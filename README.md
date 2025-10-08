@@ -86,7 +86,7 @@
 
 # &nbsp;  ```bash
 
-# &nbsp;  git clone https://github.com/YOUR\_USERNAME/medical-store.git
+# &nbsp;  git clone https://github.com/fajruddinskin/medical-store.git
 
 # &nbsp;  cd medical-store
 
