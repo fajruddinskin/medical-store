@@ -20,7 +20,6 @@ public class WebController {
     @Autowired
     private CustomerService customerService;
 
-    // Dashboard
     @GetMapping("/")
     public String index(Model model) {
         List<Medicine> medicines = medicineService.getAllMedicines();
@@ -31,6 +30,12 @@ public class WebController {
         model.addAttribute("totalMedicines", medicines.size());
         model.addAttribute("totalCustomers", customers.size());
         model.addAttribute("lowStockCount", medicines.stream().filter(m -> m.getQuantity() < 10).count());
+
+        // Add recent data for dashboard
+        model.addAttribute("recentMedicines",
+                medicines.size() > 5 ? medicines.subList(0, 5) : medicines);
+        model.addAttribute("recentCustomers",
+                customers.size() > 5 ? customers.subList(0, 5) : customers);
 
         return "index";
     }

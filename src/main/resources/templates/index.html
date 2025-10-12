@@ -30,6 +30,19 @@
         .stat-card:hover {
             transform: translateY(-5px);
         }
+        .quick-action-btn {
+            transition: all 0.3s ease;
+        }
+        .quick-action-btn:hover {
+            transform: scale(1.05);
+        }
+        #customerForm {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .customer-table th {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+        }
     </style>
 </head>
 <body>
@@ -76,6 +89,64 @@
                 </h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
                     <span class="text-muted" th:text="'Welcome to Medical Store System'"></span>
+                </div>
+            </div>
+
+            <!-- Quick Customer Creation Form -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card stat-card text-white" id="customerForm">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h5 class="card-title mb-3">
+                                        <i class="fas fa-user-plus me-2"></i>Quick Customer Registration
+                                    </h5>
+                                    <p class="card-text mb-4">Add a new customer quickly to get started with sales and management.</p>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <button class="btn btn-light btn-lg quick-action-btn" data-bs-toggle="collapse" data-bs-target="#customerFormCollapse">
+                                        <i class="fas fa-chevron-down me-2"></i> Add Customer
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Collapsible Form -->
+                            <div class="collapse mt-3" id="customerFormCollapse">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="customerName" class="form-label">Customer Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="customerName" placeholder="Enter customer name" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="customerPhone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                            <input type="tel" class="form-control" id="customerPhone" placeholder="+1-555-1234" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="customerEmail" class="form-label">Email Address</label>
+                                            <input type="email" class="form-control" id="customerEmail" placeholder="customer@email.com">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <button type="button" class="btn btn-light me-2" onclick="clearCustomerForm()">
+                                            <i class="fas fa-times me-1"></i> Clear
+                                        </button>
+                                        <button type="button" class="btn btn-success" onclick="createCustomer()">
+                                            <i class="fas fa-save me-1"></i> Create Customer
+                                        </button>
+                                        <div id="customerMessage" class="mt-2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -143,25 +214,25 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-3 text-center mb-3">
-                                    <a href="/medicines" class="btn btn-outline-primary btn-lg w-100">
+                                    <a href="/medicines" class="btn btn-outline-primary btn-lg w-100 quick-action-btn">
                                         <i class="fas fa-plus-circle fa-2x mb-2"></i><br>
                                         Add Medicine
                                     </a>
                                 </div>
                                 <div class="col-md-3 text-center mb-3">
-                                    <a href="/customers" class="btn btn-outline-success btn-lg w-100">
+                                    <a href="/customers" class="btn btn-outline-success btn-lg w-100 quick-action-btn">
                                         <i class="fas fa-user-plus fa-2x mb-2"></i><br>
-                                        Add Customer
+                                        Manage Customers
                                     </a>
                                 </div>
                                 <div class="col-md-3 text-center mb-3">
-                                    <a href="/medicines" class="btn btn-outline-info btn-lg w-100">
+                                    <a href="/medicines" class="btn btn-outline-info btn-lg w-100 quick-action-btn">
                                         <i class="fas fa-search fa-2x mb-2"></i><br>
                                         View Inventory
                                     </a>
                                 </div>
                                 <div class="col-md-3 text-center mb-3">
-                                    <a href="/reports" class="btn btn-outline-warning btn-lg w-100">
+                                    <a href="/reports" class="btn btn-outline-warning btn-lg w-100 quick-action-btn">
                                         <i class="fas fa-chart-pie fa-2x mb-2"></i><br>
                                         View Reports
                                     </a>
@@ -172,30 +243,29 @@
                 </div>
             </div>
 
-            <!-- Recent Medicines -->
+            <!-- Recent Data Section -->
             <div class="row">
-                <div class="col-12">
-                    <div class="card">
+                <!-- Recent Medicines -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
                         <div class="card-header bg-info text-white">
                             <h5 class="card-title mb-0">
-                                <i class="fas fa-list me-2"></i>Recent Medicines
+                                <i class="fas fa-pills me-2"></i>Recent Medicines
                             </h5>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-striped table-hover">
-                                    <thead class="table-dark">
+                                <table class="table table-striped table-hover customer-table">
+                                    <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Batch Number</th>
+                                        <th>Batch</th>
                                         <th>Price</th>
-                                        <th>Quantity</th>
-                                        <th>Type</th>
-                                        <th>Manufacturer</th>
+                                        <th>Qty</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="medicine : ${medicines}">
+                                    <tr th:each="medicine : ${recentMedicines}">
                                         <td th:text="${medicine.name}"></td>
                                         <td th:text="${medicine.batchNumber}"></td>
                                         <td th:text="'$' + ${medicine.price}"></td>
@@ -205,15 +275,53 @@
                                             <span th:unless="${medicine.quantity < 10}"
                                                   class="badge bg-success" th:text="${medicine.quantity}"></span>
                                         </td>
-                                        <td>
-                                            <span class="badge bg-primary" th:text="${medicine.type}"></span>
-                                        </td>
-                                        <td th:text="${medicine.manufacturer}"></td>
                                     </tr>
-                                    <tr th:if="${medicines.empty}">
-                                        <td colspan="6" class="text-center text-muted py-4">
-                                            <i class="fas fa-inbox fa-3x mb-3"></i><br>
-                                            No medicines found. <a href="/medicines">Add your first medicine</a>
+                                    <tr th:if="${recentMedicines.empty}">
+                                        <td colspan="4" class="text-center text-muted py-3">
+                                            <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                                            No medicines found
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Customers -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-users me-2"></i>Recent Customers
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover customer-table">
+                                    <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Phone</th>
+                                        <th>Email</th>
+                                        <th>Joined</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="customer : ${recentCustomers}">
+                                        <td th:text="${customer.name}"></td>
+                                        <td th:text="${customer.phoneNumber}"></td>
+                                        <td>
+                                            <span th:if="${customer.email}" th:text="${customer.email}" class="text-primary"></span>
+                                            <span th:unless="${customer.email}" class="text-muted">-</span>
+                                        </td>
+                                        <td th:text="${#temporals.format(customer.createdAt, 'MM/dd')}"></td>
+                                    </tr>
+                                    <tr th:if="${recentCustomers.empty}">
+                                        <td colspan="4" class="text-center text-muted py-3">
+                                            <i class="fas fa-user-plus fa-2x mb-2"></i><br>
+                                            No customers yet. <a href="#" data-bs-toggle="collapse" data-bs-target="#customerFormCollapse">Add first customer</a>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -228,5 +336,119 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Customer creation function using the API
+    async function createCustomer() {
+        const name = document.getElementById('customerName').value.trim();
+        const phone = document.getElementById('customerPhone').value.trim();
+        const email = document.getElementById('customerEmail').value.trim();
+        const messageDiv = document.getElementById('customerMessage');
+
+        // Basic validation
+        if (!name || !phone) {
+            showMessage('Please fill in all required fields (Name and Phone).', 'danger');
+            return;
+        }
+
+        // Prepare customer data
+        const customerData = {
+            name: name,
+            phoneNumber: phone,
+            email: email || null
+            // Note: id and createdAt will be generated by the server
+        };
+
+        try {
+            showMessage('Creating customer...', 'info');
+
+            const response = await fetch('/api/customers', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(customerData)
+            });
+
+            if (response.ok) {
+                const createdCustomer = await response.json();
+                showMessage(`Customer "${createdCustomer.name}" created successfully!`, 'success');
+                clearCustomerForm();
+
+                // Collapse the form after successful creation
+                const collapseElement = document.getElementById('customerFormCollapse');
+                const bsCollapse = new bootstrap.Collapse(collapseElement, {
+                    toggle: false
+                });
+                bsCollapse.hide();
+
+                // Refresh the page to show updated customer count and list
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+
+            } else {
+                const errorData = await response.json();
+                showMessage(`Error: ${errorData.message || 'Failed to create customer'}`, 'danger');
+            }
+        } catch (error) {
+            console.error('Error creating customer:', error);
+            showMessage('Network error: Could not create customer. Please try again.', 'danger');
+        }
+    }
+
+    // Clear form function
+    function clearCustomerForm() {
+        document.getElementById('customerName').value = '';
+        document.getElementById('customerPhone').value = '';
+        document.getElementById('customerEmail').value = '';
+        document.getElementById('customerMessage').innerHTML = '';
+    }
+
+    // Show message function
+    function showMessage(message, type) {
+        const messageDiv = document.getElementById('customerMessage');
+        const alertClass = type === 'success' ? 'alert-success' :
+                         type === 'danger' ? 'alert-danger' : 'alert-info';
+
+        messageDiv.innerHTML = `
+            <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+    }
+
+    // Auto-expand form if there are no customers
+    document.addEventListener('DOMContentLoaded', function() {
+        const customerCount = parseInt(document.querySelector('.stat-card.border-success h2').textContent);
+        if (customerCount === 0) {
+            // Auto-expand the customer form if no customers exist
+            const collapseElement = document.getElementById('customerFormCollapse');
+            const bsCollapse = new bootstrap.Collapse(collapseElement, {
+                toggle: true
+            });
+            bsCollapse.show();
+        }
+    });
+
+    // Example of using the provided curl command data
+    function createExampleCustomer() {
+        // This demonstrates how to use the exact data from your curl command
+        const exampleCustomer = {
+            id: 5,
+            name: "Fajtyuhbj Jowhnson",
+            phoneNumber: "+1-55895-0103",
+            email: "robert.j4499@email.com",
+            createdAt: "2025-01-17T09:15:00"
+        };
+
+        console.log('Example customer data:', exampleCustomer);
+        // Note: In production, you wouldn't send the ID and createdAt from client
+        // These should be generated by the server
+    }
+
+    // Initialize example (for demonstration)
+    createExampleCustomer();
+</script>
 </body>
 </html>
