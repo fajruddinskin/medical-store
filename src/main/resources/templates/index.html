@@ -36,15 +36,28 @@
         .quick-action-btn:hover {
             transform: scale(1.05);
         }
-        #customerForm {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
         #medicineForm {
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        #customerForm {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
         .customer-table th {
             background-color: #f8f9fa;
             border-bottom: 2px solid #dee2e6;
+        }
+        .visually-hidden {
+            position: absolute;
+            left: -10000px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+        /* Hide the form cards by default */
+        .form-card {
+            display: none;
+
         }
     </style>
 </head>
@@ -160,22 +173,24 @@
                             <div class="row">
                                 <div class="col-md-3 text-center mb-3">
                                     <a href="#medicineFormCollapse"
-                                       class="btn btn-outline-primary btn-lg w-100 quick-action-btn collapsed"
+                                       class="btn btn-outline-primary btn-lg w-100 quick-action-btn"
                                        data-bs-toggle="collapse"
                                        role="button"
                                        aria-expanded="false"
-                                       aria-controls="medicineFormCollapse">
+                                       aria-controls="medicineFormCollapse"
+                                       onclick="toggleFormCard('medicineForm')">
                                         <i class="fas fa-plus-circle fa-2x mb-2"></i><br>
                                         Add Medicine
                                     </a>
                                 </div>
                                 <div class="col-md-3 text-center mb-3">
                                     <a href="#customerFormCollapse"
-                                       class="btn btn-outline-success btn-lg w-100 quick-action-btn collapsed"
+                                       class="btn btn-outline-success btn-lg w-100 quick-action-btn"
                                        data-bs-toggle="collapse"
                                        role="button"
                                        aria-expanded="false"
-                                       aria-controls="customerFormCollapse">
+                                       aria-controls="customerFormCollapse"
+                                       onclick="toggleFormCard('customerForm')">
                                         <i class="fas fa-user-plus fa-2x mb-2"></i><br>
                                         Add Customer
                                     </a>
@@ -197,7 +212,7 @@
                             <!-- Quick Medicine Creation Form -->
                             <div class="row mb-4">
                                 <div class="col-12">
-                                    <div class="card stat-card text-white" id="medicineForm">
+                                    <div class="card stat-card text-white form-card" id="medicineForm">
                                         <div class="card-body">
                                             <!-- Collapsible Medicine Form -->
                                             <div class="collapse mt-3" id="medicineFormCollapse">
@@ -289,7 +304,7 @@
                             <!-- Quick Customer Creation Form -->
                             <div class="row mb-4">
                                 <div class="col-12">
-                                    <div class="card stat-card text-white" id="customerForm">
+                                    <div class="card stat-card text-white form-card" id="customerForm">
                                         <div class="card-body">
                                             <!-- Collapsible Customer Form -->
                                             <div class="collapse mt-3" id="customerFormCollapse">
@@ -417,7 +432,7 @@
                                     <tr th:if="${recentCustomers.empty}">
                                         <td colspan="4" class="text-center text-muted py-3">
                                             <i class="fas fa-user-plus fa-2x mb-2"></i><br>
-                                            No customers yet. <a href="#" data-bs-toggle="collapse" data-bs-target="#customerFormCollapse">Add first customer</a>
+                                            No customers yet. <a href="#" data-bs-toggle="collapse" data-bs-target="#customerFormCollapse" onclick="toggleFormCard('customerForm')">Add first customer</a>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -433,6 +448,12 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // Function to toggle form card visibility
+    function toggleFormCard(formId) {
+        const formCard = document.getElementById(formId);
+        formCard.style.display = formCard.style.display === 'none' || formCard.style.display === '' ? 'block' : 'none';
+    }
+
     // Medicine creation function using the API
     async function createMedicine() {
         const name = document.getElementById('medicineName').value.trim();
@@ -496,6 +517,9 @@
                     toggle: false
                 });
                 bsCollapse.hide();
+
+                // Hide the form card
+                document.getElementById('medicineForm').style.display = 'none';
 
                 // Refresh the page to show updated medicine count and list
                 setTimeout(() => {
@@ -583,6 +607,9 @@
                 });
                 bsCollapse.hide();
 
+                // Hide the form card
+                document.getElementById('customerForm').style.display = 'none';
+
                 // Refresh the page to show updated customer count and list
                 setTimeout(() => {
                     location.reload();
@@ -620,11 +647,12 @@
         `;
     }
 
-    // Auto-expand form if there are no medicines
+    // Auto-expand form if there are no medicines or customers
     document.addEventListener('DOMContentLoaded', function() {
         const medicineCount = parseInt(document.querySelector('.stat-card.border-primary h2').textContent);
         if (medicineCount === 0) {
-            // Auto-expand the medicine form if no medicines exist
+            // Show and auto-expand the medicine form if no medicines exist
+            document.getElementById('medicineForm').style.display = 'block';
             const collapseElement = document.getElementById('medicineFormCollapse');
             const bsCollapse = new bootstrap.Collapse(collapseElement, {
                 toggle: true
@@ -634,7 +662,8 @@
 
         const customerCount = parseInt(document.querySelector('.stat-card.border-success h2').textContent);
         if (customerCount === 0) {
-            // Auto-expand the customer form if no customers exist
+            // Show and auto-expand the customer form if no customers exist
+            document.getElementById('customerForm').style.display = 'block';
             const collapseElement = document.getElementById('customerFormCollapse');
             const bsCollapse = new bootstrap.Collapse(collapseElement, {
                 toggle: true
