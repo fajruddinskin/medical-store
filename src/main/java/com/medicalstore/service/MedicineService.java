@@ -6,6 +6,7 @@ import com.medicalstore.repository.MedicineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +16,12 @@ public class MedicineService {
     private MedicineRepository medicineRepository;
 
     public List<Medicine> getAllMedicines() {
-        return medicineRepository.findAll();
+        try {
+            return medicineRepository.findAll();
+        } catch (Exception e) {
+            System.out.println("Error fetching all medicines: {}" + e.getMessage()+ e);
+            return Collections.emptyList();
+        }
     }
 
     public Optional<Medicine> getMedicineById(Long id) {

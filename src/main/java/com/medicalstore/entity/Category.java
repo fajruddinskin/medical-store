@@ -1,19 +1,25 @@
 package com.medicalstore.entity;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "categories")
 public class Category {
 
     @Id
-    private String id;  // This should be String to match the repository
+    private String id;
 
     @Column
     private String name;
 
     @Column
     private String description;
+
+    @OneToMany(cascade = CascadeType.PERSIST , fetch = FetchType.LAZY)
+    @JoinColumn(name = "medicines_id")
+    private List<Medicine> medicines = new ArrayList<>();
 
     // Constructors
     public Category() {
@@ -50,12 +56,32 @@ public class Category {
         this.description = description;
     }
 
+    public List<Medicine> getMedicines() {
+        return medicines;
+    }
+
+    public void setMedicines(List<Medicine> medicines) {
+        this.medicines = medicines;
+    }
+
+    // Helper methods for bidirectional relationship
+    public void addMedicine(Medicine medicine) {
+        medicines.add(medicine);
+        medicine.setCategory(this);
+    }
+
+    public void removeMedicine(Medicine medicine) {
+        medicines.remove(medicine);
+        medicine.setCategory(null);
+    }
+
     @Override
     public String toString() {
         return "Category{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
+                ", medicinesCount=" + (medicines != null ? medicines.size() : 0) +
                 '}';
     }
 }
