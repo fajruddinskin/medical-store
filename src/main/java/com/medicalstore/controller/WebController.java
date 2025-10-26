@@ -24,7 +24,12 @@ public class WebController {
     public String index(Model model) {
         List<Medicine> medicines = medicineService.getAllMedicines();
         List<Customer> customers = customerService.getAllCustomers();
+        System.out.println( "================");
 
+        System.out.println(medicines.get(0).getCategory().getId());
+        System.out.println(medicines.get(0).getCategory().getName());
+        System.out.println(medicines.get(0).getCategory().getDescription());
+        System.out.println( "================");
         model.addAttribute("medicines", medicines);
         model.addAttribute("customers", customers);
         model.addAttribute("totalMedicines", medicines.size());

@@ -47,6 +47,17 @@ public class Medicine {
     @Column(name = "requires_prescription")
     private Boolean requiresPrescription = false;
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    @ManyToOne(cascade = CascadeType.PERSIST , fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
     // Constructors
     public Medicine() {}
 

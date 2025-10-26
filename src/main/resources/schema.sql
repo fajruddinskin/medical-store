@@ -1,6 +1,7 @@
 -- Drop tables if they exist
 DROP TABLE IF EXISTS medicines;
 DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS categories;
 
 -- Create medicines table with all constraints
 CREATE TABLE medicines (
@@ -13,9 +14,16 @@ CREATE TABLE medicines (
     expiry_date DATE,
     manufacturer TEXT NOT NULL,
     type TEXT NOT NULL,
-    requires_prescription BOOLEAN DEFAULT FALSE
+    requires_prescription BOOLEAN DEFAULT FALSE,
+    category_id VARCHAR(255),
+    FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
+CREATE TABLE categories (
+    id VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(255),
+    description TEXT
+);
 -- Create customers table with unique constraints in table definition
 CREATE TABLE customers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
