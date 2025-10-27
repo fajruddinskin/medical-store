@@ -232,7 +232,7 @@
                                                             <label for="medicineType" class="form-label">Medicine Type <span class="text-danger">*</span></label>
                                                             <select class="form-select" id="medicineType" required>
                                                                 <option value="">Select Type</option>
-                                                                <option th:each="medicinetype : ${medtype}"
+                                                                <option th:each="medicinetype : ${medicineType}"
                                                                         th:value="${medicinetype.key}"
                                                                         th:text="${medicinetype.value}">
 

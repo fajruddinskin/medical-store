@@ -33,7 +33,7 @@ public class WebController {
         List<Medicine> medicines = medicineService.getAllMedicines();
         List<Customer> customers = customerService.getAllCustomers();
         List<Category> catagory=categoryService.getAllCategories();
-        //List<Medicine>
+
         System.out.println( "================");
 
         System.out.println(medicines.get(0).getCategory().getId());
@@ -51,9 +51,8 @@ public class WebController {
                 medicines.size() > 5 ? medicines.subList(0, 5) : medicines);
         model.addAttribute("recentCustomers",
                 customers.size() > 5 ? customers.subList(0, 5) : customers);
-        model.addAttribute("medtype", enumService.getMedicineType());
+        model.addAttribute("medicineType", enumService.getMedicineType());
         model.addAttribute("catagory",catagory);
-       // model.addAttribute("mediciteType",medicines.get().getType());
 
         return "index";
     }

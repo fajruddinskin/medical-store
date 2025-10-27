@@ -16,6 +16,8 @@
     <!-- System Service Beans -->
     <bean id="medicineService" class="com.medicalstore.service.MedicineService"/>
 
+    <bean id="enumService" class="com.medicalstore.service.EnumService"/>
+
 
     <!-- Add more system bean definitions here -->
 

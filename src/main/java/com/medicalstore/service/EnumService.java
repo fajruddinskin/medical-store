@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@Service
+
 public class EnumService {
 
     public Map<String, String> getMedicineType() {
