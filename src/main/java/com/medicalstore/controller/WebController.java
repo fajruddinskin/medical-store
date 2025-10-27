@@ -4,6 +4,7 @@ import com.medicalstore.entity.Category;
 import com.medicalstore.entity.Medicine;
 import com.medicalstore.entity.Customer;
 import com.medicalstore.service.CategoryService;
+import com.medicalstore.service.EnumService;
 import com.medicalstore.service.MedicineService;
 import com.medicalstore.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class WebController {
     private CustomerService customerService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private EnumService enumService;
+
 
     @GetMapping("/")
     public String index(Model model) {
@@ -47,6 +51,7 @@ public class WebController {
                 medicines.size() > 5 ? medicines.subList(0, 5) : medicines);
         model.addAttribute("recentCustomers",
                 customers.size() > 5 ? customers.subList(0, 5) : customers);
+        model.addAttribute("medtype", enumService.getMedicineType());
         model.addAttribute("catagory",catagory);
        // model.addAttribute("mediciteType",medicines.get().getType());
 
