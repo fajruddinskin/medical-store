@@ -11,6 +11,7 @@
             background: linear-gradient(180deg, #2c3e50 0%, #3498db 100%);
             min-height: 100vh;
             color: white;
+            width: 265px;
         }
         .sidebar .nav-link {
             color: white;
@@ -98,7 +99,7 @@
         </nav>
 
         <!-- Main content -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-light" style="min-height: 100vh;">
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-light" style="min-height: 100vh; width: 1083px;">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2 text-primary">
                     <i class="fas fa-tachometer-alt me-2"></i>Dashboard
@@ -231,14 +232,25 @@
                                                             <label for="medicineType" class="form-label">Medicine Type <span class="text-danger">*</span></label>
                                                             <select class="form-select" id="medicineType" required>
                                                                 <option value="">Select Type</option>
-                                                                <option value="TABLET">Tablet</option>
-                                                                <option value="CAPSULE">Capsule</option>
-                                                                <option value="SYRUP">Syrup</option>
-                                                                <option value="INJECTION">Injection</option>
-                                                                <option value="OINTMENT">Ointment</option>
-                                                                <option value="DROPS">Drops</option>
-                                                                <option value="INHALER">Inhaler</option>
-                                                                <option value="OTHER">Other</option>
+                                                                <option th:each="medicinetype : ${medicineType}"
+                                                                        th:value="${medicinetype.key}"
+                                                                        th:text="${medicinetype.value}">
+
+                                                                >
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="mb-3">
+                                                            <label for="medicineType" class="form-label">Medicine categery <span class="text-danger">*</span></label>
+                                                            <select class="form-select" id="medicinecategory" required>
+                                                                <option value="">Select categery</option>
+                                                                <option th:each="categori : ${catagory}"
+                                                                        th:value="${categori.id}"
+                                                                        th:text="${categori.name}"
+                                                                        >
+                                                                </option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -265,7 +277,7 @@
                                                     <div class="col-md-3">
                                                         <div class="mb-3">
                                                             <label for="medicineManufacturer" class="form-label">Manufacturer</label>
-                                                            <input type="text" class="form-control" id="medicineManufacturer" placeholder="Enter manufacturer name">
+                                                            <input type="date" class="form-control" id="medicineManufacturer" placeholder="Enter manufacturer name">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">

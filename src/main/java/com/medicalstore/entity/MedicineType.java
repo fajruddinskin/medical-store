@@ -1,12 +1,23 @@
 package com.medicalstore.entity;
 
 public enum MedicineType {
-    TABLET,
-    CAPSULE,
-    SYRUP,
-    INJECTION,
-    OINTMENT,
-    DROPS,
-    INHALER,
-    OTHER
+    TABLET("Tablet"),
+    CAPSULE("Capsule"),
+    SYRUP("Syrup"),
+    INJECTION("Injection"),
+    OINTMENT("Ointment"),
+    DROPS("Drops"),
+    INHALER("Inhaler"),
+    OTHER("Other");
+
+    private final String displayName;
+
+    MedicineType(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getType() {
+        return displayName;
+    }
+
 }
