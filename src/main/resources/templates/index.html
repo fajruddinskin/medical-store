@@ -231,14 +231,24 @@
                                                             <label for="medicineType" class="form-label">Medicine Type <span class="text-danger">*</span></label>
                                                             <select class="form-select" id="medicineType" required>
                                                                 <option value="">Select Type</option>
-                                                                <option value="TABLET">Tablet</option>
-                                                                <option value="CAPSULE">Capsule</option>
-                                                                <option value="SYRUP">Syrup</option>
-                                                                <option value="INJECTION">Injection</option>
-                                                                <option value="OINTMENT">Ointment</option>
-                                                                <option value="DROPS">Drops</option>
-                                                                <option value="INHALER">Inhaler</option>
-                                                                <option value="OTHER">Other</option>
+                                                                <option th:each="medicineType : ${medicines}"
+                                                                        th:value="${medicineType.id}"
+                                                                        th:text="${medicineType.type}"
+                                                                >
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="mb-3">
+                                                            <label for="medicineType" class="form-label">Medicine categery <span class="text-danger">*</span></label>
+                                                            <select class="form-select" id="medicinecategory" required>
+                                                                <option value="">Select categery</option>
+                                                                <option th:each="categori : ${catagory}"
+                                                                        th:value="${categori.id}"
+                                                                        th:text="${categori.name}"
+                                                                        >
+                                                                </option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -265,7 +275,7 @@
                                                     <div class="col-md-3">
                                                         <div class="mb-3">
                                                             <label for="medicineManufacturer" class="form-label">Manufacturer</label>
-                                                            <input type="text" class="form-control" id="medicineManufacturer" placeholder="Enter manufacturer name">
+                                                            <input type="date" class="form-control" id="medicineManufacturer" placeholder="Enter manufacturer name">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">

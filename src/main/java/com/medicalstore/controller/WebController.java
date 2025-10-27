@@ -1,7 +1,9 @@
 package com.medicalstore.controller;
 
+import com.medicalstore.entity.Category;
 import com.medicalstore.entity.Medicine;
 import com.medicalstore.entity.Customer;
+import com.medicalstore.service.CategoryService;
 import com.medicalstore.service.MedicineService;
 import com.medicalstore.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +21,15 @@ public class WebController {
 
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private CategoryService categoryService;
 
     @GetMapping("/")
     public String index(Model model) {
         List<Medicine> medicines = medicineService.getAllMedicines();
         List<Customer> customers = customerService.getAllCustomers();
+        List<Category> catagory=categoryService.getAllCategories();
+        //List<Medicine>
         System.out.println( "================");
 
         System.out.println(medicines.get(0).getCategory().getId());
@@ -41,6 +47,8 @@ public class WebController {
                 medicines.size() > 5 ? medicines.subList(0, 5) : medicines);
         model.addAttribute("recentCustomers",
                 customers.size() > 5 ? customers.subList(0, 5) : customers);
+        model.addAttribute("catagory",catagory);
+       // model.addAttribute("mediciteType",medicines.get().getType());
 
         return "index";
     }
