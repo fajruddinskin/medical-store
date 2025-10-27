@@ -106,6 +106,6 @@ public class WebController {
         model.addAttribute("lowStockMedicines",
                 medicines.stream().filter(m -> m.getQuantity() < 10).toList());
 
-        return "reports";
+        return "lab-reports";
     }
 }
