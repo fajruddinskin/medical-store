@@ -17,6 +17,14 @@ public interface MedicineRepository extends JpaRepository<Medicine, Long> {
 
     List<Medicine> findByType(MedicineType type);
 
+    @Query(value = """
+    SELECT m.* FROM medicines m
+    JOIN categories c ON m.category_id = c.id
+    WHERE LOWER(m.name) LIKE LOWER('%' || :searchTerm || '%')
+       OR LOWER(m.manufacturer) LIKE LOWER('%' || :searchTerm || '%')
+       OR LOWER(c.name) LIKE LOWER('%' || :searchTerm || '%')
+    """, nativeQuery = true)
+    List<Medicine> searchMedicines(@Param("searchTerm") String searchTerm);
     List<Medicine> findByManufacturerContainingIgnoreCase(String manufacturer);
 
     List<Medicine> findByQuantityLessThan(Integer quantity);

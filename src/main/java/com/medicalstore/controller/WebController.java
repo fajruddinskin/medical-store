@@ -33,9 +33,6 @@ public class WebController {
         List<Medicine> medicines = medicineService.getAllMedicines();
         List<Customer> customers = customerService.getAllCustomers();
         List<Category> catagory=categoryService.getAllCategories();
-
-        System.out.println( "================");
-
         System.out.println(medicines.get(0).getCategory().getId());
         System.out.println(medicines.get(0).getCategory().getName());
         System.out.println(medicines.get(0).getCategory().getDescription());

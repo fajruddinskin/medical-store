@@ -4,10 +4,12 @@ import com.medicalstore.entity.Medicine;
 import com.medicalstore.service.MedicineService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -29,6 +31,25 @@ public class MedicineController {
         return medicine.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    @GetMapping("/search")
+    @ResponseBody
+    public ResponseEntity<?> searchMedicines(@RequestParam String searchTerm) {
+        try {
+            List<Medicine> list = medicineService.searchMedicines(searchTerm);
+            return ResponseEntity.ok(list);
+        } catch (Exception e) {
+            // Log the exception
+            e.printStackTrace();
+            // Return a meaningful error message to the client
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                            "error", "Failed to fetch medicines",
+                            "message", e.getMessage()
+                    ));
+        }
+    }
+
 
     @PostMapping
     public Medicine createMedicine(@Valid @RequestBody Medicine medicine) {
@@ -62,11 +83,6 @@ public class MedicineController {
     public ResponseEntity<Void> deleteMedicine(@PathVariable Long id) {
         medicineService.deleteMedicine(id);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/search")
-    public List<Medicine> searchMedicines(@RequestParam String name) {
-        return medicineService.searchMedicinesByName(name);
     }
 
     @GetMapping("/low-stock")

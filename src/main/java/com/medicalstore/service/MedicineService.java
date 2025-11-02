@@ -14,10 +14,14 @@ public class MedicineService {
     @Autowired
     private MedicineRepository medicineRepository;
 
+    public List<Medicine> searchMedicines(String query) {
+        //return null;
+        return medicineRepository.searchMedicines(query);
+    }
+
     public List<Medicine> getAllMedicines() {
         return medicineRepository.findAll();
     }
-
     public Optional<Medicine> getMedicineById(Long id) {
         return medicineRepository.findById(id);
     }
