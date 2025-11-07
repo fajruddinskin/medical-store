@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -49,7 +50,22 @@ public class MedicineController {
                     ));
         }
     }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Map<String, Object>> deleteMedicine(@PathVariable Long id) {
+        Map<String, Object> response = new HashMap<>();
 
+        boolean deleted = false;
+
+        if (deleted) {
+            response.put("success", true);
+            response.put("message", "Medicine deleted successfully!");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("success", false);
+            response.put("message", "Medicine not found or could not be deleted.");
+            return ResponseEntity.status(404).body(response);
+        }
+    }
 
     @PostMapping
     public Medicine createMedicine(@Valid @RequestBody Medicine medicine) {
@@ -79,11 +95,11 @@ public class MedicineController {
         }
     }
 
-    @DeleteMapping("/{id}")
+/*    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMedicine(@PathVariable Long id) {
         medicineService.deleteMedicine(id);
         return ResponseEntity.ok().build();
-    }
+    }*/
 
     @GetMapping("/low-stock")
     public List<Medicine> getLowStockMedicines() {

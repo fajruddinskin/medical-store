@@ -467,6 +467,25 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    $(document).on('click', '.delete-btn', function() {
+      let row = $(this).closest('tr');
+      let medicineId = row.data('id');
+
+      if (confirm('Are you sure you want to delete this medicine?')) {
+        $.ajax({
+          url: '/api/medicines/delete/' + medicineId, // Spring Boot endpoint
+          type: 'DELETE', // use DELETE for RESTful convention
+          success: function(response) {
+            alert(response.message);
+            row.remove();
+          },
+          error: function(xhr, status, error) {
+            console.error(error);
+            alert('Failed to delete medicine.');
+          }
+        });
+      }
+    });
     $(document).ready(function() {
         // Trigger AJAX search on button click or Enter key
         $('#searchBtn').on('click', function() {
@@ -497,12 +516,14 @@
                         html = '<p class="text-danger">No medicines found.</p>';
                     } else {
                         html = '<table class="table table-bordered table-striped">';
-                        html += '<thead><tr><th>Name</th><th>Manufacturer</th><th>Category</th></tr></thead><tbody>';
+                        html += '<thead><tr><th>Id</th><th>Name</th><th>Manufacturer</th><th>Category</th><th>Action</th></tr></thead><tbody>';
                         data.forEach(med => {
-                            html += `<tr>
+                            html += `<tr data-id="${med.id}">
+                                <td>${med.id}</td>
                                 <td>${med.name}</td>
                                 <td>${med.manufacturer}</td>
                                 <td>${med.category ? med.category.name || med.category : ''}</td>
+                                <td><button class="btn btn-danger btn-sm delete-btn">Delete</button></td>
                             </tr>`;
                         });
                         html += '</tbody></table>';
