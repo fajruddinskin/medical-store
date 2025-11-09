@@ -1,0 +1,58 @@
+/* Sidebar */
+.sidebar {
+    background: linear-gradient(180deg, #2c3e50 0%, #3498db 100%);
+    min-height: 100vh;
+    color: white;
+}
+.sidebar .nav-link {
+    color: white;
+    border-radius: 5px;
+    padding: 12px 20px;
+}
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Cards */
+.stat-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+    transition: transform 0.3s ease;
+}
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Quick action buttons */
+.quick-action-btn {
+    transition: all 0.3s ease;
+}
+.quick-action-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Lab test form styling */
+#labTestFormCard {
+    background: linear-gradient(135deg, #007bff 0%, #17a2b8 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+#labTestFormCard .form-label {
+    color: #fff;
+    font-weight: 500;
+}
+#labTestFormCard .form-control {
+    border-radius: 6px;
+    border: none;
+}
+#labTestFormCard .btn-primary {
+    background-color: #28a745;
+    border: none;
+}
+#labTestFormCard .btn-primary:hover {
+    background-color: #218838;
+}
