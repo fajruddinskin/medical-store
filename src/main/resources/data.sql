@@ -22,3 +22,6 @@ VALUES
 ('John Doe', '+1234567890', 'john.doe@email.com'),
 ('Jane Smith', '+0987654321', 'jane.smith@email.com'),
 ('Bob Johnson', '+1122334455', 'bob.johnson@email.com');
+
+INSERT INTO patients (id, medical_history, gender)
+VALUES (1, 'Asthma', 'Male');

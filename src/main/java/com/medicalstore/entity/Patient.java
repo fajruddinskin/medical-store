@@ -1,0 +1,49 @@
+package com.medicalstore.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import java.time.LocalDate;
+
+@Entity
+@Table(name = "patients")
+public class Patient extends Customer {
+
+    private String medicalHistory;
+    private LocalDate dateOfBirth;
+    private String gender;
+
+    public Patient() {
+        super();
+    }
+
+    public Patient(String name, String phoneNumber, String email, String medicalHistory, LocalDate dateOfBirth, String gender) {
+        super(name, phoneNumber, email);
+        this.medicalHistory = medicalHistory;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+    }
+
+    public String getMedicalHistory() {
+        return medicalHistory;
+    }
+
+    public void setMedicalHistory(String medicalHistory) {
+        this.medicalHistory = medicalHistory;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+}

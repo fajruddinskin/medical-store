@@ -30,8 +30,9 @@ public class MedicineService {
         return medicineRepository.save(medicine);
     }
 
-    public void deleteMedicine(Long id) {
+    public boolean deleteMedicine(Long id) {
         medicineRepository.deleteById(id);
+        return true;
     }
 
     public List<Medicine> getMedicinesByType(String type) {

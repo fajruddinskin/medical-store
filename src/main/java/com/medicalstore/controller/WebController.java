@@ -3,10 +3,8 @@ package com.medicalstore.controller;
 import com.medicalstore.entity.Category;
 import com.medicalstore.entity.Medicine;
 import com.medicalstore.entity.Customer;
-import com.medicalstore.service.CategoryService;
-import com.medicalstore.service.EnumService;
-import com.medicalstore.service.MedicineService;
-import com.medicalstore.service.CustomerService;
+import com.medicalstore.entity.Patient;
+import com.medicalstore.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +20,10 @@ public class WebController {
 
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private PatientService patientService;
+
     @Autowired
     private CategoryService categoryService;
     @Autowired
@@ -32,10 +34,14 @@ public class WebController {
     public String index(Model model) {
         List<Medicine> medicines = medicineService.getAllMedicines();
         List<Customer> customers = customerService.getAllCustomers();
+        List<Patient> patients = patientService.getAllPatients();
         List<Category> catagory=categoryService.getAllCategories();
         System.out.println(medicines.get(0).getCategory().getId());
         System.out.println(medicines.get(0).getCategory().getName());
         System.out.println(medicines.get(0).getCategory().getDescription());
+        System.out.println( "================");
+        model.addAttribute("totalPatients", patients.size());
+
         System.out.println( "================");
         model.addAttribute("medicines", medicines);
         model.addAttribute("customers", customers);

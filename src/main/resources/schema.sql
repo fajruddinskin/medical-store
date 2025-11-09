@@ -2,6 +2,7 @@
 DROP TABLE IF EXISTS medicines;
 DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS patients;
 
 -- Create medicines table with all constraints
 CREATE TABLE medicines (
@@ -31,4 +32,12 @@ CREATE TABLE customers (
     phone_number TEXT NOT NULL UNIQUE,
     email TEXT UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE patients (
+    id INTEGER PRIMARY KEY,  -- 👈 same ID as in customers
+    medical_history TEXT,
+    date_of_birth DATE,
+    gender TEXT,
+    FOREIGN KEY (id) REFERENCES customers(id) ON DELETE CASCADE
 );

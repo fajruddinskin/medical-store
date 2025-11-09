@@ -54,7 +54,7 @@ public class MedicineController {
     public ResponseEntity<Map<String, Object>> deleteMedicine(@PathVariable Long id) {
         Map<String, Object> response = new HashMap<>();
 
-        boolean deleted = false;
+        boolean deleted = medicineService.deleteMedicine(id);
 
         if (deleted) {
             response.put("success", true);
