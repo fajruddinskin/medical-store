@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS medicines;
 DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS patients;
+DROP TABLE IF EXISTS tests;
 
 -- Create medicines table with all constraints
 CREATE TABLE medicines (
@@ -40,4 +41,12 @@ CREATE TABLE patients (
     date_of_birth DATE,
     gender TEXT,
     FOREIGN KEY (id) REFERENCES customers(id) ON DELETE CASCADE
+);
+
+CREATE TABLE tests (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    description TEXT,
+    price REAL NOT NULL,
+    referrer_fee REAL
 );

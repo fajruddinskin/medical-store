@@ -1,9 +1,6 @@
 package com.medicalstore.controller;
 
-import com.medicalstore.entity.Category;
-import com.medicalstore.entity.Medicine;
-import com.medicalstore.entity.Customer;
-import com.medicalstore.entity.Patient;
+import com.medicalstore.entity.*;
 import com.medicalstore.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +20,8 @@ public class WebController {
 
     @Autowired
     private PatientService patientService;
-
+    @Autowired
+    private LabTestService labTestService;
     @Autowired
     private CategoryService categoryService;
     @Autowired
@@ -35,10 +33,16 @@ public class WebController {
         List<Medicine> medicines = medicineService.getAllMedicines();
         List<Customer> customers = customerService.getAllCustomers();
         List<Patient> patients = patientService.getAllPatients();
+
+        List<LabTestModel> labTests= labTestService.getAllLabTest();
         List<Category> catagory=categoryService.getAllCategories();
         System.out.println(medicines.get(0).getCategory().getId());
         System.out.println(medicines.get(0).getCategory().getName());
         System.out.println(medicines.get(0).getCategory().getDescription());
+        System.out.println( "================");
+        model.addAttribute("labTests", labTests.size());
+        System.out.println( "================");
+
         System.out.println( "================");
         model.addAttribute("totalPatients", patients.size());
 
@@ -107,11 +111,34 @@ public class WebController {
     public String reports(Model model) {
         List<Medicine> medicines = medicineService.getAllMedicines();
         List<Customer> customers = customerService.getAllCustomers();
+        List<Patient> patients = patientService.getAllPatients();
 
+        List<LabTestModel> labTests= labTestService.getAllLabTest();
+        List<Category> catagory=categoryService.getAllCategories();
+        System.out.println(medicines.get(0).getCategory().getId());
+        System.out.println(medicines.get(0).getCategory().getName());
+        System.out.println(medicines.get(0).getCategory().getDescription());
+        System.out.println( "================");
+        model.addAttribute("labTests", labTests.size());
+        System.out.println( "================");
+
+        System.out.println( "================");
+        model.addAttribute("totalPatients", patients.size());
+
+        System.out.println( "================");
         model.addAttribute("medicines", medicines);
         model.addAttribute("customers", customers);
-        model.addAttribute("lowStockMedicines",
-                medicines.stream().filter(m -> m.getQuantity() < 10).toList());
+        model.addAttribute("totalMedicines", medicines.size());
+        model.addAttribute("totalCustomers", customers.size());
+        model.addAttribute("lowStockCount", medicines.stream().filter(m -> m.getQuantity() < 10).count());
+
+        // Add recent data for dashboard
+        model.addAttribute("recentMedicines",
+                medicines.size() > 5 ? medicines.subList(0, 5) : medicines);
+        model.addAttribute("recentCustomers",
+                customers.size() > 5 ? customers.subList(0, 5) : customers);
+        model.addAttribute("medicineType", enumService.getMedicineType());
+        model.addAttribute("catagory",catagory);
 
         return "lab-reports";
     }

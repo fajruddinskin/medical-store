@@ -25,3 +25,15 @@ VALUES
 
 INSERT INTO patients (id, medical_history, gender)
 VALUES (1, 'Asthma', 'Male');
+
+INSERT INTO tests (name, description, price, referrer_fee) VALUES
+('Complete Blood Count (CBC)', 'Measures various components of blood including red cells, white cells, and platelets.', 450.00, 50.00),
+('Liver Function Test (LFT)', 'Evaluates liver enzymes and proteins to check liver health.', 800.00, 100.00),
+('Kidney Function Test (KFT)', 'Assesses kidney performance through urea, creatinine, and electrolyte levels.', 750.00, 80.00),
+('Fasting Blood Sugar (FBS)', 'Determines blood sugar level after fasting for 8–10 hours.', 250.00, 30.00),
+('Postprandial Blood Sugar (PPBS)', 'Measures blood sugar level after a meal.', 250.00, 30.00),
+('Lipid Profile', 'Checks cholesterol and triglyceride levels to assess heart health.', 900.00, 100.00),
+('Thyroid Profile (T3, T4, TSH)', 'Measures thyroid hormone levels to detect thyroid disorders.', 600.00, 70.00),
+('Urine Routine and Microscopy', 'General urine analysis for infection or kidney issues.', 200.00, 20.00),
+('HbA1c (Glycated Hemoglobin)', 'Shows average blood sugar levels over 3 months.', 550.00, 50.00),
+('Vitamin D Test', 'Measures Vitamin D levels to check for deficiency.', 1200.00, 150.00);

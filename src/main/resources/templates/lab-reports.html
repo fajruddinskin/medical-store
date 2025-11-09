@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Store Management System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>Medical Store - Lab Reports</title>
+
+    <!-- Bootstrap & FontAwesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
     <style>
+        /* Sidebar */
         .sidebar {
             background: linear-gradient(180deg, #2c3e50 0%, #3498db 100%);
             min-height: 100vh;
@@ -14,662 +18,249 @@
         }
         .sidebar .nav-link {
             color: white;
-            padding: 12px 20px;
-            margin: 5px 0;
             border-radius: 5px;
+            padding: 12px 20px;
         }
         .sidebar .nav-link:hover, .sidebar .nav-link.active {
-            background-color: rgba(255,255,255,0.1);
+            background-color: rgba(255, 255, 255, 0.15);
         }
+
+        /* Cards */
         .stat-card {
-            border-radius: 15px;
+            border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
             border: none;
+            transition: transform 0.3s ease;
         }
         .stat-card:hover {
             transform: translateY(-5px);
         }
+
+        /* Quick action buttons */
         .quick-action-btn {
             transition: all 0.3s ease;
         }
         .quick-action-btn:hover {
             transform: scale(1.05);
         }
-        #medicineForm {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-        #customerForm {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .customer-table th {
-            background-color: #f8f9fa;
-            border-bottom: 2px solid #dee2e6;
-        }
-        .visually-hidden {
-            position: absolute;
-            left: -10000px;
-            top: auto;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-        }
-        /* Hide the form cards by default */
-        .form-card {
-            display: none;
 
+        /* Lab test form styling */
+        #labTestFormCard {
+            background: linear-gradient(135deg, #007bff 0%, #17a2b8 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+        #labTestFormCard .form-label {
+            color: #fff;
+            font-weight: 500;
+        }
+        #labTestFormCard .form-control {
+            border-radius: 6px;
+            border: none;
+        }
+        #labTestFormCard .btn-primary {
+            background-color: #28a745;
+            border: none;
+        }
+        #labTestFormCard .btn-primary:hover {
+            background-color: #218838;
         }
     </style>
 </head>
+
 <body>
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <nav class="col-md-3 col-lg-2 sidebar">
-            <div class="position-sticky pt-3">
-                <div class="text-center mb-4">
-                    <i class="fas fa-hospital-alt fa-3x mb-3"></i>
-                    <h4>Medical Store</h4>
-                    <p class="text-light">Management System</p>
-                </div>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">
-                            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/medicines">
-                            <i class="fas fa-pills me-2"></i> Medicine Management
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/customers">
-                            <i class="fas fa-users me-2"></i> Customer Management
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/reports">
-                            <i class="fas fa-chart-bar me-2"></i>Lab Reports
-                        </a>
-                    </li>
-                </ul>
+        <nav class="col-md-3 col-lg-2 sidebar p-3">
+            <div class="text-center mb-4">
+                <i class="fas fa-hospital-alt fa-3x mb-2"></i>
+                <h4>Medical Store</h4>
+                <p class="text-light">Management System</p>
             </div>
+
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="/medicines"><i class="fas fa-pills me-2"></i>Medicine</a></li>
+                <li class="nav-item"><a class="nav-link" href="/customers"><i class="fas fa-users me-2"></i>Customers</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/reports"><i class="fas fa-flask me-2"></i>Lab Reports</a></li>
+            </ul>
         </nav>
 
-        <!-- Main content -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-light" style="min-height: 100vh;">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2 text-primary">
-                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                </h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <span class="text-muted" th:text="'Welcome to Medical Store System'"></span>
-                </div>
-            </div>
-
-            <!-- Statistics Cards -->
-            <div class="row mb-4">
-                <div class="col-md-4 mb-3">
-                    <div class="card stat-card border-primary">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h6 class="card-title text-muted">Total Medicines</h6>
-                                    <h2 class="text-primary" th:text="${totalMedicines}">0</h2>
-                                    <small class="text-muted">Available in stock</small>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-pills fa-3x text-primary opacity-50"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="card stat-card border-warning">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h6 class="card-title text-muted">Low Stock Items</h6>
-                                    <h2 class="text-warning" th:text="${lowStockCount}">0</h2>
-                                    <small class="text-muted">Need restocking</small>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-exclamation-triangle fa-3x text-warning opacity-50"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="card stat-card border-success">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h6 class="card-title text-muted">Total Customers</h6>
-                                    <h2 class="text-success" th:text="${totalCustomers}">0</h2>
-                                    <small class="text-muted">Registered customers</small>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-users fa-3x text-success opacity-50"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-light">
+            <div class="pt-4 pb-3 mb-3 border-bottom d-flex justify-content-between align-items-center">
+                <h2 class="text-primary"><i class="fas fa-vials me-2"></i>Lab Reports</h2>
+                <span class="text-muted">Welcome to Medical Store System</span>
             </div>
 
             <!-- Quick Actions -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="card-title mb-0">
-                                <i class="fas fa-bolt me-2"></i>Quick Actions
-                            </h5>
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 text-center mb-3">
+                            <a href="#labTestFormCollapse"
+                               class="btn btn-outline-primary btn-lg w-100 quick-action-btn"
+                               data-bs-toggle="collapse"
+                               role="button"
+                               aria-expanded="false"
+                               aria-controls="labTestFormCollapse">
+                                <i class="fas fa-plus-circle fa-2x mb-2"></i><br>Add Test
+                            </a>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-3 text-center mb-3">
-                                    <a href="#medicineFormCollapse"
-                                       class="btn btn-outline-primary btn-lg w-100 quick-action-btn"
-                                       data-bs-toggle="collapse"
-                                       role="button"
-                                       aria-expanded="false"
-                                       aria-controls="medicineFormCollapse"
-                                       onclick="toggleFormCard('medicineForm')">
-                                        <i class="fas fa-plus-circle fa-2x mb-2"></i><br>
-                                        Add Medicine
-                                    </a>
-                                </div>
-                                <div class="col-md-3 text-center mb-3">
-                                    <a href="#customerFormCollapse"
-                                       class="btn btn-outline-success btn-lg w-100 quick-action-btn"
-                                       data-bs-toggle="collapse"
-                                       role="button"
-                                       aria-expanded="false"
-                                       aria-controls="customerFormCollapse"
-                                       onclick="toggleFormCard('customerForm')">
-                                        <i class="fas fa-user-plus fa-2x mb-2"></i><br>
-                                        Add Customer
-                                    </a>
-                                </div>
-                                <div class="col-md-3 text-center mb-3">
-                                    <a href="/medicines" class="btn btn-outline-info btn-lg w-100 quick-action-btn">
-                                        <i class="fas fa-search fa-2x mb-2"></i><br>
-                                        View Inventory
-                                    </a>
-                                </div>
-                                <div class="col-md-3 text-center mb-3">
-                                    <a href="/reports" class="btn btn-outline-warning btn-lg w-100 quick-action-btn">
-                                        <i class="fas fa-chart-pie fa-2x mb-2"></i><br>
-                                        View Reports
-                                    </a>
-                                </div>
-                            </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <a href="/medicines" class="btn btn-outline-info btn-lg w-100 quick-action-btn">
+                                <i class="fas fa-pills fa-2x mb-2"></i><br>View Inventory
+                            </a>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <a href="/customers" class="btn btn-outline-success btn-lg w-100 quick-action-btn">
+                                <i class="fas fa-users fa-2x mb-2"></i><br>Manage Customers
+                            </a>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <a href="/reports" class="btn btn-outline-warning btn-lg w-100 quick-action-btn">
+                                <i class="fas fa-chart-bar fa-2x mb-2"></i><br>View Reports
+                            </a>
+                        </div>
+                    </div>
 
-                            <!-- Quick Medicine Creation Form -->
-                            <div class="row mb-4">
-                                <div class="col-12">
-                                    <div class="card stat-card text-white form-card" id="medicineForm">
-                                        <div class="card-body">
-                                            <!-- Collapsible Medicine Form -->
-                                            <div class="collapse mt-3" id="medicineFormCollapse">
-                                                <h5 class="card-title mb-3">
-                                                    <i class="fas fa-pills me-2"></i>Add New Medicine
-                                                </h5>
-                                                <div class="row">
-                                                    <div class="col-md-3">
-                                                        <div class="mb-3">
-                                                            <label for="medicineName" class="form-label">Medicine Name <span class="text-danger">*</span></label>
-                                                            <input type="text" class="form-control" id="medicineName" placeholder="Enter medicine name" required>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="mb-3">
-                                                            <label for="medicineType" class="form-label">Medicine Type <span class="text-danger">*</span></label>
-                                                            <select class="form-select" id="medicineType" required>
-                                                                <option value="">Select Type</option>
-                                                                <option value="TABLET">Tablet</option>
-                                                                <option value="CAPSULE">Capsule</option>
-                                                                <option value="SYRUP">Syrup</option>
-                                                                <option value="INJECTION">Injection</option>
-                                                                <option value="OINTMENT">Ointment</option>
-                                                                <option value="DROPS">Drops</option>
-                                                                <option value="INHALER">Inhaler</option>
-                                                                <option value="OTHER">Other</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="mb-3">
-                                                            <label for="medicineBatch" class="form-label">Batch Number <span class="text-danger">*</span></label>
-                                                            <input type="text" class="form-control" id="medicineBatch" placeholder="Enter batch number" required>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="mb-3">
-                                                            <label for="medicinePrice" class="form-label">Price ($) <span class="text-danger">*</span></label>
-                                                            <input type="number" class="form-control" id="medicinePrice" placeholder="0.00" step="0.01" min="0" required>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-3">
-                                                        <div class="mb-3">
-                                                            <label for="medicineQuantity" class="form-label">Quantity <span class="text-danger">*</span></label>
-                                                            <input type="number" class="form-control" id="medicineQuantity" placeholder="0" min="0" required>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="mb-3">
-                                                            <label for="medicineManufacturer" class="form-label">Manufacturer</label>
-                                                            <input type="text" class="form-control" id="medicineManufacturer" placeholder="Enter manufacturer name">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="mb-3">
-                                                            <label for="medicineExpiry" class="form-label">Expiry Date</label>
-                                                            <input type="date" class="form-control" id="medicineExpiry">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="mb-3">
-                                                            <label for="medicineRequiresPrescription" class="form-label">Prescription Required</label>
-                                                            <select class="form-select" id="medicineRequiresPrescription">
-                                                                <option value="false">No</option>
-                                                                <option value="true">Yes</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                        <button type="button" class="btn btn-light me-2" onclick="clearMedicineForm()">
-                                                            <i class="fas fa-times me-1"></i> Clear
-                                                        </button>
-                                                        <button type="button" class="btn btn-success" onclick="createMedicine()">
-                                                            <i class="fas fa-save me-1"></i> Add Medicine
-                                                        </button>
-                                                        <div id="medicineMessage" class="mt-2"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                    <!-- Collapsible Add Lab Test Form -->
+                    <div class="collapse mt-3" id="labTestFormCollapse">
+                        <div class="card card-body" id="labTestFormCard">
+                            <h5 class="card-title mb-3"><i class="fas fa-vial me-2"></i>Add New Lab Test</h5>
+                            <form id="labTestForm">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label class="form-label">Test Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="testName" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label class="form-label">Description</label>
+                                            <input type="text" class="form-control" id="testDescription">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label class="form-label">Price ($) <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control" id="testPrice" step="0.01" min="0" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label class="form-label">Referrer Fee ($)</label>
+                                            <input type="number" class="form-control" id="testReferrerFee" step="0.01" min="0">
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- Quick Customer Creation Form -->
-                            <div class="row mb-4">
-                                <div class="col-12">
-                                    <div class="card stat-card text-white form-card" id="customerForm">
-                                        <div class="card-body">
-                                            <!-- Collapsible Customer Form -->
-                                            <div class="collapse mt-3" id="customerFormCollapse">
-                                                <h5 class="card-title mb-3">
-                                                    <i class="fas fa-user-plus me-2"></i>Add New Customer
-                                                </h5>
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <div class="mb-3">
-                                                            <label for="customerName" class="form-label">Customer Name <span class="text-danger">*</span></label>
-                                                            <input type="text" class="form-control" id="customerName" placeholder="Enter customer name" required>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <div class="mb-3">
-                                                            <label for="customerPhone" class="form-label">Phone Number <span class="text-danger">*</span></label>
-                                                            <input type="tel" class="form-control" id="customerPhone" placeholder="+1-555-1234" required>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <div class="mb-3">
-                                                            <label for="customerEmail" class="form-label">Email Address</label>
-                                                            <input type="email" class="form-control" id="customerEmail" placeholder="customer@email.com">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                        <button type="button" class="btn btn-light me-2" onclick="clearCustomerForm()">
-                                                            <i class="fas fa-times me-1"></i> Clear
-                                                        </button>
-                                                        <button type="button" class="btn btn-success" onclick="createCustomer()">
-                                                            <i class="fas fa-save me-1"></i> Create Customer
-                                                        </button>
-                                                        <div id="customerMessage" class="mt-2"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="text-end">
+                                    <button type="reset" class="btn btn-light me-2">
+                                        <i class="fas fa-times me-1"></i>Clear
+                                    </button>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-save me-1"></i>Save Test
+                                    </button>
                                 </div>
-                            </div>
+                                <div id="labTestMessage" class="mt-3"></div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Recent Data Section -->
-            <div class="row">
-                <!-- Recent Medicines -->
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header bg-info text-white">
-                            <h5 class="card-title mb-0">
-                                <i class="fas fa-pills me-2"></i>Recent Medicines
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover customer-table">
-                                    <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Type</th>
-                                        <th>Batch</th>
-                                        <th>Price</th>
-                                        <th>Qty</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="medicine : ${recentMedicines}">
-                                        <td th:text="${medicine.name}"></td>
-                                        <td th:text="${medicine.type}"></td>
-                                        <td th:text="${medicine.batchNumber}"></td>
-                                        <td th:text="'$' + ${medicine.price}"></td>
-                                        <td>
-                                            <span th:if="${medicine.quantity < 10}"
-                                                  class="badge bg-warning" th:text="${medicine.quantity}"></span>
-                                            <span th:unless="${medicine.quantity < 10}"
-                                                  class="badge bg-success" th:text="${medicine.quantity}"></span>
-                                        </td>
-                                    </tr>
-                                    <tr th:if="${recentMedicines.empty}">
-                                        <td colspan="5" class="text-center text-muted py-3">
-                                            <i class="fas fa-inbox fa-2x mb-2"></i><br>
-                                            No medicines found
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Placeholder for Table/List of Tests -->
+            <div id="labTestsTableContainer" class="card">
+                <div class="card-header bg-info text-white">
+                    <i class="fas fa-flask me-2"></i>Recent Lab Tests
                 </div>
-
-                <!-- Recent Customers -->
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="card-title mb-0">
-                                <i class="fas fa-users me-2"></i>Recent Customers
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover customer-table">
-                                    <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Phone</th>
-                                        <th>Email</th>
-                                        <th>Joined</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="customer : ${recentCustomers}">
-                                        <td th:text="${customer.name}"></td>
-                                        <td th:text="${customer.phoneNumber}"></td>
-                                        <td>
-                                            <span th:if="${customer.email}" th:text="${customer.email}" class="text-primary"></span>
-                                            <span th:unless="${customer.email}" class="text-muted">-</span>
-                                        </td>
-                                        <td th:text="${#temporals.format(customer.createdAt, 'MM/dd')}"></td>
-                                    </tr>
-                                    <tr th:if="${recentCustomers.empty}">
-                                        <td colspan="4" class="text-center text-muted py-3">
-                                            <i class="fas fa-user-plus fa-2x mb-2"></i><br>
-                                            No customers yet. <a href="#" data-bs-toggle="collapse" data-bs-target="#customerFormCollapse" onclick="toggleFormCard('customerForm')">Add first customer</a>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped align-middle">
+                            <thead>
+                            <tr>
+                                <th>Test ID</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>Referrer Fee</th>
+                            </tr>
+                            </thead>
+                            <tbody id="labTestsTableBody">
+                            <tr><td colspan="5" class="text-center text-muted">No lab tests available</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
+
         </main>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Function to toggle form card visibility
-    function toggleFormCard(formId) {
-        const formCard = document.getElementById(formId);
-        formCard.style.display = formCard.style.display === 'none' || formCard.style.display === '' ? 'block' : 'none';
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("labTestForm");
+        const messageDiv = document.getElementById("labTestMessage");
+        const tableBody = document.getElementById("labTestsTableBody");
 
-    // Medicine creation function using the API
-    async function createMedicine() {
-        const name = document.getElementById('medicineName').value.trim();
-        const type = document.getElementById('medicineType').value;
-        const batch = document.getElementById('medicineBatch').value.trim();
-        const price = parseFloat(document.getElementById('medicinePrice').value);
-        const quantity = parseInt(document.getElementById('medicineQuantity').value);
-        const manufacturer = document.getElementById('medicineManufacturer').value.trim();
-        const expiry = document.getElementById('medicineExpiry').value;
-        const requiresPrescription = document.getElementById('medicineRequiresPrescription').value === 'true';
-        const messageDiv = document.getElementById('medicineMessage');
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
 
-        // Basic validation
-        if (!name || !type || !batch || isNaN(price) || isNaN(quantity)) {
-            showMedicineMessage('Please fill in all required fields (Name, Type, Batch, Price, and Quantity).', 'danger');
-            return;
-        }
+            const testData = {
+                name: document.getElementById("testName").value.trim(),
+                description: document.getElementById("testDescription").value.trim(),
+                price: parseFloat(document.getElementById("testPrice").value),
+                referrerFee: parseFloat(document.getElementById("testReferrerFee").value) || 0
+            };
 
-        if (price < 0) {
-            showMedicineMessage('Price cannot be negative.', 'danger');
-            return;
-        }
+            messageDiv.innerHTML = `<div class="alert alert-info">Saving...</div>`;
 
-        if (quantity < 0) {
-            showMedicineMessage('Quantity cannot be negative.', 'danger');
-            return;
-        }
-
-        // Prepare medicine data
-        const medicineData = {
-            name: name,
-            type: type,
-            batchNumber: batch,
-            price: price,
-            quantity: quantity,
-            manufacturer: manufacturer || null,
-            expiryDate: expiry || null,
-            requiresPrescription: requiresPrescription
-            // Note: id and createdAt will be generated by the server
-        };
-
-        try {
-            showMedicineMessage('Adding medicine...', 'info');
-
-            const response = await fetch('/api/medicines', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(medicineData)
-            });
-
-            if (response.ok) {
-                const createdMedicine = await response.json();
-                showMedicineMessage(`Medicine "${createdMedicine.name}" added successfully!`, 'success');
-                clearMedicineForm();
-
-                // Collapse the form after successful creation
-                const collapseElement = document.getElementById('medicineFormCollapse');
-                const bsCollapse = new bootstrap.Collapse(collapseElement, {
-                    toggle: false
+            try {
+                const response = await fetch("/api/lab-tests", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(testData)
                 });
-                bsCollapse.hide();
 
-                // Hide the form card
-                document.getElementById('medicineForm').style.display = 'none';
+                if (response.ok) {
+                    const newTest = await response.json();
+                    messageDiv.innerHTML = `<div class="alert alert-success">✅ Lab Test "${newTest.name}" added successfully!</div>`;
+                    form.reset();
 
-                // Refresh the page to show updated medicine count and list
-                setTimeout(() => {
-                    location.reload();
-                }, 1500);
+                    // Append new row
+                    const newRow = `
+                        <tr>
+                            <td>${newTest.id}</td>
+                            <td>${newTest.name}</td>
+                            <td>${newTest.description || "-"}</td>
+                            <td>$${newTest.price.toFixed(2)}</td>
+                            <td>$${(newTest.referrerFee || 0).toFixed(2)}</td>
+                        </tr>`;
+                    if (tableBody.querySelector("td.text-muted")) tableBody.innerHTML = "";
+                    tableBody.insertAdjacentHTML("afterbegin", newRow);
 
-            } else {
-                const errorData = await response.json();
-                showMedicineMessage(`Error: ${errorData.message || 'Failed to add medicine'}`, 'danger');
+                    // Collapse form
+                    const collapse = bootstrap.Collapse.getOrCreateInstance(document.getElementById("labTestFormCollapse"));
+                    collapse.hide();
+                } else {
+                    const errText = await response.text();
+                    messageDiv.innerHTML = `<div class="alert alert-danger">❌ Failed: ${errText}</div>`;
+                }
+            } catch (err) {
+                console.error(err);
+                messageDiv.innerHTML = `<div class="alert alert-danger">⚠️ Server error. Please try again.</div>`;
             }
-        } catch (error) {
-            console.error('Error adding medicine:', error);
-            showMedicineMessage('Network error: Could not add medicine. Please try again.', 'danger');
-        }
-    }
-
-    // Clear medicine form function
-    function clearMedicineForm() {
-        document.getElementById('medicineName').value = '';
-        document.getElementById('medicineType').value = '';
-        document.getElementById('medicineBatch').value = '';
-        document.getElementById('medicinePrice').value = '';
-        document.getElementById('medicineQuantity').value = '';
-        document.getElementById('medicineManufacturer').value = '';
-        document.getElementById('medicineExpiry').value = '';
-        document.getElementById('medicineRequiresPrescription').value = 'false';
-        document.getElementById('medicineMessage').innerHTML = '';
-    }
-
-    // Show medicine message function
-    function showMedicineMessage(message, type) {
-        const messageDiv = document.getElementById('medicineMessage');
-        const alertClass = type === 'success' ? 'alert-success' :
-                         type === 'danger' ? 'alert-danger' : 'alert-info';
-
-        messageDiv.innerHTML = `
-            <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        `;
-    }
-
-    // Customer creation function using the API
-    async function createCustomer() {
-        const name = document.getElementById('customerName').value.trim();
-        const phone = document.getElementById('customerPhone').value.trim();
-        const email = document.getElementById('customerEmail').value.trim();
-        const messageDiv = document.getElementById('customerMessage');
-
-        // Basic validation
-        if (!name || !phone) {
-            showCustomerMessage('Please fill in all required fields (Name and Phone).', 'danger');
-            return;
-        }
-
-        // Prepare customer data
-        const customerData = {
-            name: name,
-            phoneNumber: phone,
-            email: email || null
-            // Note: id and createdAt will be generated by the server
-        };
-
-        try {
-            showCustomerMessage('Creating customer...', 'info');
-
-            const response = await fetch('/api/customers', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(customerData)
-            });
-
-            if (response.ok) {
-                const createdCustomer = await response.json();
-                showCustomerMessage(`Customer "${createdCustomer.name}" created successfully!`, 'success');
-                clearCustomerForm();
-
-                // Collapse the form after successful creation
-                const collapseElement = document.getElementById('customerFormCollapse');
-                const bsCollapse = new bootstrap.Collapse(collapseElement, {
-                    toggle: false
-                });
-                bsCollapse.hide();
-
-                // Hide the form card
-                document.getElementById('customerForm').style.display = 'none';
-
-                // Refresh the page to show updated customer count and list
-                setTimeout(() => {
-                    location.reload();
-                }, 1500);
-
-            } else {
-                const errorData = await response.json();
-                showCustomerMessage(`Error: ${errorData.message || 'Failed to create customer'}`, 'danger');
-            }
-        } catch (error) {
-            console.error('Error creating customer:', error);
-            showCustomerMessage('Network error: Could not create customer. Please try again.', 'danger');
-        }
-    }
-
-    // Clear customer form function
-    function clearCustomerForm() {
-        document.getElementById('customerName').value = '';
-        document.getElementById('customerPhone').value = '';
-        document.getElementById('customerEmail').value = '';
-        document.getElementById('customerMessage').innerHTML = '';
-    }
-
-    // Show customer message function
-    function showCustomerMessage(message, type) {
-        const messageDiv = document.getElementById('customerMessage');
-        const alertClass = type === 'success' ? 'alert-success' :
-                         type === 'danger' ? 'alert-danger' : 'alert-info';
-
-        messageDiv.innerHTML = `
-            <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        `;
-    }
-
-    // Auto-expand form if there are no medicines or customers
-    document.addEventListener('DOMContentLoaded', function() {
-        const medicineCount = parseInt(document.querySelector('.stat-card.border-primary h2').textContent);
-        if (medicineCount === 0) {
-            // Show and auto-expand the medicine form if no medicines exist
-            document.getElementById('medicineForm').style.display = 'block';
-            const collapseElement = document.getElementById('medicineFormCollapse');
-            const bsCollapse = new bootstrap.Collapse(collapseElement, {
-                toggle: true
-            });
-            bsCollapse.show();
-        }
-
-        const customerCount = parseInt(document.querySelector('.stat-card.border-success h2').textContent);
-        if (customerCount === 0) {
-            // Show and auto-expand the customer form if no customers exist
-            document.getElementById('customerForm').style.display = 'block';
-            const collapseElement = document.getElementById('customerFormCollapse');
-            const bsCollapse = new bootstrap.Collapse(collapseElement, {
-                toggle: true
-            });
-            bsCollapse.show();
-        }
+        });
     });
 </script>
 </body>
