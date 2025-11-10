@@ -2,6 +2,7 @@ package com.medicalstore.service;
 
 import com.medicalstore.entity.Customer;
 import com.medicalstore.entity.LabTestModel;
+import com.medicalstore.entity.Medicine;
 import com.medicalstore.entity.Patient;
 import com.medicalstore.repository.LabTestRepository;
 import com.medicalstore.repository.PatientRepository;
@@ -37,5 +38,7 @@ public class LabTestService {
     public List<LabTestModel> searchCustomersByName(String name) {
         return labTestRepository.findByNameContainingIgnoreCase(name);
     }
-
+    public List<LabTestModel> searchTests(String queryTest) {
+        return labTestRepository.searchTests(queryTest);
+    }
 }

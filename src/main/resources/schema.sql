@@ -47,6 +47,7 @@ CREATE TABLE tests (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     description TEXT,
+    search TEXT,
     price REAL NOT NULL,
     referrer_fee REAL
 );

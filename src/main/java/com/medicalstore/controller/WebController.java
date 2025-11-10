@@ -34,7 +34,7 @@ public class WebController {
         List<Customer> customers = customerService.getAllCustomers();
         List<Patient> patients = patientService.getAllPatients();
 
-        List<LabTestModel> labTests= labTestService.getAllLabTest();
+        List<LabTestModel> labTests= labTestService.searchTests("CBC");
         List<Category> catagory=categoryService.getAllCategories();
         System.out.println(medicines.get(0).getCategory().getId());
         System.out.println(medicines.get(0).getCategory().getName());
