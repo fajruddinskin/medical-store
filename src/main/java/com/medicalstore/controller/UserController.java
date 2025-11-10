@@ -1,7 +1,8 @@
 package com.medicalstore.controller;
 
-import com.medicalstore.entity.Customer;
-import com.medicalstore.service.CustomerService;
+
+import com.medicalstore.entity.UserModel;
+import com.medicalstore.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,39 +14,39 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/customers")
 @CrossOrigin(origins = "*")
-public class CustomerController {
+public class UserController {
 
     @Autowired
-    private CustomerService customerService;
+    private UserService UserService;
 
     @GetMapping
-    public List<Customer> getAllCustomers() {
-        return customerService.getAllCustomers();
+    public List<UserModel> getAllCustomers() {
+        return UserService.getAllCustomers();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable Long id) {
-        Optional<Customer> customer = customerService.getCustomerById(id);
+    public ResponseEntity<UserModel> getCustomerById(@PathVariable Long id) {
+        Optional<UserModel> customer = UserService.getCustomerById(id);
         return customer.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Customer createCustomer(@Valid @RequestBody Customer customer) {
-        return customerService.saveCustomer(customer);
+    public UserModel createCustomer(@Valid @RequestBody UserModel customer) {
+             return UserService.saveCustomer(customer);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable Long id,
-                                                   @Valid @RequestBody Customer customerDetails) {
-        Optional<Customer> customer = customerService.getCustomerById(id);
+    public ResponseEntity<UserModel> updateCustomer(@PathVariable Long id,
+                                                   @Valid @RequestBody UserModel customerDetails) {
+        Optional<UserModel> customer = UserService.getCustomerById(id);
         if (customer.isPresent()) {
-            Customer existingCustomer = customer.get();
+            UserModel existingCustomer = customer.get();
             existingCustomer.setName(customerDetails.getName());
             existingCustomer.setPhoneNumber(customerDetails.getPhoneNumber());
             existingCustomer.setEmail(customerDetails.getEmail());
 
-            Customer updatedCustomer = customerService.saveCustomer(existingCustomer);
+            UserModel updatedCustomer = UserService.saveCustomer(existingCustomer);
             return ResponseEntity.ok(updatedCustomer);
         } else {
             return ResponseEntity.notFound().build();
@@ -54,18 +55,18 @@ public class CustomerController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
-        customerService.deleteCustomer(id);
+        UserService.deleteCustomer(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/search")
-    public List<Customer> searchCustomers(@RequestParam String name) {
-        return customerService.searchCustomersByName(name);
+    public List<UserModel> searchCustomers(@RequestParam String name) {
+        return UserService.searchCustomersByName(name);
     }
 
     @GetMapping("/phone/{phoneNumber}")
-    public ResponseEntity<Customer> getCustomerByPhoneNumber(@PathVariable String phoneNumber) {
-        Optional<Customer> customer = customerService.getCustomerByPhoneNumber(phoneNumber);
+    public ResponseEntity<UserModel> getCustomerByPhoneNumber(@PathVariable String phoneNumber) {
+        Optional<UserModel> customer = UserService.getCustomerByPhoneNumber(phoneNumber);
         return customer.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

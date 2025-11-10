@@ -6,21 +6,23 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "patients")
-public class Patient extends Customer {
+public class Patient extends UserModel {
 
     private String medicalHistory;
     private LocalDate dateOfBirth;
     private String gender;
+    private int age;
 
     public Patient() {
         super();
     }
 
-    public Patient(String name, String phoneNumber, String email, String medicalHistory, LocalDate dateOfBirth, String gender) {
+    public Patient(String name, String phoneNumber, String email, String medicalHistory, LocalDate dateOfBirth, String gender,int age) {
         super(name, phoneNumber, email);
         this.medicalHistory = medicalHistory;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
+        this.age = age;
     }
 
     public String getMedicalHistory() {
@@ -46,4 +48,8 @@ public class Patient extends Customer {
     public void setGender(String gender) {
         this.gender = gender;
     }
+
+    public int getAge() { return age;  }
+
+    public void setAge(int age) { this.age = age; }
 }

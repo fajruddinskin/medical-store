@@ -23,8 +23,8 @@ VALUES
 ('Jane Smith', '+0987654321', 'jane.smith@email.com'),
 ('Bob Johnson', '+1122334455', 'bob.johnson@email.com');
 
-INSERT INTO patients (id, medical_history, gender)
-VALUES (1, 'Asthma', 'Male');
+INSERT INTO patients (id, medical_history, gender,age)
+VALUES (1,'Asthma', 'Male',56);
 
 INSERT INTO tests (name, description, price, referrer_fee) VALUES
 ('Complete Blood Count (CBC)', 'Measures various components of blood including red cells, white cells, and platelets.', 450.00, 50.00),

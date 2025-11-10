@@ -1,9 +1,10 @@
 package com.medicalstore.service;
 
-import com.medicalstore.entity.Customer;
+import com.medicalstore.entity.UserModel;
 import com.medicalstore.entity.Patient;
-import com.medicalstore.repository.CustomerRepository;
+import com.medicalstore.repository.UserRepository;
 import com.medicalstore.repository.PatientRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,9 +25,8 @@ public class PatientService {
         return patientRepository.findById(id);
     }
 
-    public Customer saveCustomer(Patient customer) {
-        return patientRepository.save(customer);
-    }
+    public UserModel saveCustomer(Patient patient) {
+        return patientRepository.save(patient);}
 
     public void deletePatient(Long id) {
         patientRepository.deleteById(id);
@@ -47,4 +47,6 @@ public class PatientService {
     public boolean patientExistsByEmail(String email) {
         return patientRepository.existsByEmail(email);
     }
+
+    public Patient savePatient(@Valid Patient patient) { return patientRepository.save(patient); }
 }

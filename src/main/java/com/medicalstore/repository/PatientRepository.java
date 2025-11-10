@@ -1,6 +1,6 @@
 package com.medicalstore.repository;
 
-import com.medicalstore.entity.Customer;
+import com.medicalstore.entity.UserModel;
 import com.medicalstore.entity.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
