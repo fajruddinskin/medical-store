@@ -22,6 +22,9 @@ public class LabTestModel {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
+    @Column(name = "search", nullable = false)
+    private String search;
+
     @Column(name = "referrer_fee")
     private BigDecimal referrerFee;
 

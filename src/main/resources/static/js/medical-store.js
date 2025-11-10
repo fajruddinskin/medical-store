@@ -52,3 +52,64 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+$(document).ready(function() {
+    // Trigger search when button is clicked
+    $('#testSearchBtn').on('click', function(e) {
+        e.preventDefault();
+        performSearch();
+    });
+
+    // Optional: Trigger search on Enter key press
+    $('#testSearchInput').on('keypress', function(e) {
+        if (e.which === 13) {
+            performSearch();
+        }
+    });
+
+    function performSearch() {
+        const searchTerm = $('#testSearchInput').val().trim();
+
+        if (!searchTerm) {
+            alert("Please enter a search term.");
+            return;
+        }
+
+        $.ajax({
+            url: '/api/lab-tests/search', // your Spring Boot endpoint
+            method: 'GET',
+            data: { searchTerm: searchTerm },
+            success: function(response) {
+                renderResults(response);
+            },
+            error: function(xhr) {
+                console.error("Error fetching lab tests:", xhr.responseText);
+                $('#labTestsTableBody').html(
+                    `<tr><td colspan="5" class="text-center text-danger">Failed to fetch lab tests. Please try again.</td></tr>`
+                );
+            }
+        });
+    }
+
+    function renderResults(data) {
+        const tbody = $('#labTestsTableBody');
+        tbody.empty(); // Clear previous results
+
+        if (!data || data.length === 0) {
+            tbody.html('<tr><td colspan="5" class="text-center text-muted">No lab tests found</td></tr>');
+            return;
+        }
+
+        data.forEach(test => {
+            tbody.append(`
+                <tr>
+                    <td>${test.id || '-'}</td>
+                    <td>${test.name || '-'}</td>
+                    <td>${test.description || '-'}</td>
+                    <td>${test.price != null ? test.price : '-'}</td>
+                    <td>${test.referrerFee != null ? test.referrerFee : '-'}</td>
+                </tr>
+            `);
+        });
+    }
+});
