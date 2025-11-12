@@ -1,6 +1,4 @@
 package com.medicalstore.controller;
-
-
 import com.medicalstore.entity.UserModel;
 import com.medicalstore.service.UserService;
 import jakarta.validation.Valid;
@@ -15,15 +13,12 @@ import java.util.Optional;
 @RequestMapping("/api/customers")
 @CrossOrigin(origins = "*")
 public class UserController {
-
     @Autowired
     private UserService UserService;
-
     @GetMapping
     public List<UserModel> getAllCustomers() {
         return UserService.getAllCustomers();
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<UserModel> getCustomerById(@PathVariable Long id) {
         Optional<UserModel> customer = UserService.getCustomerById(id);
