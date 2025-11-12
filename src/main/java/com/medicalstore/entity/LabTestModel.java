@@ -1,8 +1,11 @@
 package com.medicalstore.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tests")
@@ -27,6 +30,19 @@ public class LabTestModel {
 
     @Column(name = "referrer_fee")
     private BigDecimal referrerFee;
+
+    @ManyToMany(mappedBy = "labTests")
+    @JsonIgnore
+    private List<ReportContainerModel> reports = new ArrayList<>();
+
+    public List<ReportContainerModel> getReports() {
+        return reports;
+    }
+
+    public void setReports(List<ReportContainerModel> reports) {
+        this.reports = reports;
+    }
+
 
     // Constructors
     public LabTestModel() {}

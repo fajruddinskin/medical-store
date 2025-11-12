@@ -32,7 +32,7 @@ public class WebController {
     public String index(Model model) {
         List<Medicine> medicines = medicineService.getAllMedicines();
         List<UserModel> user =  userService.getAllCustomers();
-        List<Patient> patients = patientService.getAllPatients();
+        List<PatientModel> patients = patientService.getAllPatients();
 
         List<LabTestModel> labTests= labTestService.searchTests("CBC");
         List<Category> catagory=categoryService.getAllCategories();
@@ -69,7 +69,7 @@ public class WebController {
     public String medicineManagement(Model model) {
         List<Medicine> medicines = medicineService.getAllMedicines();
         List<UserModel> user =  userService.getAllCustomers();
-        List<Patient> patients = patientService.getAllPatients();
+        List<PatientModel> patients = patientService.getAllPatients();
 
         List<LabTestModel> labTests= labTestService.searchTests("CBC");
         List<Category> catagory=categoryService.getAllCategories();
@@ -139,7 +139,7 @@ public class WebController {
     public String reports(Model model) {
         List<Medicine> medicines = medicineService.getAllMedicines();
         List<UserModel> customers = userService.getAllCustomers();
-        List<Patient> patients = patientService.getAllPatients();
+        List<PatientModel> patients = patientService.getAllPatients();
 
         List<LabTestModel> labTests= labTestService.getAllLabTest();
         List<Category> catagory=categoryService.getAllCategories();

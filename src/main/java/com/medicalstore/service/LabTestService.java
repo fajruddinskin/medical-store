@@ -1,11 +1,7 @@
 package com.medicalstore.service;
 
-import com.medicalstore.entity.UserModel;
 import com.medicalstore.entity.LabTestModel;
-import com.medicalstore.entity.Medicine;
-import com.medicalstore.entity.Patient;
 import com.medicalstore.repository.LabTestRepository;
-import com.medicalstore.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

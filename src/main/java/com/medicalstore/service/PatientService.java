@@ -1,8 +1,7 @@
 package com.medicalstore.service;
 
+import com.medicalstore.entity.PatientModel;
 import com.medicalstore.entity.UserModel;
-import com.medicalstore.entity.Patient;
-import com.medicalstore.repository.UserRepository;
 import com.medicalstore.repository.PatientRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,26 +16,26 @@ public class PatientService {
     @Autowired
     private PatientRepository patientRepository;
 
-    public List<Patient> getAllPatients() {
+    public List<PatientModel> getAllPatients() {
         return patientRepository.findAll();
     }
 
-    public Optional<Patient> getCustomerById(Long id) {
+    public Optional<PatientModel> getCustomerById(Long id) {
         return patientRepository.findById(id);
     }
 
-    public UserModel saveCustomer(Patient patient) {
+    public UserModel saveCustomer(PatientModel patient) {
         return patientRepository.save(patient);}
 
     public void deletePatient(Long id) {
         patientRepository.deleteById(id);
     }
 
-    public Optional<Patient> getCustomerByPhoneNumber(String phoneNumber) {
+    public Optional<PatientModel> getCustomerByPhoneNumber(String phoneNumber) {
         return patientRepository.findByPhoneNumber(phoneNumber);
     }
 
-    public List<Patient> searchCustomersByName(String name) {
+    public List<PatientModel> searchCustomersByName(String name) {
         return patientRepository.findByNameContainingIgnoreCase(name);
     }
 
@@ -48,5 +47,5 @@ public class PatientService {
         return patientRepository.existsByEmail(email);
     }
 
-    public Patient savePatient(@Valid Patient patient) { return patientRepository.save(patient); }
+    public PatientModel savePatient(@Valid PatientModel patient) { return patientRepository.save(patient); }
 }

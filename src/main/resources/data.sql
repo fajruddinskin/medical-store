@@ -37,3 +37,16 @@ INSERT INTO tests (name, description, search,price, referrer_fee) VALUES
 ('Urine Routine and Microscopy','URAM', 'General urine analysis for infection or kidney issues.', 200.00, 20.00),
 ('HbA1c (Glycated Hemoglobin)', 'GH','Shows average blood sugar levels over 3 months.', 550.00, 50.00),
 ('Vitamin D Test',  'VDT','Measures Vitamin D levels to check for deficiency.', 1200.00, 150.00);
+
+
+INSERT INTO report_containers (report_name, is_verified) VALUES
+('Basic Health Report', 1),
+('Liver Function Summary', 0),
+('Thyroid Analysis', 1);
+
+-- Basic Health Report → CBC + LFT
+INSERT INTO report_tests (report_id, test_id) VALUES (1, 1), (1, 2);
+-- Liver Function Summary → LFT only
+INSERT INTO report_tests (report_id, test_id) VALUES (2, 2);
+-- Thyroid Analysis → Thyroid Profile only
+INSERT INTO report_tests (report_id, test_id) VALUES (3, 3);

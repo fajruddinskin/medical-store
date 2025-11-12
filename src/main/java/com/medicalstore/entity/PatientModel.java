@@ -6,18 +6,18 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "patients")
-public class Patient extends UserModel {
+public class PatientModel extends UserModel {
 
     private String medicalHistory;
     private LocalDate dateOfBirth;
     private String gender;
     private int age;
 
-    public Patient() {
+    public PatientModel() {
         super();
     }
 
-    public Patient(String name, String phoneNumber, String email, String medicalHistory, LocalDate dateOfBirth, String gender,int age) {
+    public PatientModel(String name, String phoneNumber, String email, String medicalHistory, LocalDate dateOfBirth, String gender,int age) {
         super(name, phoneNumber, email);
         this.medicalHistory = medicalHistory;
         this.dateOfBirth = dateOfBirth;

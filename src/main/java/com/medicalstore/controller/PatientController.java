@@ -1,7 +1,7 @@
 package com.medicalstore.controller;
 
 import com.medicalstore.entity.UserModel;
-import com.medicalstore.entity.Patient;
+import com.medicalstore.entity.PatientModel;
 import com.medicalstore.service.UserService;
 import com.medicalstore.service.PatientService;
 import jakarta.validation.Valid;
@@ -15,7 +15,7 @@ public class PatientController {
     @Autowired
     private PatientService patientService;
     @PostMapping
-    public Patient createPatient(@Valid @RequestBody Patient patient) {
+    public PatientModel createPatient(@Valid @RequestBody PatientModel patient) {
         return patientService.savePatient(patient);
     }
 }

@@ -4,6 +4,9 @@ DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS patients;
 DROP TABLE IF EXISTS tests;
+DROP TABLE IF EXISTS report_containers;
+DROP TABLE IF EXISTS report_tests;
+
 
 -- Create medicines table with all constraints
 CREATE TABLE medicines (
@@ -52,4 +55,19 @@ CREATE TABLE tests (
     search TEXT,
     price REAL NOT NULL,
     referrer_fee REAL
+);
+
+
+CREATE TABLE report_containers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    report_name TEXT,
+    is_verified BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE report_tests (
+    report_id INTEGER NOT NULL,
+    test_id INTEGER NOT NULL,
+    PRIMARY KEY (report_id, test_id),
+    FOREIGN KEY (report_id) REFERENCES report_containers(id) ON DELETE CASCADE,
+    FOREIGN KEY (test_id) REFERENCES tests(id) ON DELETE CASCADE
 );
