@@ -1,6 +1,6 @@
 package com.medicalstore.service;
 
-import com.medicalstore.entity.Customer;
+import com.medicalstore.entity.UserModel;
 import com.medicalstore.entity.LabTestModel;
 import com.medicalstore.entity.Medicine;
 import com.medicalstore.entity.Patient;

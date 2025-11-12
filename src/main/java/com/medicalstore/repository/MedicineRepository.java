@@ -3,6 +3,7 @@ package com.medicalstore.repository;
 import com.medicalstore.entity.Medicine;
 import com.medicalstore.entity.MedicineType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -35,4 +36,7 @@ public interface MedicineRepository extends JpaRepository<Medicine, Long> {
     List<Medicine> findExpiredMedicines();
 
     List<Medicine> findByRequiresPrescription(Boolean requiresPrescription);
+    //@Modifying
+   /* @Query(value="DELETE FROM Medicine u WHERE  u.id = :id",nativeQuery = true)
+    boolean deleteUsersByEmailDomain(@Param("id") Long id);*/
 }

@@ -37,9 +37,11 @@ CREATE TABLE customers (
 
 CREATE TABLE patients (
     id INTEGER PRIMARY KEY,  -- 👈 same ID as in customers
+
     medical_history TEXT,
     date_of_birth DATE,
     gender TEXT,
+    age INT,
     FOREIGN KEY (id) REFERENCES customers(id) ON DELETE CASCADE
 );
 

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "customers")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Customer {
+public class UserModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,11 +27,11 @@ public class Customer {
     private LocalDateTime createdAt;
 
     // Constructors
-    public Customer() {
+    public UserModel() {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Customer(String name, String phoneNumber, String email) {
+    public UserModel(String name, String phoneNumber, String email) {
         this();
         this.name = name;
         this.phoneNumber = phoneNumber;

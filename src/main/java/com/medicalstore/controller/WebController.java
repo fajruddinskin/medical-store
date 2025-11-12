@@ -16,7 +16,7 @@ public class WebController {
     private MedicineService medicineService;
 
     @Autowired
-    private CustomerService customerService;
+    private UserService userService;
 
     @Autowired
     private PatientService patientService;
@@ -31,7 +31,7 @@ public class WebController {
     @GetMapping("/")
     public String index(Model model) {
         List<Medicine> medicines = medicineService.getAllMedicines();
-        List<Customer> customers = customerService.getAllCustomers();
+        List<UserModel> user =  userService.getAllCustomers();
         List<Patient> patients = patientService.getAllPatients();
 
         List<LabTestModel> labTests= labTestService.searchTests("CBC");
@@ -48,16 +48,16 @@ public class WebController {
 
         System.out.println( "================");
         model.addAttribute("medicines", medicines);
-        model.addAttribute("customers", customers);
+        model.addAttribute("customers", user);
         model.addAttribute("totalMedicines", medicines.size());
-        model.addAttribute("totalCustomers", customers.size());
+        model.addAttribute("totalCustomers",user.size());
         model.addAttribute("lowStockCount", medicines.stream().filter(m -> m.getQuantity() < 10).count());
 
         // Add recent data for dashboard
         model.addAttribute("recentMedicines",
                 medicines.size() > 5 ? medicines.subList(0, 5) : medicines);
         model.addAttribute("recentCustomers",
-                customers.size() > 5 ? customers.subList(0, 5) : customers);
+                user.size() > 5 ? user.subList(0, 5) : user);
         model.addAttribute("medicineType", enumService.getMedicineType());
         model.addAttribute("catagory",catagory);
 
@@ -68,8 +68,36 @@ public class WebController {
     @GetMapping("/medicines")
     public String medicineManagement(Model model) {
         List<Medicine> medicines = medicineService.getAllMedicines();
+        List<UserModel> user =  userService.getAllCustomers();
+        List<Patient> patients = patientService.getAllPatients();
+
+        List<LabTestModel> labTests= labTestService.searchTests("CBC");
+        List<Category> catagory=categoryService.getAllCategories();
+        System.out.println(medicines.get(0).getCategory().getId());
+        System.out.println(medicines.get(0).getCategory().getName());
+        System.out.println(medicines.get(0).getCategory().getDescription());
+        System.out.println( "================");
+        model.addAttribute("labTests", labTests.size());
+        System.out.println( "================");
+
+        System.out.println( "================");
+        model.addAttribute("totalPatients", patients.size());
+
+        System.out.println( "================");
         model.addAttribute("medicines", medicines);
-        model.addAttribute("medicine", new Medicine());
+        model.addAttribute("customers", user);
+        model.addAttribute("totalMedicines", medicines.size());
+        model.addAttribute("totalCustomers",user.size());
+        model.addAttribute("lowStockCount", medicines.stream().filter(m -> m.getQuantity() < 10).count());
+
+        // Add recent data for dashboard
+        model.addAttribute("recentMedicines",
+                medicines.size() > 5 ? medicines.subList(0, 5) : medicines);
+        model.addAttribute("recentCustomers",
+                user.size() > 5 ? user.subList(0, 5) : user);
+        model.addAttribute("medicineType", enumService.getMedicineType());
+        model.addAttribute("catagory",catagory);
+
         return "medicine-management";
     }
 
@@ -88,21 +116,21 @@ public class WebController {
     // Customer Management
     @GetMapping("/customers")
     public String customerManagement(Model model) {
-        List<Customer> customers = customerService.getAllCustomers();
+        List<UserModel> customers = userService.getAllCustomers();
         model.addAttribute("customers", customers);
-        model.addAttribute("customer", new Customer());
+        model.addAttribute("customer", new UserModel());
         return "customer-management";
     }
 
     @PostMapping("/customers")
-    public String addCustomer(@ModelAttribute Customer customer) {
-        customerService.saveCustomer(customer);
+    public String addCustomer(@ModelAttribute UserModel customer) {
+        userService.saveCustomer(customer);
         return "redirect:/customers";
     }
 
     @GetMapping("/customers/delete/{id}")
     public String deleteCustomer(@PathVariable Long id) {
-        customerService.deleteCustomer(id);
+        userService.deleteCustomer(id);
         return "redirect:/customers";
     }
 
@@ -110,7 +138,7 @@ public class WebController {
     @GetMapping("/reports")
     public String reports(Model model) {
         List<Medicine> medicines = medicineService.getAllMedicines();
-        List<Customer> customers = customerService.getAllCustomers();
+        List<UserModel> customers = userService.getAllCustomers();
         List<Patient> patients = patientService.getAllPatients();
 
         List<LabTestModel> labTests= labTestService.getAllLabTest();
