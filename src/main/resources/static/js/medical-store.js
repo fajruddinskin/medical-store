@@ -113,3 +113,82 @@ $(document).ready(function() {
         });
     }
 });
+
+// ✅ PATIENT CREATION FUNCTION
+async function createPatient() {
+    const name = document.getElementById('patientName').value.trim();
+    const phone = document.getElementById('patientPhone').value.trim();
+    const email = document.getElementById('patientEmail').value.trim();
+    const patientAge = document.getElementById('age').value.trim();
+    const patientHistory = document.getElementById('medicalHistory').value.trim();
+    const gender = document.getElementById('gender').value.trim();
+
+    const messageDiv = document.getElementById('patientMessage');
+
+    // Basic validation
+    if (!name || !phone) {
+        showPatientMessage('Please fill in all required fields (Name and Phone).', 'danger');
+        return;
+    }
+
+    const patientData = {
+        name: name,
+        gender: gender,
+        phoneNumber: phone,
+        email: email || null,
+        age: patientAge,
+        medicalHistory: patientHistory
+    };
+
+    try {
+        showPatientMessage('Creating patient...', 'info');
+
+        const response = await fetch('/api/patients', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(patientData)
+        });
+
+        if (response.ok) {
+            const createdPatient = await response.json();
+            showPatientMessage(`✅ Patient "${createdPatient.name}" created successfully!`, 'success');
+            clearPatientForm();
+
+            // Collapse the form after success
+            const collapseEl = document.getElementById('patientFormCollapse');
+            const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
+            bsCollapse.hide();
+
+            // Optional: refresh after short delay
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            const errorData = await response.json().catch(() => ({}));
+            showPatientMessage(`❌ Error: ${errorData.message || 'Failed to create patient'}`, 'danger');
+        }
+    } catch (error) {
+        console.error('Error creating patient:', error);
+        showPatientMessage('⚠️ Network error: Could not create patient. Please try again.', 'danger');
+    }
+}
+
+// ✅ Clear Form
+function clearPatientForm() {
+    document.getElementById('patientForm').reset();
+    document.getElementById('patientMessage').innerHTML = '';
+}
+
+// ✅ Show Patient Message
+function showPatientMessage(message, type) {
+    const messageDiv = document.getElementById('patientMessage');
+    const alertClass =
+        type === 'success' ? 'alert-success' :
+        type === 'danger' ? 'alert-danger' :
+        'alert-info';
+
+    messageDiv.innerHTML = `
+        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    `;
+}
