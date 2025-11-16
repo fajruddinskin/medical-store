@@ -1,200 +1,285 @@
-document.addEventListener("DOMContentLoaded", () => {
+// =======================================================
+// 1) START LAB TEST FORM SUBMIT (ADD TEST)
+// =======================================================
+$(document).ready(function () {
+
+    // -------------------------------
+    //  GLOBAL ELEMENTS
+    // -------------------------------
     const form = document.getElementById("labTestForm");
     const messageDiv = document.getElementById("labTestMessage");
     const tableBody = document.getElementById("labTestsTableBody");
+    const testNameInput = document.getElementById("testName");
+    const suggestionsList = document.getElementById("testSuggestions");
 
+    // =======================================================
+    // 1) LAB TEST FORM SUBMIT (ADD TEST)
+    // =======================================================
     form.addEventListener("submit", async function (event) {
         event.preventDefault();
 
         const testData = {
-            name: document.getElementById("testName").value.trim(),
-            description: document.getElementById("testDescription").value.trim(),
-            price: parseFloat(document.getElementById("testPrice").value),
-            referrerFee: parseFloat(document.getElementById("testReferrerFee").value) || 0
+            id: $("#testId").val() || null,
+            name: $("#testName").val().trim(),
+            description: $("#testDescription").val().trim(),
+            price: parseFloat($("#testPrice").val()),
+            referrerFee: parseFloat($("#testReferrerFee").val()) || 0
         };
+       var containerId= $("#containerId").val() || null;
+       let finalUrl = containerId ? `/api/add-test/${containerId}` : `/api/add-test/ABC123`;
+        if (!testData.name || isNaN(testData.price) || testData.price <= 0) {
+            messageDiv.innerHTML =
+                `<div class="alert alert-warning">⚠️ Please fill required fields properly.</div>`;
+            return;
+        }
 
         messageDiv.innerHTML = `<div class="alert alert-info">Saving...</div>`;
 
         try {
-            const response = await fetch("/api/lab-tests", {
+            const response = await fetch(finalUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(testData)
             });
 
-            if (response.ok) {
-                const newTest = await response.json();
-                messageDiv.innerHTML = `<div class="alert alert-success">✅ Lab Test "${newTest.name}" added successfully!</div>`;
-                form.reset();
-
-                // Add new row
-                const newRow = `
-                    <tr>
-                        <td>${newTest.id}</td>
-                        <td>${newTest.name}</td>
-                        <td>${newTest.description || "-"}</td>
-                        <td>$${newTest.price.toFixed(2)}</td>
-                        <td>$${(newTest.referrerFee || 0).toFixed(2)}</td>
-                    </tr>`;
-                if (tableBody.querySelector("td.text-muted")) tableBody.innerHTML = "";
-                tableBody.insertAdjacentHTML("afterbegin", newRow);
-
-                // Collapse form
-                const collapse = bootstrap.Collapse.getOrCreateInstance(document.getElementById("labTestFormCollapse"));
-                collapse.hide();
-            } else {
+            if (!response.ok) {
                 const errText = await response.text();
                 messageDiv.innerHTML = `<div class="alert alert-danger">❌ Failed: ${errText}</div>`;
+                return;
             }
+
+            const newTest = await response.json();
+            $("#containerId").val(newTest.id);
+
+            messageDiv.innerHTML =
+                `<div class="alert alert-success">✅ Lab Test "${newTest.reportName}" added successfully!</div>`;
+
+            form.reset();
+            addTestRow(newTest);
+
+            const collapseEl = document.getElementById("labTestFormCollapse");
+            if (collapseEl) {
+                const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
+                bsCollapse.hide();
+            }
+
         } catch (err) {
-            console.error(err);
-            messageDiv.innerHTML = `<div class="alert alert-danger">⚠️ Server error. Please try again.</div>`;
+            console.error("Error saving test:", err);
+            messageDiv.innerHTML =
+                `<div class="alert alert-danger">⚠️ Server error. Try again.</div>`;
         }
     });
-});
 
-$(document).ready(function() {
-    // Trigger search when button is clicked
-    $('#testSearchBtn').on('click', function(e) {
+    function addTestRow(data) {
+    test = data.labTests[0];
+        const row = `
+            <tr>
+                <td>${test.id}</td>
+                <td>${test.name}</td>
+                <td>${test.description || "-"}</td>
+                <td>$${test.price.toFixed(2)}</td>
+                <td>$${(test.referrerFee || 0).toFixed(2)}</td>
+            </tr>
+        `;
+        tableBody.insertAdjacentHTML("afterbegin", row);
+    }
+
+    // =======================================================
+    // 2) AUTO-SUGGEST FOR TEST NAME
+    // =======================================================
+    let suggestionTimeout;
+
+    testNameInput.addEventListener("input", function () {
+        $("#testId").val("")
+        const query = this.value.trim();
+        clearTimeout(suggestionTimeout);
+
+        if (!query) {
+            hideSuggestions();
+            return;
+        }
+
+        suggestionTimeout = setTimeout(() => {
+            $.ajax({
+                url: "/api/lab-tests/search",
+                method: "GET",
+                data: { searchTerm: query },
+                success: showSuggestions,
+                error: hideSuggestions
+            });
+        }, 300);
+    });
+
+    function showSuggestions(tests) {
+        suggestionsList.innerHTML = "";
+
+        if (!tests || tests.length === 0) {
+            hideSuggestions();
+            return;
+        }
+
+        tests.forEach(test => {
+            const li = document.createElement("li");
+            li.classList.add("list-group-item", "list-group-item-action");
+            li.textContent = test.name;
+            li.style.cursor = "pointer";
+
+            li.addEventListener("click", () => {
+                $("#testName").val(test.name);
+                $("#testId").val(test.id);
+                $("#testDescription").val(test.description || "");
+                $("#testPrice").val(test.price ?? "");
+                $("#testReferrerFee").val(test.referrerFee ?? "");
+
+                hideSuggestions();
+            });
+
+            suggestionsList.appendChild(li);
+        });
+
+        suggestionsList.style.display = "block";
+    }
+
+    function hideSuggestions() {
+        suggestionsList.style.display = "none";
+        suggestionsList.innerHTML = "";
+    }
+
+    document.addEventListener("click", function (e) {
+        if (!testNameInput.contains(e.target) &&
+            !suggestionsList.contains(e.target)) hideSuggestions();
+    });
+
+    // =======================================================
+    // 3) LAB TEST TABLE SEARCH
+    // =======================================================
+    $("#testSearchBtn").on("click", e => {
         e.preventDefault();
         performSearch();
     });
 
-    // Optional: Trigger search on Enter key press
-    $('#testSearchInput').on('keypress', function(e) {
-        if (e.which === 13) {
-            performSearch();
-        }
+    $("#testSearchInput").on("keypress", e => {
+        if (e.which === 13) performSearch();
     });
 
     function performSearch() {
-        const searchTerm = $('#testSearchInput').val().trim();
+        const searchTerm = $("#testSearchInput").val().trim();
 
         if (!searchTerm) {
-            alert("Please enter a search term.");
+            alert("Enter a search term.");
             return;
         }
 
         $.ajax({
-            url: '/api/lab-tests/search', // your Spring Boot endpoint
-            method: 'GET',
-            data: { searchTerm: searchTerm },
-            success: function(response) {
-                renderResults(response);
-            },
-            error: function(xhr) {
-                console.error("Error fetching lab tests:", xhr.responseText);
-                $('#labTestsTableBody').html(
-                    `<tr><td colspan="5" class="text-center text-danger">Failed to fetch lab tests. Please try again.</td></tr>`
+            url: "/api/lab-tests/search",
+            method: "GET",
+            data: { searchTerm },
+            success: renderResults,
+            error: () => {
+                $("#labTestsTableBody").html(
+                    `<tr><td colspan="5" class="text-center text-danger">Error fetching tests.</td></tr>`
                 );
             }
         });
     }
 
     function renderResults(data) {
-        const tbody = $('#labTestsTableBody');
-        tbody.empty(); // Clear previous results
+        const tbody = $("#labTestsTableBody");
+        tbody.empty();
 
         if (!data || data.length === 0) {
-            tbody.html('<tr><td colspan="5" class="text-center text-muted">No lab tests found</td></tr>');
+            tbody.html(`<tr><td colspan="5" class="text-center text-muted">No results found</td></tr>`);
             return;
         }
 
         data.forEach(test => {
             tbody.append(`
                 <tr>
-                    <td>${test.id || '-'}</td>
-                    <td>${test.name || '-'}</td>
-                    <td>${test.description || '-'}</td>
-                    <td>${test.price != null ? test.price : '-'}</td>
-                    <td>${test.referrerFee != null ? test.referrerFee : '-'}</td>
+                    <td>${test.id || "-"}</td>
+                    <td>${test.name || "-"}</td>
+                    <td>${test.description || "-"}</td>
+                    <td>${test.price ?? "-"}</td>
+                    <td>${test.referrerFee ?? "-"}</td>
                 </tr>
             `);
         });
     }
 });
+// =======================================================
+// 1) END LAB TEST FORM SUBMIT (ADD TEST)
+// =======================================================
 
-// PATIENT CREATION FUNCTION
+// =======================================================
+// 2) START CREATE PATIENT
+// =======================================================
 async function createPatient() {
-    const name = document.getElementById('patientName').value.trim();
-    const phone = document.getElementById('patientPhone').value.trim();
-    const email = document.getElementById('patientEmail').value.trim();
-    const patientAge = document.getElementById('age').value.trim();
-    const patientHistory = document.getElementById('medicalHistory').value.trim();
-    const gender = document.getElementById('gender').value.trim();
-    const bloodGroup = document.getElementById('bloodGroup').value.trim();
-    const Doctor = document.getElementById('doctorName').value.trim();
-    const Reffer = document.getElementById('refferBy').value.trim();
+    // Get form values
+    const name = document.getElementById("patientName").value.trim();
+    const phone = document.getElementById("patientPhone").value.trim();
+    const email = document.getElementById("patientEmail").value.trim();
+    const history = document.getElementById("medicalHistory").value.trim();
+    const age = document.getElementById("age").value.trim();
+    const gender = document.getElementById("gender").value;
 
-    const messageDiv = document.getElementById('patientMessage');
+    const patientMessageDiv = document.getElementById("patientMessage");
 
     // Basic validation
     if (!name || !phone) {
-        showPatientMessage('Please fill in all required fields (Name and Phone).', 'danger');
+        patientMessageDiv.innerHTML = `
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                ⚠️ Please enter Patient Name and Phone Number.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`;
         return;
     }
 
     const patientData = {
         name: name,
-        gender: gender,
         phoneNumber: phone,
         email: email || null,
-        age: patientAge,
-        bloodGroup:bloodGroup,
-        medicalHistory: patientHistory,
-        doctor :Doctor,
-        reffered_By :Reffer,
+        medicalHistory: history || null,
+        age: age || null,
+        gender: gender || null
     };
 
-    try {
-        showPatientMessage('Creating patient...', 'info');
+    // Show loading message
+    patientMessageDiv.innerHTML = `
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            ⏳ Creating patient...
+        </div>`;
 
-        const response = await fetch('/api/patients', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+    try {
+        const response = await fetch("/api/patients", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(patientData)
         });
 
-        if (response.ok) {
-            const createdPatient = await response.json();
-            showPatientMessage(`✅ Patient "${createdPatient.name}" created successfully!`, 'success');
-            clearPatientForm();
-
-            // Collapse the form after success
-            const collapseEl = document.getElementById('patientFormCollapse');
-            const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
-            bsCollapse.hide();
-
-            // Optional: refresh after short delay
-            setTimeout(() => location.reload(), 1500);
-        } else {
+        if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            showPatientMessage(`❌ Error: ${errorData.message || 'Failed to create patient'}`, 'danger');
+            throw new Error(errorData.message || "Failed to create patient");
         }
+
+        const createdPatient = await response.json();
+
+        patientMessageDiv.innerHTML = `
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                ✅ Patient "${createdPatient.name}" created successfully!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`;
+
+        // Reset form
+       // document.getElementById("patientForm").reset();
+
     } catch (error) {
-        console.error('Error creating patient:', error);
-        showPatientMessage('⚠️ Network error: Could not create patient. Please try again.', 'danger');
+        console.error("Error creating patient:", error);
+        patientMessageDiv.innerHTML = `
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                ❌ ${error.message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`;
     }
 }
-
-// Clear Form
-function clearPatientForm() {
-    document.getElementById('patientForm').reset();
-    document.getElementById('patientMessage').innerHTML = '';
-}
-
-// Show Patient Message
-function showPatientMessage(message, type) {
-    const messageDiv = document.getElementById('patientMessage');
-    const alertClass =
-        type === 'success' ? 'alert-success' :
-        type === 'danger' ? 'alert-danger' :
-        'alert-info';
-
-    messageDiv.innerHTML = `
-        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    `;
-}
+// =======================================================
+// 2) END CREATE PATIENT
+// =======================================================
