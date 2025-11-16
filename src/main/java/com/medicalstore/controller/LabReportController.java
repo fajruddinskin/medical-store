@@ -24,14 +24,17 @@ public class LabReportController {
     private ReportContainerService reportContainerService;
 
 
-    @PostMapping("/add-test")
-    public ResponseEntity<?> addTestInLab(@RequestBody LabTestModel labTest) {
-        LabTestModel saved = labTestService.saveLabTest(labTest);
-        ReportContainerModel reportContainerModel= new ReportContainerModel();
-        reportContainerModel.addLabTest(saved);
-        reportContainerModel.setReportName(saved.getName());
-        reportContainerService.saveContainer(reportContainerModel);
-        return ResponseEntity.ok(saved);
+    @PostMapping("/add-test/{id}")
+    public ResponseEntity<?> addTestInLab(@PathVariable("id") String id,
+                                          @RequestBody LabTestModel labTestData) {
+        LabTestModel test = labTestService.saveLabTest(labTestData);
+        ReportContainerModel container = reportContainerService.getContainerById(id).get();
+        List<LabTestModel> list= container.getLabTests();
+        list.add(test);
+        container.setLabTests(list);
+        container.setReportName("Test Report");
+        reportContainerService.saveContainer(container);
+        return ResponseEntity.ok(container);
     }
 
     @GetMapping("/search")

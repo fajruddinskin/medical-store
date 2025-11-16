@@ -25,7 +25,8 @@ $(document).ready(function () {
             price: parseFloat($("#testPrice").val()),
             referrerFee: parseFloat($("#testReferrerFee").val()) || 0
         };
-
+       var containerId= $("#containerId").val() || null;
+       let finalUrl = containerId ? `/api/add-test/${containerId}` : `/api/add-test/ABC123`;
         if (!testData.name || isNaN(testData.price) || testData.price <= 0) {
             messageDiv.innerHTML =
                 `<div class="alert alert-warning">⚠️ Please fill required fields properly.</div>`;
@@ -35,7 +36,7 @@ $(document).ready(function () {
         messageDiv.innerHTML = `<div class="alert alert-info">Saving...</div>`;
 
         try {
-            const response = await fetch("/api/add-test", {
+            const response = await fetch(finalUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(testData)
@@ -48,12 +49,12 @@ $(document).ready(function () {
             }
 
             const newTest = await response.json();
+            $("#containerId").val(newTest.id);
 
             messageDiv.innerHTML =
-                `<div class="alert alert-success">✅ Lab Test "${newTest.name}" added successfully!</div>`;
+                `<div class="alert alert-success">✅ Lab Test "${newTest.reportName}" added successfully!</div>`;
 
             form.reset();
-
             addTestRow(newTest);
 
             const collapseEl = document.getElementById("labTestFormCollapse");
@@ -69,7 +70,8 @@ $(document).ready(function () {
         }
     });
 
-    function addTestRow(test) {
+    function addTestRow(data) {
+    test = data.labTests[0];
         const row = `
             <tr>
                 <td>${test.id}</td>
