@@ -19,6 +19,7 @@ $(document).ready(function () {
         event.preventDefault();
 
         const testData = {
+            id: $("#testId").val() || null,
             name: $("#testName").val().trim(),
             description: $("#testDescription").val().trim(),
             price: parseFloat($("#testPrice").val()),
@@ -34,7 +35,7 @@ $(document).ready(function () {
         messageDiv.innerHTML = `<div class="alert alert-info">Saving...</div>`;
 
         try {
-            const response = await fetch("/api/lab-tests", {
+            const response = await fetch("/api/add-test", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(testData)
@@ -87,6 +88,7 @@ $(document).ready(function () {
     let suggestionTimeout;
 
     testNameInput.addEventListener("input", function () {
+        $("#testId").val("")
         const query = this.value.trim();
         clearTimeout(suggestionTimeout);
 
@@ -122,6 +124,7 @@ $(document).ready(function () {
 
             li.addEventListener("click", () => {
                 $("#testName").val(test.name);
+                $("#testId").val(test.id);
                 $("#testDescription").val(test.description || "");
                 $("#testPrice").val(test.price ?? "");
                 $("#testReferrerFee").val(test.referrerFee ?? "");

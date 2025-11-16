@@ -41,21 +41,17 @@
 
             <!-- ✅ QUICK ACTIONS SECTION -->
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <i class="fas fa-bolt me-2"></i>Quick Actions
-                </div>
+                <div class="card-header bg-primary text-white"> <i class="fas fa-bolt me-2"></i>Lab Test Registration </div>
                 <div class="card-body">
-                    <div class="row">
-
-                    </div>
-
+                    <div class="row"> </div>
                     <!-- Directly Visible Add Lab Test Form (Collapse Removed) -->
                             <form id="labTestForm">
                                 <div class="row">
                                     <div class="col-md-3 position-relative">
                                         <label class="form-label">Test Name <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="testName" autocomplete="off" required>
-
+                                        <!-- Hidden ID Field -->
+                                        <input type="hidden" id="testId">
                                         <!-- 🔽 Live search suggestion dropdown -->
                                         <ul id="testSuggestions"
                                             class="list-group position-absolute w-100"
@@ -89,13 +85,9 @@
                                 </div>
                             <div id="labTestMessage" class="mt-3"></div>
                             </form>
+                    <div class="card-header bg-success  text-white"> <i class="fas fa-user me-2"></i>Patient Details </div>
 
                     <!-- ✅ PATIENT DETAILS SECTION -->
-                    <div class="card mb-4">
-                        <div class="card-header bg-success text-white">
-                            <i class="fas fa-user me-2"></i>Patient Details
-                        </div>
-                        <div class="card-body">
                             <!-- Directly Visible Add Patient Form -->
                                  <form id="patientForm">
                                     <div class="row">
@@ -139,8 +131,7 @@
                                     </div>
                                     <div id="patientMessage" class="mt-3"></div>
                                 </form>
-                        </div>
-                    </div>
+
 
                     <!-- ✅ RECENT LAB TESTS TABLE -->
             <div id="labTestsTableContainer" class="card">
