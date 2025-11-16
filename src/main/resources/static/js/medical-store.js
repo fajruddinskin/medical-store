@@ -25,8 +25,8 @@ $(document).ready(function () {
             price: parseFloat($("#testPrice").val()),
             referrerFee: parseFloat($("#testReferrerFee").val()) || 0
         };
-        var containerId= $("#containerId").val() || null;
-        let finalUrl = containerId ? `/api/add-test/${containerId}` : `/api/add-test/ABC123`;
+       var containerId= $("#containerId").val() || null;
+       let finalUrl = containerId ? `/api/add-test/${containerId}` : `/api/add-test/ABC123`;
         if (!testData.name || isNaN(testData.price) || testData.price <= 0) {
             messageDiv.innerHTML =
                 `<div class="alert alert-warning">⚠️ Please fill required fields properly.</div>`;
@@ -71,7 +71,7 @@ $(document).ready(function () {
     });
 
     function addTestRow(data) {
-        test = data.labTests[0];
+    test = data.labTests[0];
         const row = `
             <tr>
                 <td>${test.id}</td>
@@ -269,7 +269,7 @@ async function createPatient() {
             </div>`;
 
         // Reset form
-        // document.getElementById("patientForm").reset();
+       // document.getElementById("patientForm").reset();
 
     } catch (error) {
         console.error("Error creating patient:", error);
