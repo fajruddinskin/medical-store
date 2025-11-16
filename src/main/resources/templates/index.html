@@ -552,7 +552,7 @@
 <script>
 
     //Delete Medicine By Id
-    $(document).on('click', '.delete-btn', function() {
+   $(document).on('click', '.delete-btn', function() {
       let row = $(this).closest('tr');
       let medicineId = row.data('id');
 
@@ -609,9 +609,14 @@
                                 <td>${med.name}</td>
                                 <td>${med.manufacturer}</td>
                                 <td>${med.category ? med.category.name || med.category : ''}</td>
-                                <td><button class="btn btn-warning btn-sm edit-btn">Edit</button></td>
-                                <td><button class="btn btn-danger btn-sm delete-btn">Delete</button></td>
-                            </tr>`;
+                               <td> <button type="button" class="btn btn-warning btn-sm edit-btn">
+                                <i class="fas fa-edit"></i> Edit
+                                 </button>
+                                  <button type="button" class="btn btn-danger btn-sm delete-btn">
+                                  <i class="fas fa-trash"></i> Delete
+                                  </button>
+                                  </td>
+                                  </tr>`;
                         });
                         html += '</tbody></table>';
                     }
@@ -942,6 +947,8 @@
             </div>
         `;
     }
+//EDIT Function
+
 </script>
 </body>
 </html>

@@ -47,5 +47,6 @@ public class PatientService {
         return patientRepository.existsByEmail(email);
     }
 
-    public PatientModel savePatient(@Valid PatientModel patient) { return patientRepository.save(patient); }
+    public PatientModel savePatient(@Valid PatientModel patient) {
+        return patientRepository.save(patient); }
 }

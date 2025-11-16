@@ -153,6 +153,7 @@
                                         <label for="age" class="form-label">Age</label>
                                         <input type="number" class="form-control" id="age" placeholder="Enter Age">
                                     </div>
+
                                     <div class="col-md-4">
                                         <label for="gender" class="form-label">Gender</label>
                                         <select class="form-select" id="gender">
@@ -160,6 +161,27 @@
                                             <option value="male">Male</option>
                                             <option value="female">Female</option>
                                         </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="bloodGroup" class="form-label">Blood Group <span class="text-danger">*</span></label>
+                                            <select class="form-select" id="bloodGroup" required>
+                                                <option value="">Select Group</option>
+                                                <option th:each="bloodGroup : ${bloodGroups}"
+                                                        th:value="${bloodGroup .key}"
+                                                        th:text="${bloodGroup .value}">
+                                                    >
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="doctorName" class="form-label">Doctor Name</label>
+                                        <input type="text" class="form-control" id="doctorName" placeholder="Doctor Name">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="refferBy" class="form-label">Reffered By</label>
+                                        <input type="text" class="form-control" id="refferBy" placeholder="Reffered By">
                                     </div>
                                 </div>
 

@@ -114,7 +114,7 @@ $(document).ready(function() {
     }
 });
 
-// ✅ PATIENT CREATION FUNCTION
+// PATIENT CREATION FUNCTION
 async function createPatient() {
     const name = document.getElementById('patientName').value.trim();
     const phone = document.getElementById('patientPhone').value.trim();
@@ -122,6 +122,9 @@ async function createPatient() {
     const patientAge = document.getElementById('age').value.trim();
     const patientHistory = document.getElementById('medicalHistory').value.trim();
     const gender = document.getElementById('gender').value.trim();
+    const bloodGroup = document.getElementById('bloodGroup').value.trim();
+    const Doctor = document.getElementById('doctorName').value.trim();
+    const Reffer = document.getElementById('refferBy').value.trim();
 
     const messageDiv = document.getElementById('patientMessage');
 
@@ -137,7 +140,10 @@ async function createPatient() {
         phoneNumber: phone,
         email: email || null,
         age: patientAge,
-        medicalHistory: patientHistory
+        bloodGroup:bloodGroup,
+        medicalHistory: patientHistory,
+        doctor :Doctor,
+        reffered_By :Reffer,
     };
 
     try {
@@ -171,13 +177,13 @@ async function createPatient() {
     }
 }
 
-// ✅ Clear Form
+// Clear Form
 function clearPatientForm() {
     document.getElementById('patientForm').reset();
     document.getElementById('patientMessage').innerHTML = '';
 }
 
-// ✅ Show Patient Message
+// Show Patient Message
 function showPatientMessage(message, type) {
     const messageDiv = document.getElementById('patientMessage');
     const alertClass =
