@@ -40,7 +40,6 @@ CREATE TABLE customers (
 
 CREATE TABLE patients (
     id INTEGER PRIMARY KEY,  -- 👈 same ID as in customers
-
     medical_history TEXT,
     date_of_birth DATE,
     gender TEXT,
@@ -61,7 +60,9 @@ CREATE TABLE tests (
 CREATE TABLE report_containers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     report_name TEXT,
-    is_verified BOOLEAN DEFAULT FALSE
+    is_verified BOOLEAN DEFAULT FALSE,
+    patient_id VARCHAR(255),
+    FOREIGN KEY (patient_id) REFERENCES patients(id)
 );
 
 CREATE TABLE report_tests (

@@ -216,6 +216,7 @@ async function createPatient() {
     // Get form values
     const name = document.getElementById("patientName").value.trim();
     const phone = document.getElementById("patientPhone").value.trim();
+    const tableBody = document.getElementById("labTestsTableBody");
     const email = document.getElementById("patientEmail").value.trim();
     const history = document.getElementById("medicalHistory").value.trim();
     const age = document.getElementById("age").value.trim();
@@ -248,8 +249,11 @@ async function createPatient() {
             ⏳ Creating patient...
         </div>`;
 
+var containerId= $("#containerId").val() || null;
+let finalUrl = containerId ? `/api/patients/create/${containerId}` : `/api/patients/create/ABC123`;
+
     try {
-        const response = await fetch("/api/patients", {
+        const response = await fetch(finalUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(patientData)
@@ -261,13 +265,13 @@ async function createPatient() {
         }
 
         const createdPatient = await response.json();
-
+        $("#containerId").val(createdPatient.id);
         patientMessageDiv.innerHTML = `
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                ✅ Patient "${createdPatient.name}" created successfully!
+                ✅ Patient "${createdPatient.reportName}" created successfully!
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>`;
-
+        addTestRow(createdPatient);
         // Reset form
        // document.getElementById("patientForm").reset();
 
@@ -279,6 +283,20 @@ async function createPatient() {
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>`;
     }
+
+    function addTestRow(data) {
+        test = data.labTests[0];
+            const row = `
+                <tr>
+                    <td>${test.id}</td>
+                    <td>${test.name}</td>
+                    <td>${test.description || "-"}</td>
+                    <td>$${test.price.toFixed(2)}</td>
+                    <td>$${(test.referrerFee || 0).toFixed(2)}</td>
+                </tr>
+            `;
+            tableBody.insertAdjacentHTML("afterbegin", row);
+        }
 }
 // =======================================================
 // 2) END CREATE PATIENT
