@@ -60,7 +60,7 @@ public class WebController {
                 user.size() > 5 ? user.subList(0, 5) : user);
         model.addAttribute("medicineType", enumService.getMedicineType());
         model.addAttribute("catagory",catagory);
-
+        model.addAttribute("bloodGroups", enumService.getBloodGroup());
         return "index";
     }
 
