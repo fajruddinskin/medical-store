@@ -22,6 +22,10 @@ public class ReportContainerModel {
     @Column(name = "is_verified")
     private Boolean isVerified = false;
 
+    @ManyToOne(cascade = CascadeType.PERSIST , fetch = FetchType.LAZY)
+    @JoinColumn(name = "patient_id")
+    private PatientModel patient;
+
     // Many-to-many relationship with LabTestModel
     @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable( name = "report_tests",
@@ -29,6 +33,14 @@ public class ReportContainerModel {
             inverseJoinColumns = @JoinColumn(name = "test_id")
     )
     private List<LabTestModel> labTests = new ArrayList<>();
+
+    public PatientModel getPatient() {
+        return patient;
+    }
+
+    public void setPatient(PatientModel patient) {
+        this.patient = patient;
+    }
 
     // Constructors
     public ReportContainerModel() {}

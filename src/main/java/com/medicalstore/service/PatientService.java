@@ -24,7 +24,7 @@ public class PatientService {
         return patientRepository.findById(id);
     }
 
-    public UserModel saveCustomer(PatientModel patient) {
+    public PatientModel saveCustomer(PatientModel patient) {
         return patientRepository.save(patient);}
 
     public void deletePatient(Long id) {
@@ -47,6 +47,6 @@ public class PatientService {
         return patientRepository.existsByEmail(email);
     }
 
-    public PatientModel savePatient(@Valid PatientModel patient) {
+    public PatientModel savePatient(PatientModel patient) {
         return patientRepository.save(patient); }
 }
