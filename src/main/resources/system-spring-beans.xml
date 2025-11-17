@@ -17,6 +17,9 @@
 
     <bean id="enumService" class="com.medicalstore.service.EnumService"/>
 
+    <alias name="normalSubTotalStrategy" alias="subTotalStrategy" />
+    <bean id="normalSubTotalStrategy" class="com.medicalstore.strategy.impl.NormalSubTotalStrategy"/>
+
 
     <!-- Add more system bean definitions here -->
 

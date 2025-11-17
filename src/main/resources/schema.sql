@@ -63,6 +63,7 @@ CREATE TABLE tests (
 CREATE TABLE report_containers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     report_name TEXT,
+    sub_total REAL,
     is_verified BOOLEAN DEFAULT FALSE,
     patient_id VARCHAR(255),
     FOREIGN KEY (patient_id) REFERENCES patients(id)

@@ -4,6 +4,7 @@ import com.medicalstore.entity.LabTestModel;
 import com.medicalstore.entity.ReportContainerModel;
 import com.medicalstore.service.LabTestService;
 import com.medicalstore.service.ReportContainerService;
+import com.medicalstore.strategy.SubTotalStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,9 @@ public class LabReportController {
     @Autowired
     private ReportContainerService reportContainerService;
 
+    @Autowired
+    private SubTotalStrategy subTotalStrategy;
+
 
     @PostMapping("/add-test/{id}")
     public ResponseEntity<?> addTestInLab(@PathVariable("id") String id,
@@ -33,7 +37,11 @@ public class LabReportController {
         list.add(test);
         container.setLabTests(list);
         container.setReportName("Test Report");
+        container.setSubTotal(subTotalStrategy.calculateSubTotal(container));
         reportContainerService.saveContainer(container);
+        System.out.println("======================================= ");
+        System.out.println("Subtotal before update: " + container.getSubTotal());
+        System.out.println("======================================= ");
         return ResponseEntity.ok(container);
     }
 

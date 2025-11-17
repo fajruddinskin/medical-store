@@ -3,6 +3,8 @@ package com.medicalstore.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,9 @@ public class ReportContainerModel {
     @Column(name = "report_name", nullable = false)
     private String reportName;
 
+    @Column(name = "sub_total")
+    private BigDecimal subTotal;
+
     @Column(name = "is_verified")
     private Boolean isVerified = false;
 
@@ -33,6 +38,14 @@ public class ReportContainerModel {
             inverseJoinColumns = @JoinColumn(name = "test_id")
     )
     private List<LabTestModel> labTests = new ArrayList<>();
+
+    public BigDecimal getSubTotal() {
+        return subTotal;
+    }
+
+    public void setSubTotal(BigDecimal sub_total) {
+        this.subTotal = sub_total;
+    }
 
     public PatientModel getPatient() {
         return patient;
