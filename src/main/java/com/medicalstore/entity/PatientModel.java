@@ -13,7 +13,7 @@ public class PatientModel extends UserModel {
     private String gender;
     private int age;
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+
     private BloodGroup bloodGroup;
     private String doctor;
     private String reffered_By;

@@ -44,7 +44,7 @@ CREATE TABLE patients (
     date_of_birth DATE,
     gender TEXT,
     age INT,
-    blood_Group TEXT NOT NULL ,
+    blood_Group TEXT  ,
     doctor TEXT,
     reffered_By Text,
     FOREIGN KEY (id) REFERENCES customers(id) ON DELETE CASCADE
