@@ -1,13 +1,14 @@
 package com.medicalstore.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "patients")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class PatientModel extends UserModel {
-
     private String medicalHistory;
     private LocalDate dateOfBirth;
     private String gender;

@@ -71,18 +71,31 @@ $(document).ready(function () {
     });
 
     function addTestRow(data) {
-    test = data.labTests[0];
-        const row = `
-            <tr>
-                <td>${test.id}</td>
-                <td>${test.name}</td>
-                <td>${test.description || "-"}</td>
-                <td>$${test.price.toFixed(2)}</td>
-                <td>$${(test.referrerFee || 0).toFixed(2)}</td>
-            </tr>
-        `;
-        tableBody.insertAdjacentHTML("afterbegin", row);
+        const tbody = document.getElementById("labTestsTableBody");
+        tbody.innerHTML = ""; // Clear previous rows
+
+        // Loop through all lab tests
+        data.labTests.forEach(test => {
+            const row = `
+                <tr>
+                    <td>${test.id}</td>
+                    <td>${test.name}</td>
+                    <td>${test.description || "-"}</td>
+                    <td>$${Number(test.price).toFixed(2)}</td>
+                    <td>$${Number(test.referrerFee || 0).toFixed(2)}</td>
+                </tr>
+            `;
+            tbody.insertAdjacentHTML("beforeend", row);
+        });
+
+        // Display subtotal (assuming you have an element for it)
+        const subtotalEl = document.getElementById("subTotal");
+
+        if (subtotalEl) {
+            subtotalEl.textContent = "$" + Number(data.subTotal).toFixed(2);
+        }
     }
+
 
     // =======================================================
     // 2) AUTO-SUGGEST FOR TEST NAME
@@ -285,17 +298,20 @@ let finalUrl = containerId ? `/api/patients/create/${containerId}` : `/api/patie
     }
 
     function addTestRow(data) {
-        test = data.labTests[0];
-            const row = `
-                <tr>
-                    <td>${test.id}</td>
-                    <td>${test.name}</td>
-                    <td>${test.description || "-"}</td>
-                    <td>$${test.price.toFixed(2)}</td>
-                    <td>$${(test.referrerFee || 0).toFixed(2)}</td>
-                </tr>
-            `;
-            tableBody.insertAdjacentHTML("afterbegin", row);
+        const tbody = $("#labTestsTableBody");
+              tbody.empty();
+        data.labTests.forEach(test => {
+                const row = `
+                    <tr>
+                        <td>${test.id}</td>
+                        <td>${test.name}</td>
+                        <td>${test.description || "-"}</td>
+                        <td>$${Number(test.price).toFixed(2)}</td>
+                        <td>$${Number(test.referrerFee || 0).toFixed(2)}</td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
         }
 }
 // =======================================================
