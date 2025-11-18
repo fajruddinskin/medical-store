@@ -20,8 +20,8 @@ public class PatientService {
         return patientRepository.findAll();
     }
 
-    public Optional<PatientModel> getCustomerById(Long id) {
-        return patientRepository.findById(id);
+    public Optional<PatientModel> getPatientById(Long id) {
+        return patientRepository.findById(id.longValue());
     }
 
     public PatientModel saveCustomer(PatientModel patient) {

@@ -3,11 +3,32 @@
 // =======================================================
 $(document).ready(function () {
 
+// Save Patient button reference
+const savePatientBtn = document.getElementById("savePatientBtn");
+
+// Fields that trigger re-enable when edited
+const patientFormFields = [
+    "patientName",
+    "patientPhone",
+    "patientEmail",
+    "medicalHistory",
+    "age",
+    "gender"
+].map(id => document.getElementById(id));
+
+// Enable Save Patient button if any field changes
+patientFormFields.forEach(field => {
+    if (!field) return;
+    field.addEventListener("input", () => {
+        savePatientBtn.disabled = false;
+    });
+});
+
+
     // -------------------------------
     //  GLOBAL ELEMENTS
     // -------------------------------
     const form = document.getElementById("labTestForm");
-    const messageDiv = document.getElementById("labTestMessage");
     const tableBody = document.getElementById("labTestsTableBody");
     const testNameInput = document.getElementById("testName");
     const suggestionsList = document.getElementById("testSuggestions");
@@ -28,12 +49,9 @@ $(document).ready(function () {
        var containerId= $("#containerId").val() || null;
        let finalUrl = containerId ? `/api/add-test/${containerId}` : `/api/add-test/ABC123`;
         if (!testData.name || isNaN(testData.price) || testData.price <= 0) {
-            messageDiv.innerHTML =
-                `<div class="alert alert-warning">⚠️ Please fill required fields properly.</div>`;
+
             return;
         }
-
-        messageDiv.innerHTML = `<div class="alert alert-info">Saving...</div>`;
 
         try {
             const response = await fetch(finalUrl, {
@@ -49,11 +67,9 @@ $(document).ready(function () {
             }
 
             const newTest = await response.json();
-            $("#containerId").val(newTest.id);
-
-            messageDiv.innerHTML =
-                `<div class="alert alert-success">✅ Lab Test "${newTest.reportName}" added successfully!</div>`;
-
+           $("#containerId").val(newTest.id);
+           $("#patientId").val(newTest?.patient?.id ?? "");
+           $("#userName").text(newTest?.patient?.name ?? "");
             form.reset();
             addTestRow(newTest);
 
@@ -65,8 +81,6 @@ $(document).ready(function () {
 
         } catch (err) {
             console.error("Error saving test:", err);
-            messageDiv.innerHTML =
-                `<div class="alert alert-danger">⚠️ Server error. Try again.</div>`;
         }
     });
 
@@ -235,19 +249,13 @@ async function createPatient() {
     const age = document.getElementById("age").value.trim();
     const gender = document.getElementById("gender").value;
 
-    const patientMessageDiv = document.getElementById("patientMessage");
-
     // Basic validation
     if (!name || !phone) {
-        patientMessageDiv.innerHTML = `
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                ⚠️ Please enter Patient Name and Phone Number.
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>`;
         return;
     }
 
     const patientData = {
+        id: $("#patientId").val() || null,
         name: name,
         phoneNumber: phone,
         email: email || null,
@@ -256,11 +264,6 @@ async function createPatient() {
         gender: gender || null
     };
 
-    // Show loading message
-    patientMessageDiv.innerHTML = `
-        <div class="alert alert-info alert-dismissible fade show" role="alert">
-            ⏳ Creating patient...
-        </div>`;
 
 var containerId= $("#containerId").val() || null;
 let finalUrl = containerId ? `/api/patients/create/${containerId}` : `/api/patients/create/ABC123`;
@@ -279,22 +282,16 @@ let finalUrl = containerId ? `/api/patients/create/${containerId}` : `/api/patie
 
         const createdPatient = await response.json();
         $("#containerId").val(createdPatient.id);
-        patientMessageDiv.innerHTML = `
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                ✅ Patient "${createdPatient.reportName}" created successfully!
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>`;
+        $("#patientId").val(createdPatient?.patient?.id ?? "");
+        $("#userName").text(createdPatient?.patient?.name ?? "");
+
         addTestRow(createdPatient);
         // Reset form
        // document.getElementById("patientForm").reset();
+        savePatientBtn.disabled = true;
 
     } catch (error) {
         console.error("Error creating patient:", error);
-        patientMessageDiv.innerHTML = `
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                ❌ ${error.message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>`;
     }
 
     function addTestRow(data) {

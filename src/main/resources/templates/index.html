@@ -6,64 +6,8 @@
     <title>Medical Store Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .sidebar {
-            background: linear-gradient(180deg, #2c3e50 0%, #3498db 100%);
-            min-height: 100vh;
-            color: white;
-            width: 265px;
-        }
-        .sidebar .nav-link {
-            color: white;
-            padding: 12px 20px;
-            margin: 5px 0;
-            border-radius: 5px;
-        }
-        .sidebar .nav-link:hover, .sidebar .nav-link.active {
-            background-color: rgba(255,255,255,0.1);
-        }
-        .stat-card {
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-            border: none;
-        }
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-        .quick-action-btn {
-            transition: all 0.3s ease;
-        }
-        .quick-action-btn:hover {
-            transform: scale(1.05);
-        }
-        #medicineForm {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-        #customerForm {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        #patientForm {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .customer-table th {
-            background-color: #f8f9fa;
-            border-bottom: 2px solid #dee2e6;
-        }
-        .visually-hidden {
-            position: absolute;
-            left: -10000px;
-            top: auto;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-        }
-        /* Hide the form cards by default */
-        .form-card {
-            display: none;
-
-        }
-    </style>
+    <!-- ✅ External CSS -->
+    <link rel="stylesheet" th:href="@{/css/medical-store.css}">
 </head>
 <body>
 <div class="container-fluid">
@@ -77,26 +21,11 @@
                     <p class="text-light">Management System</p>
                 </div>
                 <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/">
-                            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/medicines">
-                            <i class="fas fa-pills me-2"></i> Medicine Management
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/customers">
-                            <i class="fas fa-users me-2"></i> Customer Management
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/reports">
-                            <i class="fas fa-chart-bar me-2"></i>Lab Reports
-                        </a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link active" href="/"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/medicines"><i class="fas fa-pills me-2"></i> Medicine Management</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/customers"><i class="fas fa-users me-2"></i> Customer Management</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/reports"><i class="fas fa-flask me-2"></i>Lab Reports</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/lab-test-registration"> <i class="fas fa-chart-bar me-2"></i>Lab Test Registration</a> </li>
                 </ul>
             </div>
         </nav>
