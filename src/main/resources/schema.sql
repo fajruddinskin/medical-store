@@ -33,8 +33,8 @@ CREATE TABLE categories (
 CREATE TABLE customers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
-    phone_number TEXT NOT NULL UNIQUE,
-    email TEXT UNIQUE,
+    phone_number TEXT,
+    email TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -63,7 +63,10 @@ CREATE TABLE tests (
 CREATE TABLE report_containers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     report_name TEXT,
+    delivery_date DATE,
     sub_total REAL,
+    total REAL,
+    discount REAL,
     is_verified BOOLEAN DEFAULT FALSE,
     patient_id VARCHAR(255),
     FOREIGN KEY (patient_id) REFERENCES patients(id)

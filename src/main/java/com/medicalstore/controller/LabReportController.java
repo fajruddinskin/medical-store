@@ -1,10 +1,12 @@
 package com.medicalstore.controller;
 
+import com.medicalstore.dto.DeliveryRequest;
+import com.medicalstore.dto.DiscountRequest;
 import com.medicalstore.entity.LabTestModel;
 import com.medicalstore.entity.ReportContainerModel;
+import com.medicalstore.service.ContainerCalculationService;
 import com.medicalstore.service.LabTestService;
 import com.medicalstore.service.ReportContainerService;
-import com.medicalstore.strategy.SubTotalStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +27,35 @@ public class LabReportController {
     private ReportContainerService reportContainerService;
 
     @Autowired
-    private SubTotalStrategy subTotalStrategy;
+    private ContainerCalculationService containerCalculationService;
 
+
+    @PostMapping("/delivery/add")
+    public ResponseEntity<?> addDelivery(@RequestBody DeliveryRequest request) {
+        String containerId = request.getContainerId();
+        ReportContainerModel container = reportContainerService.getContainerById(containerId).get();
+        container.setDeliveryDate(request.getDeliveryDate());
+        reportContainerService.saveContainer(container);
+        System.out.println("======================================= ");
+        System.out.println("Container ID: " + containerId);
+        System.out.println("Delivery Date: " + container.getDeliveryDate());
+        System.out.println("======================================= ");
+        return ResponseEntity.ok(container);
+    }
+
+    @PostMapping("/discount/add")
+    public ResponseEntity<?> addDiscount(@RequestBody DiscountRequest request) {
+        String containerId = request.getContainerId();
+        ReportContainerModel container = reportContainerService.getContainerById(containerId).get();
+        container.setDiscount(request.getDiscount());
+        containerCalculationService.calculateContainer(container);
+        reportContainerService.saveContainer(container);
+        System.out.println("======================================= ");
+        System.out.println("Container ID: " + containerId);
+        System.out.println("Discount: " + container.getDiscount());
+        System.out.println("======================================= ");
+        return ResponseEntity.ok(container);
+    }
 
     @PostMapping("/add-test/{id}")
     public ResponseEntity<?> addTestInLab(@PathVariable("id") String id,
@@ -37,7 +66,7 @@ public class LabReportController {
         list.add(test);
         container.setLabTests(list);
         container.setReportName("Test Report");
-        container.setSubTotal(subTotalStrategy.calculateSubTotal(container));
+        containerCalculationService.calculateContainer(container);
         reportContainerService.saveContainer(container);
         System.out.println("======================================= ");
         System.out.println("Subtotal before update: " + container.getSubTotal());

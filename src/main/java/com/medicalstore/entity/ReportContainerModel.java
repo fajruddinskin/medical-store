@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +22,17 @@ public class ReportContainerModel {
     @Column(name = "report_name", nullable = false)
     private String reportName;
 
+    @Column(name = "delivery_date")
+    private LocalDate deliveryDate;
+
     @Column(name = "sub_total")
     private BigDecimal subTotal;
+
+    @Column(name = "total")
+    private BigDecimal total;
+
+    @Column(name = "discount")
+    private BigDecimal discount;
 
     @Column(name = "is_verified")
     private Boolean isVerified = false;
@@ -38,6 +48,30 @@ public class ReportContainerModel {
             inverseJoinColumns = @JoinColumn(name = "test_id")
     )
     private List<LabTestModel> labTests = new ArrayList<>();
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public BigDecimal getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(BigDecimal discount) {
+        this.discount = discount;
+    }
+
+    public LocalDate getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(LocalDate deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
 
     public BigDecimal getSubTotal() {
         return subTotal;

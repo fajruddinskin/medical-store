@@ -20,12 +20,13 @@ public class ReportContainerService {
     }
 
     public Optional<ReportContainerModel> getContainerById(String id) {
+        ReportContainerModel object=new ReportContainerModel();
         try {
             return reportContainerRepository.findById(Long.valueOf(id));
         } catch (NumberFormatException ex) {
-            return Optional.of(new ReportContainerModel());   // ID is not numeric
+            return Optional.of(object);   // ID is not numeric
         } catch (Exception ex) {
-            return Optional.of(new ReportContainerModel());  // ID is not numeric
+            return Optional.of(object);  // ID is not numeric
         }
     }
 }

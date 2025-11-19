@@ -17,10 +17,20 @@
 
     <bean id="enumService" class="com.medicalstore.service.EnumService"/>
 
-    <alias name="normalSubTotalStrategy" alias="subTotalStrategy" />
-    <bean id="normalSubTotalStrategy" class="com.medicalstore.strategy.impl.NormalSubTotalStrategy"/>
 
-
+    <bean id="subtotalCalculationStrategy" class="com.medicalstore.strategy.impl.SubtotalCalculationStrategy"/>
+    <bean id="discountCalculationStrategy" class="com.medicalstore.strategy.impl.DiscountCalculationStrategy"/>
+    <bean id="totalCalculationStrategy" class="com.medicalstore.strategy.impl.TotalCalculationStrategy"/>
+    <!-- Container Calculation Service -->
+    <bean id="containerCalculationService" class="com.medicalstore.service.ContainerCalculationService">
+        <property name="calculationStrategies">
+            <list>
+                <ref bean="subtotalCalculationStrategy"/>
+                <ref bean="discountCalculationStrategy"/>
+                <ref bean="totalCalculationStrategy"/>
+            </list>
+        </property>
+    </bean>
     <!-- Add more system bean definitions here -->
 
 </beans>

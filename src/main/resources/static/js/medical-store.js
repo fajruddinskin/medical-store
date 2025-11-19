@@ -104,10 +104,14 @@ patientFormFields.forEach(field => {
 
         // Display subtotal (assuming you have an element for it)
         const subtotalEl = document.getElementById("subTotal");
+        const totalEl = document.getElementById("total");
 
         if (subtotalEl) {
-            subtotalEl.textContent = "$" + Number(data.subTotal).toFixed(2);
+            subtotalEl.textContent = "₹" + Number(data.subTotal).toFixed(2);
         }
+        if (totalEl) {
+           totalEl.textContent = "₹" + Number(data.total).toFixed(2);
+         }
     }
 
 
@@ -313,4 +317,75 @@ let finalUrl = containerId ? `/api/patients/create/${containerId}` : `/api/patie
 }
 // =======================================================
 // 2) END CREATE PATIENT
+// =======================================================
+
+// =======================================================
+// 3) START DELIVERY DATE
+// =======================================================
+document.getElementById("deliveryDate").addEventListener("change", function () {
+    const containerId = document.getElementById("containerId").value;  // reuse existing ID
+    const deliveryDate = this.value;
+
+    if (!deliveryDate) return;
+
+    const payload = {
+        containerId: containerId,
+        deliveryDate: deliveryDate
+    };
+
+    fetch("/api/delivery/add", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("Delivery saved:", data);
+    })
+    .catch(err => console.error(err));
+});
+// =======================================================
+// 3) END DELIVERY DATE
+// =======================================================
+
+// =======================================================
+// 4) START DISCOUNT VALUE
+// =======================================================
+document.getElementById("discountValue").addEventListener("change", function () {
+    const containerId = document.getElementById("containerId").value;  // existing hidden field
+    const discountValue = this.value;
+
+    if (!discountValue) return;
+
+    const payload = {
+        containerId: containerId,
+        discount: discountValue
+    };
+
+    fetch("/api/discount/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("Discount saved:", data);
+
+        const subtotalEl = document.getElementById("subTotal");
+        const totalEl = document.getElementById("total");
+
+        if (subtotalEl) {
+         subtotalEl.textContent = "₹" + Number(data.subTotal).toFixed(2);
+         }
+        if (totalEl) {
+        totalEl.textContent = "₹" + Number(data.total).toFixed(2);
+         }
+
+    })
+    .catch(err => console.error(err));
+});
+// =======================================================
+// 4) END DISCOUNT VALUE
 // =======================================================
