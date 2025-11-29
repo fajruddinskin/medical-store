@@ -11,6 +11,7 @@
 
     <!-- ✅ External CSS -->
     <link rel="stylesheet" th:href="@{/css/medical-store.css}">
+    <link rel="stylesheet" th:href="@{/css/print.css}" media="print">
 </head>
 
 <body>
@@ -43,91 +44,93 @@
             <div class="card mb-4">
                <div class="card-body">
                     <!-- Directly Visible Add Lab Test Form (Collapse Removed) -->
-                            <form id="labTestForm">
-                                <div class="row">
-                                    <div class="col-md-3 position-relative">
-                                        <label class="form-label">Test Name <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="testName" autocomplete="off" required>
-                                        <!-- Hidden ID Field -->
-                                        <input type="hidden" id="testId">
-                                        <input type="hidden" id="containerId">
-                                        <!-- 🔽 Live search suggestion dropdown -->
-                                        <ul id="testSuggestions"
-                                            class="list-group position-absolute w-100"
-                                            style="z-index:2000; display:none; max-height:200px; overflow-y:auto;">
-                                        </ul>
-                                    </div>
+                   <form id="labTestForm">
+                       <div class="row">
+                           <div class="col-md-3 position-relative">
+                               <label class="form-label">Test Name <span class="text-danger">*</span></label>
+                               <input type="text" class="form-control" id="testName" required>
+                               <input type="hidden" id="testId">
+                               <input type="hidden" id="containerId">
 
-                                    <div class="col-md-3">
-                                        <label class="form-label">Description</label>
-                                        <input type="text" class="form-control" id="testDescription">
-                                    </div>
+                               <ul id="testSuggestions"
+                                   class="list-group position-absolute w-100"
+                                   style="z-index:2000; display:none; max-height:200px; overflow-y:auto;">
+                               </ul>
+                           </div>
 
-                                    <div class="col-md-3">
-                                        <label class="form-label">Price ($) <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="testPrice" step="0.01" min="0" required>
-                                    </div>
+                           <div class="col-md-3">
+                               <label class="form-label">Description</label>
+                               <input type="text" class="form-control" id="testDescription">
+                           </div>
 
-                                    <div class="col-md-3">
-                                        <label class="form-label">Referrer Fee ($)</label>
-                                        <input type="number" class="form-control" id="testReferrerFee" step="0.01" min="0">
-                                    </div>
-                                </div>
+                           <div class="col-md-3">
+                               <label class="form-label">Price ($) <span class="text-danger">*</span></label>
+                               <input type="number" class="form-control" id="testPrice" step="0.01" min="0" required>
+                           </div>
 
-                                <div class="text-end mt-3">
-                                    <button type="reset" class="btn btn-light me-2">
-                                        <i class="fas fa-times me-1"></i>Clear
-                                    </button>
-                                    <button type="submit" class="btn btn-success">
-                                        <i class="fas fa-save me-1"></i>Add Test
-                                    </button>
-                                </div>
-                            </form>
+                           <div class="col-md-3 d-flex align-items-end justify-content-end">
+                               <div>
+                                   <button type="reset" class="btn btn-light me-2">
+                                       <i class="fas fa-times me-1"></i>Clear
+                                   </button>
+                                   <button type="submit" class="btn btn-success">
+                                       <i class="fas fa-save me-1"></i>Add Test
+                                   </button>
+                               </div>
+                           </div>
+                       </div>
+                   </form>
+
                    <div class="row"> </div>
                     <!-- ✅ PATIENT DETAILS SECTION -->
                             <!-- Directly Visible Add Patient Form -->
                                  <form id="patientForm">
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <label for="patientName" class="form-label">Patient Name <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" id="patientName" placeholder="Enter name" required>
                                             <input type="hidden" id="patientId"/>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <label for="patientPhone" class="form-label">Phone Number <span class="text-danger">*</span></label>
                                             <input type="tel" class="form-control" id="patientPhone" placeholder="+1-555-1234" required>
                                         </div>
-                                        <div class="col-md-4">
-                                            <label for="patientEmail" class="form-label">Email Address</label>
-                                            <input type="email" class="form-control" id="patientEmail" placeholder="customer@email.com">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label for="medicalHistory" class="form-label">Medical History</label>
-                                            <input type="text" class="form-control" id="medicalHistory" placeholder="Medical History">
-                                        </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <label for="age" class="form-label">Age</label>
                                             <input type="number" class="form-control" id="age" placeholder="Enter Age">
+
                                         </div>
-                                        <div class="col-md-4">
-                                            <label for="gender" class="form-label">Gender</label>
-                                            <select class="form-select" id="gender">
-                                                <option value="">Select</option>
-                                                <option value="male">Male</option>
-                                                <option value="female">Female</option>
-                                            </select>
+                                        <div class="col-md-3">
+                                            <label for="medicalHistory" class="form-label">Doctor Name</label>
+                                            <input type="text" class="form-control" id="medicalHistory" placeholder="Doctor Name">
                                         </div>
+
+                                            <!-- Left Side: Gender -->
+                                            <div class="col-md-3 mt-3">
+                                                <label for="gender" class="form-label">Gender</label>
+                                                <select class="form-select" id="gender">
+                                                    <option value="">Select</option>
+                                                    <option value="male">Male</option>
+                                                    <option value="female">Female</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Right Side: Buttons (same row) -->
+                                            <div class="col-md-9 mt-3 d-flex justify-content-end align-items-end ">
+                                                <button type="reset" class="btn btn-outline-secondary me-2">
+                                                    <i class="fas fa-times me-1"></i>Clear
+                                                </button>
+
+                                                <button type="button" class="btn btn-success" id="savePatientBtn" onclick="createPatient()">
+                                                    <i class="fas fa-save me-1"></i>Save Patient
+                                                </button>
+                                            </div>
+
                                     </div>
 
-                                    <div class="text-end mt-3">
-                                        <button type="reset" class="btn btn-light me-2">
-                                            <i class="fas fa-times me-1"></i>Clear
-                                        </button>
-                                        <button type="button" class="btn btn-success" id="savePatientBtn" onclick="createPatient()">
-                                            <i class="fas fa-save me-1"></i>Save Patient
-                                        </button>
-                                    </div>
-                                </form>
+<br><br>
+
+                                 </form>
 
 
                     <!-- ✅ RECENT LAB TESTS TABLE -->
@@ -144,7 +147,6 @@
                                 <th>Name</th>
                                 <th>Description</th>
                                 <th>Price</th>
-                                <th>Referrer Fee</th>
                             </tr>
                             </thead>
                             <tbody id="labTestsTableBody">
@@ -168,15 +170,20 @@
                             <label for="discountValue" class="form-label">Apply Discount</label>
                             <input type="text" class="form-control" id="discountValue" placeholder="Enter discount">
                         </div>
-                        <div class="col-md-6 mt-3 text-end">
+
+                        <div class="col-md-6 mt-3 text-end  mt-3 d-flex justify-content-end align-items-end ">
                             <h5>
                                 <strong>Total:</strong>
                                 <span id="total" class="text-primary">0.00</span>
                             </h5>
                         </div>
-
                     </div>
-
+                    <div class="row">
+                        <div class="col-md-12 d-flex justify-content-end align-items-end">
+                            <button id="printReportBtn">Print Report</button>
+                            <div id="printContainer" style="display:none;"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -189,5 +196,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- ✅ External JS -->
 <script th:src="@{/js/medical-store.js}"></script>
+<script th:src="@{/js/print.js}"></script>
 </body>
 </html>

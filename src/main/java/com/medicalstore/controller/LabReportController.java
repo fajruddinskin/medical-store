@@ -57,6 +57,12 @@ public class LabReportController {
         return ResponseEntity.ok(container);
     }
 
+    @GetMapping("/print/{id}")
+    public ResponseEntity<?> print(@PathVariable("id") String id) {
+        ReportContainerModel container = reportContainerService.getContainerById(id).get();
+        return ResponseEntity.ok(container);
+    }
+
     @PostMapping("/add-test/{id}")
     public ResponseEntity<?> addTestInLab(@PathVariable("id") String id,
                                           @RequestBody LabTestModel labTestData) {

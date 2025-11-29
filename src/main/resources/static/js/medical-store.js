@@ -10,7 +10,7 @@ const savePatientBtn = document.getElementById("savePatientBtn");
 const patientFormFields = [
     "patientName",
     "patientPhone",
-    "patientEmail",
+   // "patientEmail",
     "medicalHistory",
     "age",
     "gender"
@@ -43,8 +43,7 @@ patientFormFields.forEach(field => {
             id: $("#testId").val() || null,
             name: $("#testName").val().trim(),
             description: $("#testDescription").val().trim(),
-            price: parseFloat($("#testPrice").val()),
-            referrerFee: parseFloat($("#testReferrerFee").val()) || 0
+            price: parseFloat($("#testPrice").val())
         };
        var containerId= $("#containerId").val() || null;
        let finalUrl = containerId ? `/api/add-test/${containerId}` : `/api/add-test/ABC123`;
@@ -96,7 +95,6 @@ patientFormFields.forEach(field => {
                     <td>${test.name}</td>
                     <td>${test.description || "-"}</td>
                     <td>$${Number(test.price).toFixed(2)}</td>
-                    <td>$${Number(test.referrerFee || 0).toFixed(2)}</td>
                 </tr>
             `;
             tbody.insertAdjacentHTML("beforeend", row);
@@ -160,7 +158,6 @@ patientFormFields.forEach(field => {
                 $("#testId").val(test.id);
                 $("#testDescription").val(test.description || "");
                 $("#testPrice").val(test.price ?? "");
-                $("#testReferrerFee").val(test.referrerFee ?? "");
 
                 hideSuggestions();
             });
@@ -230,7 +227,6 @@ patientFormFields.forEach(field => {
                     <td>${test.name || "-"}</td>
                     <td>${test.description || "-"}</td>
                     <td>${test.price ?? "-"}</td>
-                    <td>${test.referrerFee ?? "-"}</td>
                 </tr>
             `);
         });
@@ -248,7 +244,7 @@ async function createPatient() {
     const name = document.getElementById("patientName").value.trim();
     const phone = document.getElementById("patientPhone").value.trim();
     const tableBody = document.getElementById("labTestsTableBody");
-    const email = document.getElementById("patientEmail").value.trim();
+    //const email = document.getElementById("patientEmail").value.trim();
     const history = document.getElementById("medicalHistory").value.trim();
     const age = document.getElementById("age").value.trim();
     const gender = document.getElementById("gender").value;
@@ -262,7 +258,7 @@ async function createPatient() {
         id: $("#patientId").val() || null,
         name: name,
         phoneNumber: phone,
-        email: email || null,
+       // email: email || null,
         medicalHistory: history || null,
         age: age || null,
         gender: gender || null
@@ -308,7 +304,6 @@ let finalUrl = containerId ? `/api/patients/create/${containerId}` : `/api/patie
                         <td>${test.name}</td>
                         <td>${test.description || "-"}</td>
                         <td>$${Number(test.price).toFixed(2)}</td>
-                        <td>$${Number(test.referrerFee || 0).toFixed(2)}</td>
                     </tr>
                 `;
                 tbody.append(row);
@@ -388,4 +383,3 @@ document.getElementById("discountValue").addEventListener("change", function () 
 });
 // =======================================================
 // 4) END DISCOUNT VALUE
-// =======================================================
