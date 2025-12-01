@@ -383,3 +383,14 @@ document.getElementById("discountValue").addEventListener("change", function () 
 });
 // =======================================================
 // 4) END DISCOUNT VALUE
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const el = document.getElementById("someId");
+
+    if (el) {
+        el.addEventListener("click", function () {
+            // your code
+        });
+    }
+});

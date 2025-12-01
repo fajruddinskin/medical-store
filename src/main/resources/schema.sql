@@ -1,11 +1,11 @@
 -- Drop tables if they exist
-DROP TABLE IF EXISTS medicines;
-DROP TABLE IF EXISTS customers;
-DROP TABLE IF EXISTS categories;
-DROP TABLE IF EXISTS patients;
-DROP TABLE IF EXISTS tests;
-DROP TABLE IF EXISTS report_containers;
-DROP TABLE IF EXISTS report_tests;
+-- DROP TABLE IF EXISTS medicines;
+-- DROP TABLE IF EXISTS customers;
+-- DROP TABLE IF EXISTS categories;
+-- DROP TABLE IF EXISTS patients;
+-- DROP TABLE IF EXISTS tests;
+-- DROP TABLE IF EXISTS report_containers;
+-- DROP TABLE IF EXISTS report_tests;
 
 
 -- Create medicines table with all constraints
@@ -78,4 +78,10 @@ CREATE TABLE report_tests (
     PRIMARY KEY (report_id, test_id),
     FOREIGN KEY (report_id) REFERENCES report_containers(id) ON DELETE CASCADE,
     FOREIGN KEY (test_id) REFERENCES tests(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS report_results (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    content TEXT,
+    created_at TEXT
 );

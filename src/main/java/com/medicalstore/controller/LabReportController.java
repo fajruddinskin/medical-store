@@ -6,6 +6,7 @@ import com.medicalstore.entity.LabTestModel;
 import com.medicalstore.entity.ReportContainerModel;
 import com.medicalstore.service.ContainerCalculationService;
 import com.medicalstore.service.LabTestService;
+import com.medicalstore.service.MedicalReportService;
 import com.medicalstore.service.ReportContainerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,9 @@ public class LabReportController {
 
     @Autowired
     private LabTestService labTestService;
+
+    @Autowired
+    private MedicalReportService medicalReportService;
 
     @Autowired
     private ReportContainerService reportContainerService;
@@ -98,4 +102,12 @@ public class LabReportController {
                     ));
         }
     }
+
+    @PostMapping("/save-report")
+    public ResponseEntity<Map<String, Object>> saveReport(@RequestBody Map<String, String> payload) {
+        String content = payload.get("content");
+        medicalReportService.saveReport(content);
+        return ResponseEntity.ok(Map.of("message", "Report saved successfully!"));
+    }
+
 }
