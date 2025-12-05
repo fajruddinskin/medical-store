@@ -36,9 +36,9 @@ public class WebController {
 
         List<LabTestModel> labTests= labTestService.searchTests("CBC");
         List<Category> catagory=categoryService.getAllCategories();
-        System.out.println(medicines.get(0).getCategory().getId());
-        System.out.println(medicines.get(0).getCategory().getName());
-        System.out.println(medicines.get(0).getCategory().getDescription());
+       // System.out.println(medicines.get(0).getCategory().getId());
+       // System.out.println(medicines.get(0).getCategory().getName());
+       // System.out.println(medicines.get(0).getCategory().getDescription());
         System.out.println( "================");
         model.addAttribute("labTests", labTests.size());
         System.out.println( "================");
@@ -180,9 +180,9 @@ public class WebController {
 
             List<LabTestModel> labTests= labTestService.getAllLabTest();
             List<Category> catagory=categoryService.getAllCategories();
-            System.out.println(medicines.get(0).getCategory().getId());
-            System.out.println(medicines.get(0).getCategory().getName());
-            System.out.println(medicines.get(0).getCategory().getDescription());
+           // System.out.println(medicines.get(0).getCategory().getId());
+         //   System.out.println(medicines.get(0).getCategory().getName());
+            //System.out.println(medicines.get(0).getCategory().getDescription());
             System.out.println( "================");
             model.addAttribute("labTests", labTests.size());
             System.out.println( "================");

@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +36,18 @@ public class PatientController {
         PatientModel patient = patientService.savePatient(patientData);
         ReportContainerModel container = reportContainerService.getContainerById(id).get();
         container.setPatient(patient);
+        List<LabTestModel>  list=container.getLabTests();
+        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MMM-yyyy"));
+        for (LabTestModel labTestModel : list) {
+            String originalHtml = labTestModel.getMedicalReport().getContent();
+            String updatedHtml = originalHtml
+                    .replace("patientData", patient.getName())
+                    .replace("ageData", String.valueOf(patient.getAge()))
+                    .replace("sexData", patient.getGender()).replace("todayDate", today);
+            labTestModel.getMedicalReport().setContent(updatedHtml);
+        }
+
+
         container.setReportName("Test Report");
         reportContainerService.saveContainer(container);
         return ResponseEntity.ok(container);

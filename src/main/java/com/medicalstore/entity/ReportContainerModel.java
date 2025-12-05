@@ -37,6 +37,10 @@ public class ReportContainerModel {
     @Column(name = "is_verified")
     private Boolean isVerified = false;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "report_status", nullable = false)
+    private ReportStatus reportStatus = ReportStatus.PENDING;
+
     @ManyToOne(cascade = CascadeType.PERSIST , fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id")
     private PatientModel patient;
@@ -48,6 +52,10 @@ public class ReportContainerModel {
             inverseJoinColumns = @JoinColumn(name = "test_id")
     )
     private List<LabTestModel> labTests = new ArrayList<>();
+
+    public ReportStatus getReportStatus() { return reportStatus; }
+    public void setReportStatus(ReportStatus reportStatus) { this.reportStatus = reportStatus; }
+
 
     public BigDecimal getTotal() {
         return total;

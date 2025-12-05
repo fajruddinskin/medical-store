@@ -19,6 +19,10 @@ public class MedicalReportService {
         report.setCreatedAt(LocalDateTime.now().toString());
         return medicalReportRepository.save(report);
     }
+    public MedicalReport saveReport(MedicalReport report) {
+        report.setCreatedAt(LocalDateTime.now().toString());
+        return medicalReportRepository.save(report);
+    }
 
     public Optional<MedicalReport> getReportById(Long id) {
         return medicalReportRepository.findById(id);

@@ -57,3 +57,6 @@
 #labTestFormCard .btn-primary:hover {
     background-color: #218838;
 }
+.selected-row {
+    background-color: #d4edff !important;
+}

@@ -1,11 +1,13 @@
--- Drop tables if they exist
--- DROP TABLE IF EXISTS medicines;
--- DROP TABLE IF EXISTS customers;
--- DROP TABLE IF EXISTS categories;
--- DROP TABLE IF EXISTS patients;
--- DROP TABLE IF EXISTS tests;
--- DROP TABLE IF EXISTS report_containers;
--- DROP TABLE IF EXISTS report_tests;
+--Drop tables if they exist
+DROP TABLE IF EXISTS medicines;
+DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS patients;
+DROP TABLE IF EXISTS tests;
+DROP TABLE IF EXISTS report_containers;
+DROP TABLE IF EXISTS report_tests;
+DROP TABLE IF EXISTS tests_data;
+
 
 
 -- Create medicines table with all constraints
@@ -50,13 +52,28 @@ CREATE TABLE patients (
     FOREIGN KEY (id) REFERENCES customers(id) ON DELETE CASCADE
 );
 
-CREATE TABLE tests (
+CREATE TABLE IF NOT EXISTS tests_data (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     description TEXT,
     search TEXT,
+    report_status TEXT NOT NULL DEFAULT 'PENDING',
     price REAL NOT NULL,
-    referrer_fee REAL
+    referrer_fee REAL,
+    report_id VARCHAR(255),
+    FOREIGN KEY (report_id) REFERENCES report_results(id)
+);
+
+CREATE TABLE IF NOT EXISTS tests (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    description TEXT,
+    search TEXT,
+    report_status TEXT NOT NULL DEFAULT 'PENDING',
+    price REAL NOT NULL,
+    referrer_fee REAL,
+    report_id VARCHAR(255),
+    FOREIGN KEY (report_id) REFERENCES report_results(id)
 );
 
 
@@ -67,6 +84,7 @@ CREATE TABLE report_containers (
     sub_total REAL,
     total REAL,
     discount REAL,
+    report_status TEXT NOT NULL DEFAULT 'PENDING',
     is_verified BOOLEAN DEFAULT FALSE,
     patient_id VARCHAR(255),
     FOREIGN KEY (patient_id) REFERENCES patients(id)

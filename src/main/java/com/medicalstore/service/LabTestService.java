@@ -18,7 +18,7 @@ public class LabTestService {
         return labTestRepository.findAll();
     }
 
-    public Optional<LabTestModel> getCustomerById(Long id) {
+    public Optional<LabTestModel> getTestById(Long id) {
         return labTestRepository.findById(id);
     }
 

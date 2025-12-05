@@ -1,16 +1,14 @@
 package com.medicalstore.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-@Table(name = "tests")
+@Table(name = "tests_data")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class LabTestModel {
+public class LabTestData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,25 +33,15 @@ public class LabTestModel {
     @Column(name = "report_status", nullable = false)
     private ReportStatus reportStatus = ReportStatus.PENDING;
 
-    public MedicalReport getMedicalReport() {
-        return medicalReport;
-    }
-
-    public void setMedicalReport(MedicalReport medicalReport) {
-        this.medicalReport = medicalReport;
-    }
 
     @ManyToOne(cascade = CascadeType.PERSIST , fetch = FetchType.LAZY)
     @JoinColumn(name = "report_id")
     private MedicalReport medicalReport;
-    /*@ManyToMany(mappedBy = "labTests")
-    @JsonIgnore
-    private List<ReportContainerModel> reports = new ArrayList<>();*/
 
-    public LabTestModel() {}
+    public LabTestData() {}
 
-    public LabTestModel(String id, String name, String description,
-                        BigDecimal price, BigDecimal referrerFee) {
+    public LabTestData(String id, String name, String description,
+                       BigDecimal price, BigDecimal referrerFee) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -62,6 +50,14 @@ public class LabTestModel {
     }
 
     // Getters & Setters
+
+    public MedicalReport getMedicalReport() {
+        return medicalReport;
+    }
+
+    public void setMedicalReport(MedicalReport medicalReport) {
+        this.medicalReport = medicalReport;
+    }
     public String getSearch() {
         return search;
     }
@@ -69,6 +65,7 @@ public class LabTestModel {
     public void setSearch(String search) {
         this.search = search;
     }
+
 
     public ReportStatus getReportStatus() { return reportStatus; }
     public void setReportStatus(ReportStatus reportStatus) { this.reportStatus = reportStatus; }

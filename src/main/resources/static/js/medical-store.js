@@ -42,6 +42,7 @@ patientFormFields.forEach(field => {
         const testData = {
             id: $("#testId").val() || null,
             name: $("#testName").val().trim(),
+            search: $("#search").val().trim(),
             description: $("#testDescription").val().trim(),
             price: parseFloat($("#testPrice").val())
         };
@@ -158,6 +159,7 @@ patientFormFields.forEach(field => {
                 $("#testId").val(test.id);
                 $("#testDescription").val(test.description || "");
                 $("#testPrice").val(test.price ?? "");
+                $("#search").val(test.search);
 
                 hideSuggestions();
             });

@@ -2,12 +2,11 @@ package com.medicalstore.controller;
 
 import com.medicalstore.dto.DeliveryRequest;
 import com.medicalstore.dto.DiscountRequest;
+import com.medicalstore.entity.LabTestData;
 import com.medicalstore.entity.LabTestModel;
+import com.medicalstore.entity.MedicalReport;
 import com.medicalstore.entity.ReportContainerModel;
-import com.medicalstore.service.ContainerCalculationService;
-import com.medicalstore.service.LabTestService;
-import com.medicalstore.service.MedicalReportService;
-import com.medicalstore.service.ReportContainerService;
+import com.medicalstore.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -23,6 +23,9 @@ public class LabReportController {
 
     @Autowired
     private LabTestService labTestService;
+
+    @Autowired
+    private LabTestDataService labTestDataService;
 
     @Autowired
     private MedicalReportService medicalReportService;
@@ -47,6 +50,13 @@ public class LabReportController {
         return ResponseEntity.ok(container);
     }
 
+    @GetMapping("/search/{id}")
+    public ResponseEntity<?> search(@PathVariable("id") String id) {
+        ReportContainerModel container = reportContainerService.getContainerById(id).get();
+        return ResponseEntity.ok(container);
+    }
+
+
     @PostMapping("/discount/add")
     public ResponseEntity<?> addDiscount(@RequestBody DiscountRequest request) {
         String containerId = request.getContainerId();
@@ -70,7 +80,10 @@ public class LabReportController {
     @PostMapping("/add-test/{id}")
     public ResponseEntity<?> addTestInLab(@PathVariable("id") String id,
                                           @RequestBody LabTestModel labTestData) {
+        labTestData.setId(null);
         LabTestModel test = labTestService.saveLabTest(labTestData);
+        List<LabTestData> list1 = labTestDataService.searchTests(labTestData.getSearch());
+        test.setMedicalReport(list1.get(0).getMedicalReport());
         ReportContainerModel container = reportContainerService.getContainerById(id).get();
         List<LabTestModel> list= container.getLabTests();
         list.add(test);
@@ -105,8 +118,33 @@ public class LabReportController {
 
     @PostMapping("/save-report")
     public ResponseEntity<Map<String, Object>> saveReport(@RequestBody Map<String, String> payload) {
+
         String content = payload.get("content");
-        medicalReportService.saveReport(content);
+        Long testId = Long.valueOf(payload.get("testId"));
+
+        Optional<LabTestModel> labTestOpt = labTestService.getTestById(testId);
+
+        if (labTestOpt.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "Lab test not found!"));
+        }
+
+        LabTestModel labTest = labTestOpt.get();
+
+        // Create new or update existing report
+        MedicalReport report = labTest.getMedicalReport();
+        if (report == null) {
+            report = new MedicalReport();
+        }
+
+        report.setContent(content);
+        medicalReportService.saveReport(report);
+
+        // Attach report to lab test
+        labTest.setMedicalReport(report);
+        labTestService.saveLabTest(labTest);
+
         return ResponseEntity.ok(Map.of("message", "Report saved successfully!"));
     }
 
