@@ -8,10 +8,12 @@ import com.medicalstore.entity.MedicalReport;
 import com.medicalstore.entity.ReportContainerModel;
 import com.medicalstore.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -50,12 +52,21 @@ public class LabReportController {
         return ResponseEntity.ok(container);
     }
 
-    @GetMapping("/search/{id}")
-    public ResponseEntity<?> search(@PathVariable("id") String id) {
+    /*@GetMapping("/data/search")
+    public ResponseEntity<?> search(@RequestParam(required = false) String id) {
         ReportContainerModel container = reportContainerService.getContainerById(id).get();
         return ResponseEntity.ok(container);
-    }
+    }*/
 
+    @GetMapping("/filter")
+    public List<ReportContainerModel> filterReports(
+            @RequestParam(required = false) Integer id,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) Integer weeks
+    ) {
+        return reportContainerService.applyFilter(id, startDate, endDate, weeks);
+    }
 
     @PostMapping("/discount/add")
     public ResponseEntity<?> addDiscount(@RequestBody DiscountRequest request) {
