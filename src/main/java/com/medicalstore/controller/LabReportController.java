@@ -2,10 +2,7 @@ package com.medicalstore.controller;
 
 import com.medicalstore.dto.DeliveryRequest;
 import com.medicalstore.dto.DiscountRequest;
-import com.medicalstore.entity.LabTestData;
-import com.medicalstore.entity.LabTestModel;
-import com.medicalstore.entity.MedicalReport;
-import com.medicalstore.entity.ReportContainerModel;
+import com.medicalstore.entity.*;
 import com.medicalstore.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -91,22 +88,44 @@ public class LabReportController {
     @PostMapping("/add-test/{id}")
     public ResponseEntity<?> addTestInLab(@PathVariable("id") String id,
                                           @RequestBody LabTestModel labTestData) {
-        labTestData.setId(null);
-        LabTestModel test = labTestService.saveLabTest(labTestData);
-        List<LabTestData> list1 = labTestDataService.searchTests(labTestData.getSearch());
-        test.setMedicalReport(list1.get(0).getMedicalReport());
-        ReportContainerModel container = reportContainerService.getContainerById(id).get();
-        List<LabTestModel> list= container.getLabTests();
-        list.add(test);
-        container.setLabTests(list);
+
+        labTestData.setId(null);  // always create a new test
+
+        // Step 1: Save incoming test object
+        LabTestModel savedTest = labTestService.saveLabTest(labTestData);
+
+        // Step 2: Fetch matching LabTestData by search key
+        LabTestData masterTest = labTestDataService.getLabTestDataBySearchKey(labTestData.getSearch())
+                .orElseThrow(() -> new RuntimeException("Invalid search key: " + labTestData.getSearch()));
+
+        // Step 3: Ensure master test has a medical report
+        MedicalReport baseReport = masterTest.getMedicalReport();
+        if (baseReport == null) {
+            throw new RuntimeException("This test has no medical report template!");
+        }
+
+        // Step 4: Attach a copy of the medical report template
+        MedicalReport report = new MedicalReport();
+        report.setContent(baseReport.getContent());
+        savedTest.setMedicalReport(report);
+
+        // Step 5: Fetch report container
+        ReportContainerModel container = reportContainerService.getContainerById(id)
+                .orElseThrow(() -> new RuntimeException("Invalid container ID: " + id));
+
+        // Step 6: Add test into container
+        container.getLabTests().add(savedTest);
+
+        // Step 7: Update container fields and recalculate
         container.setReportName("Test Report");
         containerCalculationService.calculateContainer(container);
+
+        // Step 8: Save container with updated totals
         reportContainerService.saveContainer(container);
-        System.out.println("======================================= ");
-        System.out.println("Subtotal before update: " + container.getSubTotal());
-        System.out.println("======================================= ");
+
         return ResponseEntity.ok(container);
     }
+
 
     @GetMapping("/search")
     @ResponseBody
@@ -132,7 +151,7 @@ public class LabReportController {
 
         String content = payload.get("content");
         Long testId = Long.valueOf(payload.get("testId"));
-
+       String status = payload.get("status");
         Optional<LabTestModel> labTestOpt = labTestService.getTestById(testId);
 
         if (labTestOpt.isEmpty()) {
@@ -150,6 +169,9 @@ public class LabReportController {
         }
 
         report.setContent(content);
+        if (status.equalsIgnoreCase ("Done")) {
+            labTest.setReportStatus(ReportStatus.DONE);
+        }
         medicalReportService.saveReport(report);
 
         // Attach report to lab test

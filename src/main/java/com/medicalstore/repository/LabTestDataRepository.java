@@ -16,6 +16,12 @@ public interface LabTestDataRepository extends JpaRepository<LabTestData, Long> 
 
     Optional<LabTestData> findByName(String name);
 
+    // ✔ Exact match
+    Optional<LabTestData> findBySearch(String search);
+
+    // ✔ If you want case-insensitive exact match:
+    Optional<LabTestData> findBySearchIgnoreCase(String search);
+
     List<LabTestData> findByNameContainingIgnoreCase(String name);
 
     @Query(value = """ 

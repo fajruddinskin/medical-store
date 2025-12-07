@@ -5,7 +5,7 @@
         const content = tinymce.get("editor").getContent();
         const testId = $("#selectedTestId").val();
         const invoiceNo = $("#invoiceNo").val();
-        const status = $("#reportStatus").val();
+        const status = $("#statusDropdown").val();
     
         if (!testId) return alert("Please select a test first!");
     
@@ -105,6 +105,8 @@
         $("#selectedTestId").val(testId);
         $("#invoiceNo").val(currentContainerData.id);
         $("#reportStatus").val(selectedTest.reportStatus);
+        $("#statusDropdown").val(selectedTest.reportStatus);
+
     });
     
     // =========================

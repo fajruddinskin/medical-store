@@ -22,6 +22,10 @@ public class LabTestDataService {
         return labTestDataRepository.findById(id);
     }
 
+    public Optional<LabTestData> getLabTestDataBySearchKey(String key) {
+        return labTestDataRepository.findBySearch(key);
+    }
+
     public LabTestData saveLabTest(LabTestData labTestData) {
         return labTestDataRepository.save(labTestData);
     }
