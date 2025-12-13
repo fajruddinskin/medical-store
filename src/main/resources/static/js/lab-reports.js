@@ -124,3 +124,62 @@
     function updateContainer() {
         applyFilter();
     }
+
+    // =========================
+    // PRINT REPORT
+    // =========================
+    function printReport() {
+
+        const content = tinymce.get("editor").getContent();
+        const testId = $("#selectedTestId").val();
+        const invoiceNo = $("#invoiceNo").val();
+
+        if (!testId) {
+            alert("Please select a test before printing!");
+            return;
+        }
+
+        const printWindow = window.open("", "", "width=900,height=650");
+
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Lab Report</title>
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+                <style>
+                    body {
+                        padding: 20px;
+                        font-family: Arial, sans-serif;
+                    }
+                    .header {
+                        text-align: center;
+                        margin-bottom: 20px;
+                    }
+                    .footer {
+                        margin-top: 40px;
+                        text-align: right;
+                        font-size: 14px;
+                    }
+                </style>
+            </head>
+            <body>
+                <div>
+                    ${content}
+                </div>
+
+                <div class="footer">
+                    <p>Generated on: ${new Date().toLocaleString()}</p>
+                </div>
+
+            </body>
+            </html>
+        `);
+
+        printWindow.document.close();
+        printWindow.focus();
+
+        setTimeout(() => {
+            printWindow.print();
+            printWindow.close();
+        }, 500);
+    }
