@@ -4,6 +4,7 @@ import com.medicalstore.dto.DeliveryRequest;
 import com.medicalstore.dto.DiscountRequest;
 import com.medicalstore.entity.*;
 import com.medicalstore.service.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -78,6 +79,19 @@ public class LabReportController {
         System.out.println("======================================= ");
         return ResponseEntity.ok(container);
     }
+    @Transactional
+    @DeleteMapping("/delete/{containerId}/{testId}")
+    public ResponseEntity<?> deleteLabTest(@PathVariable String containerId, @PathVariable Long testId) {
+        ReportContainerModel container = reportContainerService.getContainerById(containerId).get();
+        LabTestModel test = labTestService.getTestById(testId).get();
+        container.getLabTests().remove(test);
+        reportContainerService.saveContainer(container);
+        containerCalculationService.calculateContainer(container);
+        reportContainerService.saveContainer(container);
+        ReportContainerModel container2 = reportContainerService.getContainerById(containerId).get();
+        return ResponseEntity.ok(container);
+    }
+
 
     @GetMapping("/print/{id}")
     public ResponseEntity<?> print(@PathVariable("id") String id) {

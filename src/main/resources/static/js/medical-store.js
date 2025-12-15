@@ -94,7 +94,11 @@ patientFormFields.forEach(field => {
                 <tr>
                     <td>${test.id}</td>
                     <td>${test.name}</td>
-                    <td>${test.description || "-"}</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger"
+                         onclick="deleteTest('${data.id}', '${test.id}')"><i class="fas fa-trash"></i> Delete
+                        </button>
+                     </td>
                     <td>$${Number(test.price).toFixed(2)}</td>
                 </tr>
             `;
@@ -304,7 +308,11 @@ let finalUrl = containerId ? `/api/patients/create/${containerId}` : `/api/patie
                     <tr>
                         <td>${test.id}</td>
                         <td>${test.name}</td>
-                        <td>${test.description || "-"}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger"
+                                onclick="deleteTest('${data.id}', '${test.id}')"><i class="fas fa-trash"></i> Delete
+                            </button>
+                         </td>
                         <td>$${Number(test.price).toFixed(2)}</td>
                     </tr>
                 `;
@@ -396,3 +404,66 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+// =======================================================
+// DELETE TEST FUNCTION (GET METHOD, TABLE UPDATE LIKE ADD TEST)
+// =======================================================
+async function deleteTest(containerId, testId) {
+    if (!confirm("Are you sure you want to delete this test?")) return;
+
+    try {
+        // Fetch updated container data from server
+        const response = await fetch(`/api/delete/${containerId}/${testId}`, { method: "DELETE" });
+
+        if (!response.ok) {
+            throw new Error("Failed to delete test");
+        }
+
+        const updatedData = await response.json();
+
+        // Update container & patient info
+        $("#containerId").val(updatedData.id);
+        $("#patientId").val(updatedData?.patient?.id ?? "");
+        $("#userName").text(updatedData?.patient?.name ?? "");
+
+        // Clear previous table rows
+        const tbody = document.getElementById("labTestsTableBody");
+        tbody.innerHTML = "";
+
+        // Re-populate table like addTestRow
+        updatedData.labTests.forEach(test => {
+            const row = `
+                <tr>
+                    <td>${test.id}</td>
+                    <td>${test.name}</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger"
+                            onclick="deleteTest('${updatedData.id}', '${test.id}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                    <td>$${Number(test.price).toFixed(2)}</td>
+                </tr>
+            `;
+            tbody.insertAdjacentHTML("beforeend", row);
+        });
+
+        // Update subtotal & total
+        const subtotalEl = document.getElementById("subTotal");
+        const totalEl = document.getElementById("total");
+
+        if (subtotalEl) {
+            subtotalEl.textContent = "₹" + Number(updatedData.subTotal).toFixed(2);
+        }
+        if (totalEl) {
+            totalEl.textContent = "₹" + Number(updatedData.total).toFixed(2);
+        }
+
+        // Disable Save Patient button (optional)
+        //savePatientBtn.disabled = true;
+
+    } catch (error) {
+        console.error("Delete failed:", error);
+        alert("Unable to delete test");
+    }
+}

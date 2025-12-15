@@ -26,7 +26,7 @@ public class LabTestService {
         return labTestRepository.save(labTestModel);
     }
 
-    public void deletePatient(Long id) {
+    public void deleteLabTest(Long id) {
         labTestRepository.deleteById(id);
     }
 
