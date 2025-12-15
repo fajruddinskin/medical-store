@@ -186,6 +186,12 @@ public class LabReportController {
         if (status.equalsIgnoreCase ("Done")) {
             labTest.setReportStatus(ReportStatus.DONE);
         }
+        if (status.equalsIgnoreCase ("IN_PROGRESS")) {
+            labTest.setReportStatus(ReportStatus.IN_PROGRESS);
+        }
+        if (status.equalsIgnoreCase ("PENDING")) {
+            labTest.setReportStatus(ReportStatus.PENDING);
+        }
         medicalReportService.saveReport(report);
 
         // Attach report to lab test
