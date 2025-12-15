@@ -6,20 +6,24 @@
         const testId = $("#selectedTestId").val();
         const invoiceNo = $("#invoiceNo").val();
         const status = $("#statusDropdown").val();
-    
+
         if (!testId) return alert("Please select a test first!");
-    
+
         const payload = { testId, invoiceNo, status, content };
-    
+
         fetch('/api/save-report', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         })
-            .then(res => res.json())
-            .then(data => alert(data.message))
-            .catch(err => console.error(err));
+        .then(res => res.json())
+        .then(data => {
+           // alert(data.message);
+            applyFilter();   // 🔥 REFRESH DATA FROM SERVER
+        })
+        .catch(err => console.error(err));
     }
+
     
     // =========================
     // ENTER KEY SEARCH
