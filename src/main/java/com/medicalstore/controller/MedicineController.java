@@ -1,6 +1,8 @@
 package com.medicalstore.controller;
 
+import com.medicalstore.entity.Category;
 import com.medicalstore.entity.Medicine;
+import com.medicalstore.service.CategoryService;
 import com.medicalstore.service.MedicineService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class MedicineController {
 
     @Autowired
     private MedicineService medicineService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @GetMapping
     public List<Medicine> getAllMedicines() {
@@ -87,7 +92,8 @@ public class MedicineController {
             existingMedicine.setManufacturer(medicineDetails.getManufacturer());
             existingMedicine.setType(medicineDetails.getType());
             existingMedicine.setRequiresPrescription(medicineDetails.getRequiresPrescription());
-
+            Optional<Category> category = categoryService.getCategoryById(medicineDetails.getCategory().getId());
+            existingMedicine.setCategory(category.get());
             Medicine updatedMedicine = medicineService.saveMedicine(existingMedicine);
             return ResponseEntity.ok(updatedMedicine);
         } else {

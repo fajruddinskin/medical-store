@@ -57,7 +57,7 @@ public class Medicine {
         this.category = category;
     }
 
-    @ManyToOne(cascade = CascadeType.PERSIST , fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST , fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
     // Constructors
