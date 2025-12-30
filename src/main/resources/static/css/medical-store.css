@@ -258,3 +258,45 @@ tbody tr:not(:last-child) {
 }
 
 /* new design end */
+
+
+/* ============================= */
+/* AUTH (LOGIN / SIGNUP) STYLES */
+/* ============================= */
+
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 160px);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 32px;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+.auth-card h4 {
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.auth-card .form-control {
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.auth-card .btn-success {
+    padding: 10px;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.auth-card small a {
+    text-decoration: none;
+    font-weight: 500;
+}

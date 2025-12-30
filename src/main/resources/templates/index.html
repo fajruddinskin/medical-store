@@ -31,8 +31,11 @@
         </div>-->
 
         <div class="header-actions">
-            <button class="btn-login">Log in</button>
-            <button class="btn-signup">Sign up</button>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" class="btn-outline">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </form>
         </div>
     </div>
 </header>

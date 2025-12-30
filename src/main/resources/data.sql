@@ -17,11 +17,34 @@ VALUES
 ('Vitamin C', 'BATCH005', 12.99, 200, 'HealthVit', 'TABLET', 0,'CAT002');
 
 -- Sample Customers
-INSERT OR IGNORE INTO customers (name, phone_number, email)
+INSERT OR IGNORE INTO customers
+(name, phone_number, email, username, password, role)
 VALUES
-('John Doe', '+1234567890', 'john.doe@email.com'),
-('Jane Smith', '+0987654321', 'jane.smith@email.com'),
-('Bob Johnson', '+1122334455', 'bob.johnson@email.com');
+(
+  'John Doe',
+  '+1234567890',
+  'john.doe@email.com',
+  'john',
+  '$2a$10$wH6YQF7g0z4GQF9v6Z5n3e8rQJv5xKxJb3Zc2p9E6HqYtZlO6Qe2C',
+  'USER'
+),
+(
+  'Jane Smith',
+  '+0987654321',
+  'jane.smith@email.com',
+  'jane',
+  '$2a$10$wH6YQF7g0z4GQF9v6Z5n3e8rQJv5xKxJb3Zc2p9E6HqYtZlO6Qe2C',
+  'USER'
+),
+(
+  'Bob Johnson',
+  '+1122334455',
+  'bob.johnson@email.com',
+  'bob',
+  '$2a$10$wH6YQF7g0z4GQF9v6Z5n3e8rQJv5xKxJb3Zc2p9E6HqYtZlO6Qe2C',
+  'USER'
+);
+
 
 INSERT INTO patients (id, medical_history, gender,age,blood_Group ,doctor ,reffered_By)
 VALUES (1,'Asthma', 'Male',56,'A','xyz','u');

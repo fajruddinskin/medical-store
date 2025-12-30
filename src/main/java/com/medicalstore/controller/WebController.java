@@ -1,5 +1,6 @@
 package com.medicalstore.controller;
 
+import com.medicalstore.dto.SignupRequest;
 import com.medicalstore.entity.*;
 import com.medicalstore.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,16 @@ public class WebController {
     @Autowired
     private EnumService enumService;
 
+    @GetMapping("/signup")
+    public String signupPage(Model model) {
+        model.addAttribute("signupRequest", new SignupRequest());
+        return "signup"; // signup.html
+    }
+
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
 
     @GetMapping("/")
     public String index(Model model) {

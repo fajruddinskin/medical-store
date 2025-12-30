@@ -32,11 +32,14 @@ CREATE TABLE IF NOT EXISTS categories (
     description TEXT
 );
 -- Create customers table with unique constraints in table definition
-CREATE TABLE IF NOT EXISTS customers (
+CREATE TABLE customers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
-    phone_number TEXT,
+    phone_number TEXT NOT NULL,
     email TEXT,
+    username TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    role TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
