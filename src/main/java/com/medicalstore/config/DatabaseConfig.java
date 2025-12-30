@@ -15,9 +15,11 @@ public class DatabaseConfig {
     @Primary
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource dataSource() {
+        // Resolve ${user.dir} in Java
+        String dbPath = System.getProperty("user.dir") + "/data/medical_store.db";
         return DataSourceBuilder.create()
                 .driverClassName("org.sqlite.JDBC")
-                .url("jdbc:sqlite:medical_store.db")
+                .url("jdbc:sqlite:" + dbPath)
                 .build();
     }
 }

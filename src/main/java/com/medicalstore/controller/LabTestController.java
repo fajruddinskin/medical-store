@@ -1,7 +1,9 @@
 package com.medicalstore.controller;
 
+import com.medicalstore.entity.LabTestData;
 import com.medicalstore.entity.LabTestModel;
 import com.medicalstore.entity.Medicine;
+import com.medicalstore.service.LabTestDataService;
 import com.medicalstore.service.LabTestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,10 @@ public class LabTestController {
     @Autowired
     private LabTestService labTestService;
 
+    @Autowired
+    private LabTestDataService LabTestDataService;
+
+
 
     @PostMapping
     public ResponseEntity<LabTestModel> createLabTest(@RequestBody LabTestModel labTest) {
@@ -30,7 +36,7 @@ public class LabTestController {
     @ResponseBody
     public ResponseEntity<?> searchMedicines(@RequestParam String searchTerm) {
         try {
-            List<LabTestModel> list = labTestService.searchTests(searchTerm);
+            List<LabTestData> list = LabTestDataService.searchTests(searchTerm);
             return ResponseEntity.ok(list);
         } catch (Exception e) {
             // Log the exception

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Store - Lab Reports</title>
+
+    <!-- Bootstrap & FontAwesome -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/all.min.css}">
+    <!-- ✅ External CSS -->
+    <link rel="stylesheet" th:href="@{/css/medical-store.css}">
+    <link rel="stylesheet" th:href="@{/css/print.css}" media="print">
+</head>
+
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 sidebar">
+            <div class="text-center mb-4">
+                <i class="fas fa-hospital-alt fa-3x mb-2"></i>
+                <h4>Medical Store</h4>
+                <p class="text-light">Management System</p>
+            </div>
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="/medicines"><i class="fas fa-pills me-2"></i> Medicine Management</a></li>
+                <li class="nav-item"><a class="nav-link" href="/customers"><i class="fas fa-users me-2"></i> Customer Management</a></li>
+                <li class="nav-item"><a class="nav-link" href="/reports"><i class="fas fa-flask me-2"></i>Lab Reports</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/lab-test-registration"> <i class="fas fa-chart-bar me-2"></i>Lab Test Registration</a> </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-light" style="min-height: 100vh; width: 998px;">
+            <div class="pt-4 pb-3 mb-3 border-bottom d-flex justify-content-between align-items-center">
+                <h2 class="text-primary"><i class="fas fa-vials me-2"></i>Lab Test Registration</h2>
+                <span class="text-muted"> Patient Name: <span id="userName"> </span></span>
+            </div>
+
+            <!-- ✅ QUICK ACTIONS SECTION -->
+            <div class="card mb-4">
+               <div class="card-body">
+                    <!-- Directly Visible Add Lab Test Form (Collapse Removed) -->
+                   <form id="labTestForm">
+                       <div class="row">
+                           <div class="col-md-3 position-relative">
+                               <label class="form-label">Test Name <span class="text-danger">*</span></label>
+                               <input type="text" class="form-control" id="testName" required>
+                               <input type="hidden" id="testId">
+                               <input type="hidden" id="search">
+                               <input type="hidden" id="containerId">
+
+                               <ul id="testSuggestions"
+                                   class="list-group position-absolute w-100"
+                                   style="z-index:2000; display:none; max-height:200px; overflow-y:auto;">
+                               </ul>
+                           </div>
+
+                           <div class="col-md-3">
+                               <label class="form-label">Description</label>
+                               <input type="text" class="form-control" id="testDescription">
+                           </div>
+
+                           <div class="col-md-3">
+                               <label class="form-label">Price ($) <span class="text-danger">*</span></label>
+                               <input type="number" class="form-control" id="testPrice" step="0.01" min="0" required>
+                           </div>
+
+                           <div class="col-md-3 d-flex align-items-end justify-content-end">
+                               <div>
+                                   <button type="reset" class="btn btn-light me-2">
+                                       <i class="fas fa-times me-1"></i>Clear
+                                   </button>
+                                   <button type="submit" class="btn btn-success">
+                                       <i class="fas fa-save me-1"></i>Add Test
+                                   </button>
+                               </div>
+                           </div>
+                       </div>
+                   </form>
+
+                   <div class="row"> </div>
+                    <!-- ✅ PATIENT DETAILS SECTION -->
+                            <!-- Directly Visible Add Patient Form -->
+                                 <form id="patientForm">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <label for="patientName" class="form-label">Patient Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="patientName" placeholder="Enter name" required>
+                                            <input type="hidden" id="patientId"/>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="patientPhone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                            <input type="tel" class="form-control" id="patientPhone" placeholder="+1-555-1234" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="age" class="form-label">Age</label>
+                                            <input type="number" class="form-control" id="age" placeholder="Enter Age">
+
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="medicalHistory" class="form-label">Doctor Name</label>
+                                            <input type="text" class="form-control" id="medicalHistory" placeholder="Doctor Name">
+                                        </div>
+
+                                            <!-- Left Side: Gender -->
+                                            <div class="col-md-3 mt-3">
+                                                <label for="gender" class="form-label">Gender</label>
+                                                <select class="form-select" id="gender">
+                                                    <option value="">Select</option>
+                                                    <option value="male">Male</option>
+                                                    <option value="female">Female</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Right Side: Buttons (same row) -->
+                                            <div class="col-md-9 mt-3 d-flex justify-content-end align-items-end ">
+                                                <button type="reset" class="btn btn-outline-secondary me-2">
+                                                    <i class="fas fa-times me-1"></i>Clear
+                                                </button>
+
+                                                <button type="button" class="btn btn-success" id="savePatientBtn" onclick="createPatient()">
+                                                    <i class="fas fa-save me-1"></i>Save Patient
+                                                </button>
+                                            </div>
+
+                                    </div>
+
+<br><br>
+
+                                 </form>
+
+
+                    <!-- ✅ RECENT LAB TESTS TABLE -->
+            <div id="labTestsTableContainer" class="card">
+                <div class="card-header bg-info text-white">
+                    <i class="fas fa-flask me-2"></i>Lab Tests Details
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped align-middle">
+                            <thead>
+                            <tr>
+                                <th>Test ID</th>
+                                <th>Name</th>
+                                <th>Action</th>
+                                <th>Price</th>
+                            </tr>
+                            </thead>
+                            <tbody id="labTestsTableBody">
+                            <tr><td colspan="5" class="text-center text-muted">No lab tests available</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-3 text-end">
+                        <h5>
+                            <strong>Subtotal:</strong>
+                            <span id="subTotal" class="text-primary">0.00</span>
+                        </h5>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="deliveryDate" class="form-label">Delivery Date</label>
+                            <input type="date" class="form-control" id="deliveryDate">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="discountValue" class="form-label">Apply Discount</label>
+                            <input type="text" class="form-control" id="discountValue" placeholder="Enter discount">
+                        </div>
+
+                        <div class="col-md-6 mt-3 text-end  mt-3 d-flex justify-content-end align-items-end ">
+                            <h5>
+                                <strong>Total:</strong>
+                                <span id="total" class="text-primary">0.00</span>
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 d-flex justify-content-end align-items-end">
+                            <button id="printReportBtn">Print Report</button>
+                            <div id="printContainer" style="display:none;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+    </div>
+</div>
+
+<!-- Scripts -->
+<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+<script src="/tinymce/tinymce.min.js"></script>
+<!-- ✅ External JS -->
+<script th:src="@{/js/medical-store.js}"></script>
+<script th:src="@{/js/print.js}"></script>
+</body>
+</html>

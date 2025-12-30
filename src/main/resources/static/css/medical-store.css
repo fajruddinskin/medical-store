@@ -3,6 +3,7 @@
     background: linear-gradient(180deg, #2c3e50 0%, #3498db 100%);
     min-height: 100vh;
     color: white;
+    width: 265px;
 }
 .sidebar .nav-link {
     color: white;
@@ -55,4 +56,247 @@
 }
 #labTestFormCard .btn-primary:hover {
     background-color: #218838;
+}
+.selected-row {
+    background-color: #d4edff !important;
+}
+/* new design start */
+:root {
+    --bg-main: #f7f7f8;
+    --bg-white: #ffffff;
+    --border: #e5e7eb;
+    --text-main: #111827;
+    --text-muted: #6b7280;
+    --primary: #10a37f;
+}
+
+/* Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+/* ===== HEADER ===== */
+.chatgpt-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--bg-white);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+}
+
+.header-inner {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.header-nav a {
+    margin: 0 12px;
+    text-decoration: none;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.header-nav a:hover {
+    color: var(--text-main);
+}
+
+.header-actions button {
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn-outline {
+    border: 1px solid var(--border);
+    background: #fff;
+}
+
+.btn-primary {
+    border: none;
+    background: var(--primary);
+    color: #fff;
+}
+
+/* ===== MAIN SHELL ===== */
+.shell {
+    display: flex;
+    justify-content: center;
+}
+
+.main {
+    max-width: 1200px;
+    width: 100%;
+    padding: 24px;
+}
+
+/* ===== DASHBOARD ===== */
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 24px;
+}
+
+/* Cards */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.card {
+    background: var(--bg-white);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+
+.card h3 {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.card .value {
+    font-size: 28px;
+    font-weight: 600;
+}
+
+/* Table */
+.table-card {
+    background: var(--bg-white);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #f3f4f6;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+}
+
+th {
+    color: var(--text-muted);
+}
+
+tbody tr:not(:last-child) {
+    border-bottom: 1px solid var(--border);
+}
+
+/* Footer note */
+.footer-note {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+.chat-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--bg-main);
+    padding: 16px;
+    border-top: 1px solid var(--border);
+}
+.chat-inner textarea {
+    flex: 1;
+    border: none;
+    resize: none;
+    outline: none;
+    font-size: 15px;
+    padding: 10px;
+}
+.search-wrapper {
+    display: flex;
+    justify-content: center;   /* horizontal center */
+    margin: 30px 0;            /* space above & below */
+}
+
+.search-wrapper input {
+    width: 100%;
+    max-width: 500px;
+    padding: 12px 16px;
+    font-size: 15px;
+    border-radius: 25px;
+    border: 1px solid #ddd;
+    outline: none;
+    transition: 0.3s;
+}
+
+.search-wrapper input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13,110,253,0.15);
+}
+
+/* new design end */
+
+
+/* ============================= */
+/* AUTH (LOGIN / SIGNUP) STYLES */
+/* ============================= */
+
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 160px);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 32px;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+.auth-card h4 {
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.auth-card .form-control {
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.auth-card .btn-success {
+    padding: 10px;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.auth-card small a {
+    text-decoration: none;
+    font-weight: 500;
 }

@@ -1,12 +1,17 @@
--- Drop tables if they exist
-DROP TABLE IF EXISTS medicines;
-DROP TABLE IF EXISTS customers;
-DROP TABLE IF EXISTS categories;
-DROP TABLE IF EXISTS patients;
-DROP TABLE IF EXISTS tests;
+--Drop tables if they exist
+--DROP TABLE IF EXISTS medicines;
+--DROP TABLE IF EXISTS customers;
+--DROP TABLE IF EXISTS categories;
+--DROP TABLE IF EXISTS patients;
+--DROP TABLE IF EXISTS tests;
+--DROP TABLE IF EXISTS report_containers;
+--DROP TABLE IF EXISTS report_tests;
+--DROP TABLE IF EXISTS tests_data;
+
+
 
 -- Create medicines table with all constraints
-CREATE TABLE medicines (
+CREATE TABLE IF NOT EXISTS medicines (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     batch_number TEXT NOT NULL,
@@ -21,7 +26,7 @@ CREATE TABLE medicines (
     FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
-CREATE TABLE categories (
+CREATE TABLE IF NOT EXISTS categories (
     id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255),
     description TEXT
@@ -30,24 +35,74 @@ CREATE TABLE categories (
 CREATE TABLE customers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
-    phone_number TEXT NOT NULL UNIQUE,
-    email TEXT UNIQUE,
+    phone_number TEXT NOT NULL,
+    email TEXT,
+    username TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    role TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE patients (
+CREATE TABLE IF NOT EXISTS patients (
     id INTEGER PRIMARY KEY,  -- 👈 same ID as in customers
     medical_history TEXT,
     date_of_birth DATE,
     gender TEXT,
+    age INT,
+    blood_Group TEXT  ,
+    doctor TEXT,
+    reffered_By Text,
     FOREIGN KEY (id) REFERENCES customers(id) ON DELETE CASCADE
 );
 
-CREATE TABLE tests (
+CREATE TABLE IF NOT EXISTS tests_data (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     description TEXT,
     search TEXT,
+    report_status TEXT NOT NULL DEFAULT 'PENDING',
     price REAL NOT NULL,
-    referrer_fee REAL
+    referrer_fee REAL,
+    report_id VARCHAR(255),
+    FOREIGN KEY (report_id) REFERENCES report_results(id)
+);
+
+CREATE TABLE IF NOT EXISTS tests (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    description TEXT,
+    search TEXT,
+    report_status TEXT NOT NULL DEFAULT 'PENDING',
+    price REAL NOT NULL,
+    referrer_fee REAL,
+    report_id VARCHAR(255),
+    FOREIGN KEY (report_id) REFERENCES report_results(id)
+);
+
+
+CREATE TABLE IF NOT EXISTS report_containers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    report_name TEXT,
+    delivery_date DATE,
+    sub_total REAL,
+    total REAL,
+    discount REAL,
+    report_status TEXT NOT NULL DEFAULT 'PENDING',
+    is_verified BOOLEAN DEFAULT FALSE,
+    patient_id VARCHAR(255),
+    FOREIGN KEY (patient_id) REFERENCES patients(id)
+);
+
+CREATE TABLE IF NOT EXISTS report_tests (
+    report_id INTEGER NOT NULL,
+    test_id INTEGER NOT NULL,
+    PRIMARY KEY (report_id, test_id),
+    FOREIGN KEY (report_id) REFERENCES report_containers(id) ON DELETE CASCADE,
+    FOREIGN KEY (test_id) REFERENCES tests(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS report_results (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    content TEXT,
+    created_at TEXT
 );

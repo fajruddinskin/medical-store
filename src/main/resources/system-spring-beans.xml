@@ -9,8 +9,7 @@
 
     <!-- Enable component scanning for other annotations but exclude services -->
     <context:component-scan base-package="com.medicalstore">
-        <context:exclude-filter type="annotation"
-                                expression="org.springframework.stereotype.Service"/>
+        <context:exclude-filter type="annotation"  expression="org.springframework.stereotype.Service"/>
     </context:component-scan>
 
     <!-- System Service Beans -->
@@ -19,6 +18,19 @@
     <bean id="enumService" class="com.medicalstore.service.EnumService"/>
 
 
+    <bean id="subtotalCalculationStrategy" class="com.medicalstore.strategy.impl.SubtotalCalculationStrategy"/>
+    <bean id="discountCalculationStrategy" class="com.medicalstore.strategy.impl.DiscountCalculationStrategy"/>
+    <bean id="totalCalculationStrategy" class="com.medicalstore.strategy.impl.TotalCalculationStrategy"/>
+    <!-- Container Calculation Service -->
+    <bean id="containerCalculationService" class="com.medicalstore.service.ContainerCalculationService">
+        <property name="calculationStrategies">
+            <list>
+                <ref bean="subtotalCalculationStrategy"/>
+                <ref bean="discountCalculationStrategy"/>
+                <ref bean="totalCalculationStrategy"/>
+            </list>
+        </property>
+    </bean>
     <!-- Add more system bean definitions here -->
 
 </beans>

@@ -1,9 +1,9 @@
 package com.medicalstore.service;
 
-import com.medicalstore.entity.Customer;
-import com.medicalstore.entity.Patient;
-import com.medicalstore.repository.CustomerRepository;
+import com.medicalstore.entity.PatientModel;
+import com.medicalstore.entity.UserModel;
 import com.medicalstore.repository.PatientRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,27 +16,26 @@ public class PatientService {
     @Autowired
     private PatientRepository patientRepository;
 
-    public List<Patient> getAllPatients() {
+    public List<PatientModel> getAllPatients() {
         return patientRepository.findAll();
     }
 
-    public Optional<Patient> getCustomerById(Long id) {
-        return patientRepository.findById(id);
+    public Optional<PatientModel> getPatientById(Long id) {
+        return patientRepository.findById(id.longValue());
     }
 
-    public Customer saveCustomer(Patient customer) {
-        return patientRepository.save(customer);
-    }
+    public PatientModel saveCustomer(PatientModel patient) {
+        return patientRepository.save(patient);}
 
     public void deletePatient(Long id) {
         patientRepository.deleteById(id);
     }
 
-    public Optional<Patient> getCustomerByPhoneNumber(String phoneNumber) {
+    public Optional<PatientModel> getCustomerByPhoneNumber(String phoneNumber) {
         return patientRepository.findByPhoneNumber(phoneNumber);
     }
 
-    public List<Patient> searchCustomersByName(String name) {
+    public List<PatientModel> searchCustomersByName(String name) {
         return patientRepository.findByNameContainingIgnoreCase(name);
     }
 
@@ -47,4 +46,7 @@ public class PatientService {
     public boolean patientExistsByEmail(String email) {
         return patientRepository.existsByEmail(email);
     }
+
+    public PatientModel savePatient(PatientModel patient) {
+        return patientRepository.save(patient); }
 }

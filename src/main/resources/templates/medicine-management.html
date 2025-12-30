@@ -6,60 +6,8 @@
     <title>Medical Store Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .sidebar {
-            background: linear-gradient(180deg, #2c3e50 0%, #3498db 100%);
-            min-height: 100vh;
-            color: white;
-        }
-        .sidebar .nav-link {
-            color: white;
-            padding: 12px 20px;
-            margin: 5px 0;
-            border-radius: 5px;
-        }
-        .sidebar .nav-link:hover, .sidebar .nav-link.active {
-            background-color: rgba(255,255,255,0.1);
-        }
-        .stat-card {
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-            border: none;
-        }
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-        .quick-action-btn {
-            transition: all 0.3s ease;
-        }
-        .quick-action-btn:hover {
-            transform: scale(1.05);
-        }
-        #medicineForm {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-        #customerForm {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .customer-table th {
-            background-color: #f8f9fa;
-            border-bottom: 2px solid #dee2e6;
-        }
-        .visually-hidden {
-            position: absolute;
-            left: -10000px;
-            top: auto;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-        }
-        /* Hide the form cards by default */
-        .form-card {
-            display: none;
-
-        }
-    </style>
+    <!-- ✅ External CSS -->
+    <link rel="stylesheet" th:href="@{/css/medical-store.css}">
 </head>
 <body>
 <div class="container-fluid">
@@ -73,32 +21,17 @@
                     <p class="text-light">Management System</p>
                 </div>
                 <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">
-                            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/medicines">
-                            <i class="fas fa-pills me-2"></i> Medicine Management
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/customers">
-                            <i class="fas fa-users me-2"></i> Customer Management
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/reports">
-                            <i class="fas fa-chart-bar me-2"></i>Lab Reports
-                        </a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/medicines"><i class="fas fa-pills me-2"></i> Medicine Management</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/customers"><i class="fas fa-users me-2"></i> Customer Management</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/reports"><i class="fas fa-flask me-2"></i>Lab Reports</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/lab-test-registration"> <i class="fas fa-chart-bar me-2"></i>Lab Test Registration</a> </li>
                 </ul>
             </div>
         </nav>
 
         <!-- Main content -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-light" style="min-height: 100vh;">
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-light" style="min-height: 100vh; width: 998px;">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2 text-primary">
                     <i class="fas fa-tachometer-alt me-2"></i>Dashboard
@@ -195,12 +128,31 @@
                                         Add Customer
                                     </a>
                                 </div>
+                                <!-- patient form-->
                                 <div class="col-md-3 text-center mb-3">
-                                    <a href="/medicines" class="btn btn-outline-info btn-lg w-100 quick-action-btn">
-                                        <i class="fas fa-search fa-2x mb-2"></i><br>
-                                        View Inventory
+                                    <a href="#patientFormCollapse"
+                                       class="btn btn-outline-success btn-lg w-100 quick-action-btn"
+                                       data-bs-toggle="collapse"
+                                       role="button"
+                                       aria-expanded="false"
+                                       aria-controls="customerFormCollapse"
+                                       onclick="toggleFormCard('patientForm')">
+                                        <i class="fas fa-user-plus fa-2x mb-2"></i><br>
+                                        Add Patient
                                     </a>
                                 </div>
+                                <div class="col-md-3 text-center mb-3">
+                                    <div class="input-group">
+                                        <input type="text"
+                                               id="searchInput"
+                                               class="form-control form-control-lg"
+                                               placeholder="Search Medicines...">
+                                        <button id="searchBtn" class="btn btn-outline-info btn-lg">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-3" id="searchResults"></div>
                                 <div class="col-md-3 text-center mb-3">
                                     <a href="/reports" class="btn btn-outline-warning btn-lg w-100 quick-action-btn">
                                         <i class="fas fa-chart-pie fa-2x mb-2"></i><br>
@@ -231,14 +183,25 @@
                                                             <label for="medicineType" class="form-label">Medicine Type <span class="text-danger">*</span></label>
                                                             <select class="form-select" id="medicineType" required>
                                                                 <option value="">Select Type</option>
-                                                                <option value="TABLET">Tablet</option>
-                                                                <option value="CAPSULE">Capsule</option>
-                                                                <option value="SYRUP">Syrup</option>
-                                                                <option value="INJECTION">Injection</option>
-                                                                <option value="OINTMENT">Ointment</option>
-                                                                <option value="DROPS">Drops</option>
-                                                                <option value="INHALER">Inhaler</option>
-                                                                <option value="OTHER">Other</option>
+                                                                <option th:each="medicinetype : ${medicineType}"
+                                                                        th:value="${medicinetype.key}"
+                                                                        th:text="${medicinetype.value}">
+
+                                                                    >
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="mb-3">
+                                                            <label for="medicineType" class="form-label">Medicine categery <span class="text-danger">*</span></label>
+                                                            <select class="form-select" id="medicinecategory" required>
+                                                                <option value="">Select categery</option>
+                                                                <option th:each="categori : ${catagory}"
+                                                                        th:value="${categori.id}"
+                                                                        th:text="${categori.name}"
+                                                                >
+                                                                </option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -265,7 +228,7 @@
                                                     <div class="col-md-3">
                                                         <div class="mb-3">
                                                             <label for="medicineManufacturer" class="form-label">Manufacturer</label>
-                                                            <input type="text" class="form-control" id="medicineManufacturer" placeholder="Enter manufacturer name">
+                                                            <input type="date" class="form-control" id="medicineManufacturer" placeholder="Enter manufacturer name">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -340,6 +303,73 @@
                                                             <i class="fas fa-save me-1"></i> Create Customer
                                                         </button>
                                                         <div id="customerMessage" class="mt-2"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <div class="card stat-card text-white form-card" id="patientForm">
+                                        <div class="card-body">
+                                            <!-- Collapsible Customer Form -->
+                                            <div class="collapse mt-3" id="patientFormCollapse">
+                                                <h5 class="card-title mb-3">
+                                                    <i class="fas fa-user-plus me-2"></i>Add New Patient
+                                                </h5>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="mb-3">
+                                                            <label for="patientName" class="form-label">Patient Name <span class="text-danger">*</span></label>
+                                                            <input type="text" class="form-control" id="patientName" placeholder="Enter customer name" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="mb-3">
+                                                            <label for="patientPhone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                                            <input type="tel" class="form-control" id="patientPhone" placeholder="+1-555-1234" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="mb-3">
+                                                            <label for="patientEmail" class="form-label">Email Address</label>
+                                                            <input type="email" class="form-control" id="patientEmail" placeholder="customer@email.com">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="mb-3">
+                                                            <label for="medicalHistory" class="form-label">Medical History</label>
+                                                            <input type="text" class="form-control" id="medicalHistory" placeholder="Medical History">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="mb-3">
+                                                            <label for="age" class="form-label">Enter Age</label>
+                                                            <input type="number" class="form-control" id="age" placeholder="Enter Age">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="mb-3">
+                                                            <label for="medicineRequiresPrescription" class="form-label">Prescription Required</label>
+                                                            <select class="form-select" id="gender">
+                                                                <option value="male">Male</option>
+                                                                <option value="female">Female</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <button type="button" class="btn btn-light me-2" onclick="clearPatientForm()">
+                                                            <i class="fas fa-times me-1"></i> Clear
+                                                        </button>
+                                                        <button type="button" class="btn btn-success" onclick="createPatient()">
+                                                            <i class="fas fa-save me-1"></i> patient
+                                                        </button>
+                                                        <div id="patientMessage" class="mt-2"></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -447,7 +477,81 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
+    //Delete Medicine By Id
+    $(document).on('click', '.delete-btn', function() {
+        let row = $(this).closest('tr');
+        let medicineId = row.data('id');
+
+        if (confirm('Are you sure you want to delete this medicine?')) {
+            $.ajax({
+                url: '/api/medicines/delete/' + medicineId, // Spring Boot endpoint
+                type: 'DELETE', // use DELETE for RESTful convention
+                success: function(response) {
+                    alert(response.message);
+                    row.remove();
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                    alert('Failed to delete medicine.');
+                }
+            });
+        }
+    });
+    //
+    $(document).ready(function() {
+        // Trigger AJAX search on button click or Enter key
+        $('#searchBtn').on('click', function() {
+            performSearch();
+        });
+
+        $('#searchInput').on('keypress', function(e) {
+            if (e.which === 13) { // Enter key
+                performSearch();
+            }
+        });
+
+        function performSearch() {
+            let query = $('#searchInput').val().trim();
+            if (query === "") {
+                $('#searchResults').html('<p class="text-muted">Please enter a search term.</p>');
+                return;
+            }
+
+            $.ajax({
+                url: '/api/medicines/search',  // <-- Adjust endpoint as per your controller mapping
+                type: 'GET',
+                data: { searchTerm: query },
+                success: function(data) {
+                    // Assume 'data' is a list of medicine objects (JSON)
+                    let html = '';
+                    if (data.length === 0) {
+                        html = '<p class="text-danger">No medicines found.</p>';
+                    } else {
+                        html = '<table class="table table-bordered table-striped">';
+                        html += '<thead><tr><th>Id</th><th>Name</th><th>Manufacturer</th><th>Category</th><th>Action</th></tr></thead><tbody>';
+                        data.forEach(med => {
+                            html += `<tr data-id="${med.id}">
+                                <td>${med.id}</td>
+                                <td>${med.name}</td>
+                                <td>${med.manufacturer}</td>
+                                <td>${med.category ? med.category.name || med.category : ''}</td>
+                                <td><button class="btn btn-warning btn-sm edit-btn">Edit</button></td>
+                                <td><button class="btn btn-danger btn-sm delete-btn">Delete</button></td>
+                            </tr>`;
+                        });
+                        html += '</tbody></table>';
+                    }
+                    $('#searchResults').html(html);
+                },
+                error: function() {
+                    $('#searchResults').html('<p class="text-danger">Error fetching medicines.</p>');
+                }
+            });
+        }
+    });
     // Function to toggle form card visibility
     function toggleFormCard(formId) {
         const formCard = document.getElementById(formId);
@@ -553,7 +657,7 @@
     function showMedicineMessage(message, type) {
         const messageDiv = document.getElementById('medicineMessage');
         const alertClass = type === 'success' ? 'alert-success' :
-                         type === 'danger' ? 'alert-danger' : 'alert-info';
+            type === 'danger' ? 'alert-danger' : 'alert-info';
 
         messageDiv.innerHTML = `
             <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
@@ -631,13 +735,15 @@
         document.getElementById('customerPhone').value = '';
         document.getElementById('customerEmail').value = '';
         document.getElementById('customerMessage').innerHTML = '';
+
+
     }
 
     // Show customer message function
     function showCustomerMessage(message, type) {
         const messageDiv = document.getElementById('customerMessage');
         const alertClass = type === 'success' ? 'alert-success' :
-                         type === 'danger' ? 'alert-danger' : 'alert-info';
+            type === 'danger' ? 'alert-danger' : 'alert-info';
 
         messageDiv.innerHTML = `
             <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
@@ -671,6 +777,100 @@
             bsCollapse.show();
         }
     });
+    //patient creation
+    async function createPatient() {
+        //let gender;
+        //const checkboxes = document.querySelectorAll('gender').value.trim();
+        //if(document.getElementById('patientName').value.trim();)
+        const name = document.getElementById('patientName').value.trim();
+        const phone = document.getElementById('patientPhone').value.trim();
+        const email = document.getElementById('patientEmail').value.trim();
+        const patientAge=document.getElementById('age').value.trim();
+        const patientHistory = document.getElementById('medicalHistory').value.trim();
+
+        const gender = document.getElementById('gender').value.trim();
+        const messageDiv = document.getElementById('patientMessage');
+
+        // Basic validation
+        if (!name || !phone) {
+            showCustomerMessage('Please fill in all required fields (Name and Phone).', 'danger');
+            return;
+        }
+
+        // Prepare customer data
+        const patientData = {
+            name: name,
+            gender:gender,
+            phoneNumber: phone,
+            email: email || null,
+            age:patientAge,
+            medicalHistory  :patientHistory,
+
+
+            // Note: id and createdAt will be generated by the server
+        };
+        // //showPatientMessage('Creating customer...', 'info');
+        // alert("standing before try");
+        try {
+            showCustomerMessage('Creating customer...', 'info');
+
+            const response = await fetch('api/patients', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(patientData)
+            });
+
+            if (response.ok) {
+                const createdPatient = await response.json();
+                showCustomerMessage(`Customer "${createdPatient.name}" created successfully!`, 'success');
+                clearCustomerForm();
+
+                // Collapse the form after successful creation
+                const collapseElement = document.getElementById('patientFormCollapse');
+                const bsCollapse = new bootstrap.Collapse(collapseElement, {
+                    toggle: false
+                });
+                bsCollapse.hide();
+
+                // Hide the form card
+                document.getElementById('patientForm').style.display = 'none';
+
+                // Refresh the page to show updated customer count and list
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+
+            } else {
+                const errorData = await response.json();
+                showCustomerMessage(`Error: ${errorData.message || 'Failed to create patient'}`, 'danger');
+            }
+        } catch (error) {
+            console.error('Error creating customer:', error);
+            showCustomerMessage('Network error: Could not create customer. Please try again.', 'danger');
+        }
+    }
+    function clearPatientForm() {
+        document.getElementById('patientName').value = '';
+        document.getElementById('patientPhone').value = '';
+        document.getElementById('patientEmail').value = '';
+        document.getElementById('patientMessage').innerHTML = '';
+
+    }
+    // Show customer message function
+    function showPatientMessage(message, type) {
+        const messageDiv = document.getElementById('customerMessage');
+        const alertClass = type === 'success' ? 'alert-success' :
+            type === 'danger' ? 'alert-danger' : 'alert-info';
+
+        messageDiv.innerHTML = `
+            <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+    }
 </script>
 </body>
 </html>

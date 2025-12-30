@@ -1,8 +1,6 @@
 package com.medicalstore.repository;
 
 import com.medicalstore.entity.LabTestModel;
-import com.medicalstore.entity.Medicine;
-import com.medicalstore.entity.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

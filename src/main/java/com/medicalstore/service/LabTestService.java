@@ -1,11 +1,7 @@
 package com.medicalstore.service;
 
-import com.medicalstore.entity.Customer;
 import com.medicalstore.entity.LabTestModel;
-import com.medicalstore.entity.Medicine;
-import com.medicalstore.entity.Patient;
 import com.medicalstore.repository.LabTestRepository;
-import com.medicalstore.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +18,7 @@ public class LabTestService {
         return labTestRepository.findAll();
     }
 
-    public Optional<LabTestModel> getCustomerById(Long id) {
+    public Optional<LabTestModel> getTestById(Long id) {
         return labTestRepository.findById(id);
     }
 
@@ -30,7 +26,7 @@ public class LabTestService {
         return labTestRepository.save(labTestModel);
     }
 
-    public void deletePatient(Long id) {
+    public void deleteLabTest(Long id) {
         labTestRepository.deleteById(id);
     }
 

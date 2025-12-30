@@ -1,7 +1,6 @@
 package com.medicalstore.repository;
 
-import com.medicalstore.entity.Customer;
-import com.medicalstore.entity.Patient;
+import com.medicalstore.entity.PatientModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,13 +8,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PatientRepository extends JpaRepository<Patient, Long> {
+public interface PatientRepository extends JpaRepository<PatientModel, Long> {
 
-    Optional<Patient> findByPhoneNumber(String phoneNumber);
+    Optional<PatientModel> findByPhoneNumber(String phoneNumber);
 
-    Optional<Patient> findByEmail(String email);
+    Optional<PatientModel> findByEmail(String email);
 
-    List<Patient> findByNameContainingIgnoreCase(String name);
+    List<PatientModel> findByNameContainingIgnoreCase(String name);
 
     boolean existsByPhoneNumber(String phoneNumber);
 
