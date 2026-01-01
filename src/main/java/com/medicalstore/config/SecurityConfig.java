@@ -1,6 +1,6 @@
 package com.medicalstore.config;
 
-import com.medicalstore.service.UserService;
+import com.medicalstore.service.AdminService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,7 +28,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(
             HttpSecurity http,
-            UserService userService
+            AdminService adminService
     ) throws Exception {
 
         http
@@ -68,7 +68,7 @@ public class SecurityConfig {
                 )
 
                 // 👤 UserDetailsService
-                .userDetailsService(userService);
+                .userDetailsService(adminService);
 
         return http.build();
     }

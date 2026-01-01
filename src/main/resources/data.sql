@@ -16,10 +16,13 @@ VALUES
 ('Insulin', 'BATCH004', 25.00, 30, 'BioTech', 'INJECTION', 1,'CAT002'),
 ('Vitamin C', 'BATCH005', 12.99, 200, 'HealthVit', 'TABLET', 0,'CAT002');
 
--- Sample Customers
-INSERT OR IGNORE INTO customers
-(name, phone_number, email, username, password, role)
-VALUES
+-- Sample users
+INSERT OR IGNORE INTO users (name) VALUES
+('Alice Johnson'),
+('Bob Smith'),
+('Charlie Brown');
+
+INSERT OR IGNORE INTO customers (name, phone_number, email, username, password, role) VALUES
 (
   'John Doe',
   '+1234567890',

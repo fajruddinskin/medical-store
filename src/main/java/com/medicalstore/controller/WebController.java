@@ -20,6 +20,9 @@ public class WebController {
     private UserService userService;
 
     @Autowired
+    private AdminService adminService;
+
+    @Autowired
     private PatientService patientService;
     @Autowired
     private LabTestService labTestService;
@@ -42,7 +45,7 @@ public class WebController {
     @GetMapping("/")
     public String index(Model model) {
         List<Medicine> medicines = medicineService.getAllMedicines();
-        List<UserModel> user =  userService.getAllCustomers();
+        List<AdminUserModel> user =  adminService.getAllCustomers();
         List<PatientModel> patients = patientService.getAllPatients();
 
         List<LabTestModel> labTests= labTestService.searchTests("CBC");
