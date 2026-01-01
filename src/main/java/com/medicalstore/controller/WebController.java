@@ -78,6 +78,42 @@ public class WebController {
         return "index";
     }
 
+    @GetMapping("/dashboard")
+    public String dashboard(Model model) {
+        List<Medicine> medicines = medicineService.getAllMedicines();
+        List<AdminUserModel> user =  adminService.getAllCustomers();
+        List<PatientModel> patients = patientService.getAllPatients();
+
+        List<LabTestModel> labTests= labTestService.searchTests("CBC");
+        List<Category> catagory=categoryService.getAllCategories();
+        // System.out.println(medicines.get(0).getCategory().getId());
+        // System.out.println(medicines.get(0).getCategory().getName());
+        // System.out.println(medicines.get(0).getCategory().getDescription());
+        System.out.println( "================");
+        model.addAttribute("labTests", labTests.size());
+        System.out.println( "================");
+
+        System.out.println( "================");
+        model.addAttribute("totalPatients", patients.size());
+
+        System.out.println( "================");
+        model.addAttribute("medicines", medicines);
+        model.addAttribute("customers", user);
+        model.addAttribute("totalMedicines", medicines.size());
+        model.addAttribute("totalCustomers",user.size());
+        model.addAttribute("lowStockCount", medicines.stream().filter(m -> m.getQuantity() < 10).count());
+
+        // Add recent data for dashboard
+        model.addAttribute("recentMedicines",
+                medicines.size() > 5 ? medicines.subList(0, 5) : medicines);
+        model.addAttribute("recentCustomers",
+                user.size() > 5 ? user.subList(0, 5) : user);
+        model.addAttribute("medicineType", enumService.getMedicineType());
+        model.addAttribute("catagory",catagory);
+        model.addAttribute("bloodGroups", enumService.getBloodGroup());
+        return "dashboard";
+    }
+
     // Medicine Management
     @GetMapping("/medicines")
     public String medicineManagement(Model model) {
