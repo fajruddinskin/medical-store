@@ -24,7 +24,25 @@ public class LabTestController {
     @Autowired
     private LabTestDataService LabTestDataService;
 
-
+    @GetMapping("/find")
+    @ResponseBody
+    public ResponseEntity<?> findTestData(@RequestParam String searchTerm) {
+        try {
+            System.out.println(searchTerm);
+            List<LabTestData> list = LabTestDataService.searchLabTestData(searchTerm);
+            return ResponseEntity.ok(list);
+        } catch (Exception e) {
+            // Log the exception
+            e.printStackTrace();
+            // Return a meaningful error message to the client
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                            "error", "Failed to fetch medicines",
+                            "message", e.getMessage()
+                    ));
+        }
+    }
 
     @PostMapping
     public ResponseEntity<LabTestModel> createLabTest(@RequestBody LabTestModel labTest) {

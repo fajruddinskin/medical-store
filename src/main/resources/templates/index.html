@@ -48,14 +48,14 @@
         <!-- STATS -->
         <section class="card-grid">
             <div class="card">
-                <h3>Total Medicines</h3>
-                <div class="value" th:text="${totalMedicines}">0</div>
+                <h3>Total Lab Test</h3>
+                <div class="value" th:text="${totalLabTest}">0</div>
             </div>
             <div class="search-wrapper">
                 <input type="text"  id="searchInput" placeholder="Search  medicines..." />
             </div>
             <div class="card">
-                <h3>Low Stock</h3>
+                <h3>Recent Lab Test</h3>
                 <div class="value" th:text="${lowStockCount}"></div>
             </div>
 
@@ -88,8 +88,8 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="medicine : ${recentMedicines}">
-                                        <td th:text="${medicine.name}"></td>
+                                    <tr th:each="medicine : ${recentLabTest}">
+                                       <!-- <td th:text="${medicine.name}"></td>
                                         <td th:text="${medicine.type}"></td>
                                         <td th:text="${medicine.batchNumber}"></td>
                                         <td th:text="'$' + ${medicine.price}"></td>
@@ -98,9 +98,9 @@
                                                   class="badge bg-warning" th:text="${medicine.quantity}"></span>
                                             <span th:unless="${medicine.quantity < 10}"
                                                   class="badge bg-success" th:text="${medicine.quantity}"></span>
-                                        </td>
+                                        </td>-->
                                     </tr>
-                                    <tr th:if="${recentMedicines.empty}">
+                                    <tr th:if="${recentLabTest.empty}">
                                         <td colspan="5" class="text-center text-muted py-3">
                                             <i class="fas fa-inbox fa-2x mb-2"></i><br>
                                             No medicines found
@@ -290,7 +290,7 @@
             }
 
             $.ajax({
-                url: '/api/medicines/search',  // <-- Adjust endpoint as per your controller mapping
+                url: '/api/lab-tests/find',  // <-- Adjust endpoint as per your controller mapping
                 type: 'GET',
                 data: { searchTerm: query },
                 success: function(data) {
@@ -300,13 +300,11 @@
                         html = '<p style="margin-bottom:16px; text-align:center;" class="text-danger">No medicines found.</p>';
                     } else {
                         html = '<table class="table table-bordered table-striped">';
-                        html += '<thead><tr><th>Id</th><th>Name</th><th>Manufacturer</th><th>Category</th><th>Action</th></tr></thead><tbody>';
+                        html += '<thead><tr><th>Id</th><th>Name</th><th>Action</th></tr></thead><tbody>';
                         data.forEach(med => {
                             html += `<tr data-id="${med.id}">
                                 <td>${med.id}</td>
                                 <td>${med.name}</td>
-                                <td>${med.manufacturer}</td>
-                                <td>${med.category ? med.category.name || med.category : ''}</td>
                                <td> <button type="button" class="btn btn-sm edit-btn">
                                 <i class="fas fa-edit"></i> Edit
                                  </button>

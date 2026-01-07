@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Store - Admin SQL Console</title>
+
+    <!-- Bootstrap & FontAwesome -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/css/medical-store.css}">
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="chatgpt-header">
+    <div class="header-inner">
+        <i class="fas fa-hospital-alt fa-3x"></i>
+
+        <nav class="header-nav">
+            <a href="/">Dashboard</a>
+            <a href="/medicines">Medicines</a>
+            <a href="/customers">Customers</a>
+            <a href="/reports">Reports</a>
+            <a href="/lab-test-registration">Lab Tests</a>
+            <a href="/admin" class="active">Admin</a>
+        </nav>
+
+        <div class="header-actions">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn-outline">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<!-- ================= MAIN SHELL ================= -->
+<div class="shell">
+    <main class="main">
+
+        <div class="page-title">
+            <i class="fas fa-database me-2"></i> Admin SQL Console
+        </div>
+
+        <!-- ================= SQL EDITOR ================= -->
+        <section class="table-card mt-4">
+            <h5 class="mb-3">
+                <i class="fas fa-terminal me-2"></i> Execute SQL Query
+            </h5>
+
+            <div class="mb-3">
+                <label class="fw-bold">SQL Editor</label>
+                <textarea id="sqlEditor"
+                          class="form-control"
+                          rows="8"
+                          placeholder="Enter SQL query here (CREATE / INSERT / UPDATE)"></textarea>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button class="btn btn-danger" onclick="executeSql()">
+                    <i class="fas fa-play"></i> Execute
+                </button>
+
+                <button class="btn btn-secondary" onclick="clearEditor()">
+                    <i class="fas fa-eraser"></i> Clear
+                </button>
+            </div>
+
+            <!-- ================= RESULT BOX ================= -->
+            <div class="mt-4">
+                <label class="fw-bold">Execution Result</label>
+                <pre id="sqlResult"
+                     class="p-3 bg-light border rounded"
+                     style="min-height: 80px;"></pre>
+            </div>
+        </section>
+
+        <div class="footer-note">
+            © 2025 Medical Store Management
+        </div>
+
+    </main>
+</div>
+
+<!-- ================= Scripts ================= -->
+<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+
+<script>
+    function executeSql() {
+        const sql = document.getElementById("sqlEditor").value.trim();
+        const resultBox = document.getElementById("sqlResult");
+
+        if (!sql) {
+            resultBox.textContent = "⚠️ Please enter a SQL query.";
+            return;
+        }
+
+        fetch("/api/sql/execute", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ sql })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(err => { throw err; });
+            }
+            return response.text();
+        })
+        .then(data => {
+            resultBox.textContent = "✅ Success:\n" + data;
+        })
+        .catch(error => {
+            resultBox.textContent = "❌ Error:\n" + error;
+        });
+    }
+
+    function clearEditor() {
+        document.getElementById("sqlEditor").value = "";
+        document.getElementById("sqlResult").textContent = "";
+    }
+</script>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 package com.medicalstore.service;
 
 import com.medicalstore.entity.LabTestData;
+import com.medicalstore.entity.Medicine;
 import com.medicalstore.repository.LabTestDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,10 @@ public class LabTestDataService {
 
     @Autowired
     private LabTestDataRepository labTestDataRepository;
+
+    public List<LabTestData> searchLabTestData(String query) {
+        return labTestDataRepository.searchLabTestData(query);
+    }
 
     public List<LabTestData> getAllLabTest() {
         return labTestDataRepository.findAll();

@@ -64,7 +64,18 @@ INSERT INTO tests_data (name, description, search, price, referrer_fee, report_s
 ('HbA1c (Glycated Hemoglobin)', 'Shows average blood sugar levels over 3 months.', 'GH', 550.00, 50.00, 'PENDING', '1001'),
 ('Vitamin D Test', 'Measures Vitamin D levels to check for deficiency.', 'VDT', 1200.00, 150.00, 'PENDING', '1001');
 
-
+INSERT INTO tests_data
+(name, description, search, price, referrer_fee, report_status, report_id)
+VALUES
+(
+ 'Complete Blood Count1',
+ 'Measures various components of blood including red cells, white cells, and platelets.',
+ 'CBC1',
+ 450.00,
+ 50.00,
+ 'PENDING',
+ '1001'
+);
 INSERT INTO report_containers (report_name, is_verified, report_status) VALUES
 ('Basic Health Report', 1,'PENDING'),
 ('Liver Function Summary', 0,'PENDING'),

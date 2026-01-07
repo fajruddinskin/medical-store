@@ -30,6 +30,8 @@ public class WebController {
     private CategoryService categoryService;
     @Autowired
     private EnumService enumService;
+    @Autowired
+    private LabTestDataService LabTestDataService;
 
     @GetMapping("/signup")
     public String signupPage(Model model) {
@@ -42,17 +44,18 @@ public class WebController {
         return "login";
     }
 
+    @GetMapping("/admin")
+    public String adminPage() {
+        return "admin"; // loads admin.html
+    }
+
     @GetMapping("/")
     public String index(Model model) {
-        List<Medicine> medicines = medicineService.getAllMedicines();
+        List<LabTestData>  allLabTestData=LabTestDataService.getAllLabTest();
         List<AdminUserModel> user =  adminService.getAllCustomers();
         List<PatientModel> patients = patientService.getAllPatients();
-
         List<LabTestModel> labTests= labTestService.searchTests("CBC");
         List<Category> catagory=categoryService.getAllCategories();
-       // System.out.println(medicines.get(0).getCategory().getId());
-       // System.out.println(medicines.get(0).getCategory().getName());
-       // System.out.println(medicines.get(0).getCategory().getDescription());
         System.out.println( "================");
         model.addAttribute("labTests", labTests.size());
         System.out.println( "================");
@@ -61,15 +64,15 @@ public class WebController {
         model.addAttribute("totalPatients", patients.size());
 
         System.out.println( "================");
-        model.addAttribute("medicines", medicines);
+        model.addAttribute("allLabTest", allLabTestData);
         model.addAttribute("customers", user);
-        model.addAttribute("totalMedicines", medicines.size());
+        model.addAttribute("totalLabTest", allLabTestData.size());
         model.addAttribute("totalCustomers",user.size());
-        model.addAttribute("lowStockCount", medicines.stream().filter(m -> m.getQuantity() < 10).count());
+        model.addAttribute("lowStockCount", 0);
 
         // Add recent data for dashboard
-        model.addAttribute("recentMedicines",
-                medicines.size() > 5 ? medicines.subList(0, 5) : medicines);
+        model.addAttribute("recentLabTest",
+                allLabTestData.size() > 5 ? allLabTestData.subList(0, 5) : allLabTestData);
         model.addAttribute("recentCustomers",
                 user.size() > 5 ? user.subList(0, 5) : user);
         model.addAttribute("medicineType", enumService.getMedicineType());

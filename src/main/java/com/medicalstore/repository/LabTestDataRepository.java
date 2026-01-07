@@ -1,6 +1,7 @@
 package com.medicalstore.repository;
 
 import com.medicalstore.entity.LabTestData;
+import com.medicalstore.entity.Medicine;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,6 +17,13 @@ public interface LabTestDataRepository extends JpaRepository<LabTestData, Long> 
 
     Optional<LabTestData> findByName(String name);
 
+    @Query(value = """
+    SELECT m.* FROM tests_data m
+    WHERE LOWER(m.name) LIKE LOWER('%' || :searchTerm || '%')
+       OR LOWER(m.description) LIKE LOWER('%' || :searchTerm || '%')
+       OR LOWER(m.search) LIKE LOWER('%' || :searchTerm || '%')
+    """, nativeQuery = true)
+    List<LabTestData> searchLabTestData(@Param("searchTerm") String searchTerm);
     // ✔ Exact match
     Optional<LabTestData> findBySearch(String search);
 
