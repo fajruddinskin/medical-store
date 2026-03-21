@@ -71,8 +71,12 @@ public class WebController {
         model.addAttribute("lowStockCount", 0);
 
         // Add recent data for dashboard
-        model.addAttribute("recentLabTest",
-                allLabTestData.size() > 5 ? allLabTestData.subList(0, 5) : allLabTestData);
+        // Get last 5 lab tests from the list
+        List<LabTestData> recentLabTests = allLabTestData.size() > 5
+            ? allLabTestData.subList(allLabTestData.size() - 5, allLabTestData.size())
+            : allLabTestData;
+        model.addAttribute("recentLabTestData", recentLabTests);
+
         model.addAttribute("recentCustomers",
                 user.size() > 5 ? user.subList(0, 5) : user);
         model.addAttribute("medicineType", enumService.getMedicineType());
