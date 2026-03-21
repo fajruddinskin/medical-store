@@ -522,3 +522,53 @@ Notes:
 - Add more than 5 lab tests display with pagination
 - Add filtering and sorting to Recent Lab Test section
 - Add export functionality for lab tests to CSV/PDF
+
+---
+
+## Admin SQL Console (Enhanced SQL Editor)
+
+The Admin SQL Console is available at [`http://localhost:8081/admin`](http://localhost:8081/admin). It provides a powerful web-based SQL editor for database administration and debugging.
+
+### Features
+- **SQL Editor:** Enter and execute any SQL statement (SELECT, INSERT, UPDATE, DELETE, etc.) directly from the browser.
+- **Result Display:**
+  - SELECT queries: Results are shown in a dynamic table with column headers and data rows.
+  - Data modification queries (INSERT, UPDATE, DELETE): Shows the number of affected rows.
+  - Error handling: Displays error messages for invalid SQL or execution failures.
+- **UI/UX:**
+  - Modern Bootstrap-based card layout
+  - Syntax-highlighted textarea for SQL input
+  - Responsive design for desktop and mobile
+  - Clear and Execute buttons for workflow efficiency
+- **Security:**
+  - **Warning:** This feature allows execution of arbitrary SQL. It is intended for admin/debug use only. Ensure this endpoint is protected and never exposed in production environments.
+
+### API Endpoint
+- `POST /api/sql/execute` — Accepts a JSON payload `{ "sql": "..." }` and returns query results or modification status.
+
+### Example Usage
+- Run a SELECT query:
+  ```sql
+  SELECT * FROM users;
+  ```
+- Insert a new record:
+  ```sql
+  INSERT INTO medicines (name, price) VALUES ('Aspirin', 10.50);
+  ```
+- Update a record:
+  ```sql
+  UPDATE users SET enabled = 1 WHERE id = 2;
+  ```
+- Delete a record:
+  ```sql
+  DELETE FROM users WHERE id = 3;
+  ```
+
+### How it Works
+1. Enter your SQL statement in the editor and click **Execute Query**.
+2. The backend executes the SQL and returns the result.
+3. SELECT results are shown in a table; modification queries show affected row count.
+4. Errors are displayed in a user-friendly alert.
+
+---
+
