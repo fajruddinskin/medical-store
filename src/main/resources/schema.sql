@@ -3,6 +3,7 @@
 --DROP TABLE IF EXISTS customers;
 --DROP TABLE IF EXISTS categories;
 --DROP TABLE IF EXISTS patients;
+--DROP TABLE IF EXISTS users;
 --DROP TABLE IF EXISTS tests;
 --DROP TABLE IF EXISTS report_containers;
 --DROP TABLE IF EXISTS report_tests;
@@ -32,16 +33,37 @@ CREATE TABLE IF NOT EXISTS categories (
     description TEXT
 );
 -- Create customers table with unique constraints in table definition
+CREATE TABLE users (
+   id INTEGER PRIMARY KEY AUTOINCREMENT,
+   name TEXT NOT NULL,
+   phone_number TEXT,
+   email TEXT,
+   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE admins (
+   id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL,
+
+    CONSTRAINT fk_admin_user
+        FOREIGN KEY (id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
 CREATE TABLE customers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    phone_number TEXT NOT NULL,
+    phone_number TEXT,
     email TEXT,
-    username TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL,
-    role TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    CONSTRAINT fk_customer_user
+        FOREIGN KEY (id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
 );
+
 
 CREATE TABLE IF NOT EXISTS patients (
     id INTEGER PRIMARY KEY,  -- 👈 same ID as in customers
@@ -49,7 +71,9 @@ CREATE TABLE IF NOT EXISTS patients (
     date_of_birth DATE,
     gender TEXT,
     age INT,
-    blood_Group TEXT  ,
+    blood_Group TEXT,
+    phone_number TEXT,
+    email TEXT,
     doctor TEXT,
     reffered_By Text,
     FOREIGN KEY (id) REFERENCES customers(id) ON DELETE CASCADE

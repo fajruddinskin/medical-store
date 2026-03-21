@@ -20,6 +20,9 @@ public class WebController {
     private UserService userService;
 
     @Autowired
+    private AdminService adminService;
+
+    @Autowired
     private PatientService patientService;
     @Autowired
     private LabTestService labTestService;
@@ -27,6 +30,8 @@ public class WebController {
     private CategoryService categoryService;
     @Autowired
     private EnumService enumService;
+    @Autowired
+    private LabTestDataService LabTestDataService;
 
     @GetMapping("/signup")
     public String signupPage(Model model) {
@@ -39,17 +44,58 @@ public class WebController {
         return "login";
     }
 
+    @GetMapping("/admin")
+    public String adminPage() {
+        return "admin"; // loads admin.html
+    }
+
     @GetMapping("/")
     public String index(Model model) {
+        List<LabTestData>  allLabTestData=LabTestDataService.getAllLabTest();
+        List<AdminUserModel> user =  adminService.getAllCustomers();
+        List<PatientModel> patients = patientService.getAllPatients();
+        List<LabTestModel> labTests= labTestService.searchTests("CBC");
+        List<Category> catagory=categoryService.getAllCategories();
+        System.out.println( "================");
+        model.addAttribute("labTests", labTests.size());
+        System.out.println( "================");
+
+        System.out.println( "================");
+        model.addAttribute("totalPatients", patients.size());
+
+        System.out.println( "================");
+        model.addAttribute("allLabTest", allLabTestData);
+        model.addAttribute("customers", user);
+        model.addAttribute("totalLabTest", allLabTestData.size());
+        model.addAttribute("totalCustomers",user.size());
+        model.addAttribute("lowStockCount", 0);
+
+        // Add recent data for dashboard
+        // Get last 5 lab tests from the list
+        List<LabTestData> recentLabTests = allLabTestData.size() > 5
+            ? allLabTestData.subList(allLabTestData.size() - 5, allLabTestData.size())
+            : allLabTestData;
+        model.addAttribute("recentLabTestData", recentLabTests);
+
+        model.addAttribute("recentCustomers",
+                user.size() > 5 ? user.subList(0, 5) : user);
+        model.addAttribute("medicineType", enumService.getMedicineType());
+        model.addAttribute("catagory",catagory);
+        model.addAttribute("bloodGroups", enumService.getBloodGroup());
+        return "index";
+    }
+
+    @GetMapping("/dashboard")
+    public String dashboard(Model model) {
         List<Medicine> medicines = medicineService.getAllMedicines();
-        List<UserModel> user =  userService.getAllCustomers();
+        List<AdminUserModel> user =  adminService.getAllCustomers();
         List<PatientModel> patients = patientService.getAllPatients();
 
         List<LabTestModel> labTests= labTestService.searchTests("CBC");
         List<Category> catagory=categoryService.getAllCategories();
-       // System.out.println(medicines.get(0).getCategory().getId());
-       // System.out.println(medicines.get(0).getCategory().getName());
-       // System.out.println(medicines.get(0).getCategory().getDescription());
+        // System.out.println(medicines.get(0).getCategory().getId());
+        // System.out.println(medicines.get(0).getCategory().getName());
+        // System.out.println(medicines.get(0).getCategory().getDescription());
         System.out.println( "================");
         model.addAttribute("labTests", labTests.size());
         System.out.println( "================");
@@ -72,7 +118,7 @@ public class WebController {
         model.addAttribute("medicineType", enumService.getMedicineType());
         model.addAttribute("catagory",catagory);
         model.addAttribute("bloodGroups", enumService.getBloodGroup());
-        return "index";
+        return "dashboard";
     }
 
     // Medicine Management

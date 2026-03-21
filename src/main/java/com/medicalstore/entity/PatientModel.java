@@ -13,8 +13,8 @@ public class PatientModel extends UserModel {
     private LocalDate dateOfBirth;
     private String gender;
     private int age;
-    @Enumerated(EnumType.STRING)
 
+    @Enumerated(EnumType.STRING)
     private BloodGroup bloodGroup;
     private String doctor;
     private String reffered_By;
@@ -23,7 +23,7 @@ public class PatientModel extends UserModel {
     }
 
     public PatientModel(String name, String phoneNumber, String email, String medicalHistory, LocalDate dateOfBirth, String gender,int age,String doctor,String reffered_By, BloodGroup  bloodGroup) {
-        super(name, phoneNumber, email);
+        super(name);
         this.medicalHistory = medicalHistory;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;

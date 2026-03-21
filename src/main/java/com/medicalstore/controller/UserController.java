@@ -1,6 +1,8 @@
 package com.medicalstore.controller;
+import com.medicalstore.entity.CustomerModel;
 import com.medicalstore.entity.UserModel;
 import com.medicalstore.service.UserService;
+import com.medicalstore.service.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,10 @@ import java.util.Optional;
 public class UserController {
     @Autowired
     private UserService UserService;
+
+    @Autowired
+    private CustomerService customerService;
+
     @GetMapping
     public List<UserModel> getAllCustomers() {
         return UserService.getAllCustomers();
@@ -32,16 +38,16 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserModel> updateCustomer(@PathVariable Long id,
-                                                   @Valid @RequestBody UserModel customerDetails) {
-        Optional<UserModel> customer = UserService.getCustomerById(id);
+    public ResponseEntity<CustomerModel> updateCustomer(@PathVariable Long id,
+                                                        @Valid @RequestBody CustomerModel customerDetails) {
+        Optional<CustomerModel> customer = customerService.getCustomerById(id);
         if (customer.isPresent()) {
-            UserModel existingCustomer = customer.get();
+            CustomerModel existingCustomer = customer.get();
             existingCustomer.setName(customerDetails.getName());
             existingCustomer.setPhoneNumber(customerDetails.getPhoneNumber());
             existingCustomer.setEmail(customerDetails.getEmail());
 
-            UserModel updatedCustomer = UserService.saveCustomer(existingCustomer);
+            CustomerModel updatedCustomer = customerService.saveCustomer(existingCustomer);
             return ResponseEntity.ok(updatedCustomer);
         } else {
             return ResponseEntity.notFound().build();
@@ -60,8 +66,8 @@ public class UserController {
     }
 
     @GetMapping("/phone/{phoneNumber}")
-    public ResponseEntity<UserModel> getCustomerByPhoneNumber(@PathVariable String phoneNumber) {
-        Optional<UserModel> customer = UserService.getCustomerByPhoneNumber(phoneNumber);
+    public ResponseEntity<CustomerModel> getCustomerByPhoneNumber(@PathVariable String phoneNumber) {
+        Optional<CustomerModel> customer = customerService.getCustomerByPhoneNumber(phoneNumber);
         return customer.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
