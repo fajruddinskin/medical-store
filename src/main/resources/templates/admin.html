@@ -20,8 +20,8 @@
 
         <nav class="header-nav">
             <a href="/">Dashboard</a>
-            <a href="/medicines">Medicines</a>
-            <a href="/customers">Customers</a>
+           <!-- <a href="/medicines">Medicines</a>
+            <a href="/customers">Customers</a>-->
             <a href="/reports">Reports</a>
             <a href="/lab-test-registration">Lab Tests</a>
             <a href="/admin" class="active">Admin</a>
@@ -45,38 +45,71 @@
             <i class="fas fa-database me-2"></i> Admin SQL Console
         </div>
 
-        <!-- ================= SQL EDITOR ================= -->
-        <section class="table-card mt-4">
-            <h5 class="mb-3">
-                <i class="fas fa-terminal me-2"></i> Execute SQL Query
-            </h5>
+        <!-- ================= ENHANCED SQL CONSOLE (NEW SECTION) ================= -->
+        <div class="container-fluid mt-5 mb-5">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card shadow-lg">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-database me-2"></i>Enhanced SQL Console
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- SQL Input Section -->
+                            <div class="mb-3">
+                                <label for="sqlInput" class="form-label fw-bold">SQL Query</label>
+                                <textarea id="sqlInput" class="form-control" rows="8"
+                                          placeholder="Enter SQL query...&#10;Example: SELECT * FROM medicines;&#10;INSERT INTO medicines (name, price) VALUES ('Aspirin', 10.50);&#10;UPDATE medicines SET price = 15 WHERE id = 1;&#10;DELETE FROM medicines WHERE id = 1;"
+                                          style="font-family: 'Courier New', monospace;"></textarea>
+                                <small class="text-muted d-block mt-2">
+                                    <i class="fas fa-info-circle"></i> Supports: SELECT, INSERT, UPDATE, DELETE queries
+                                </small>
+                            </div>
 
-            <div class="mb-3">
-                <label class="fw-bold">SQL Editor</label>
-                <textarea id="sqlEditor"
-                          class="form-control"
-                          rows="8"
-                          placeholder="Enter SQL query here (CREATE / INSERT / UPDATE)"></textarea>
+                            <!-- Buttons -->
+                            <div class="btn-group mb-4" role="group">
+                                <button id="executeSqlBtn" class="btn btn-success btn-lg">
+                                    <i class="fas fa-play me-2"></i>Execute Query
+                                </button>
+                                <button id="clearBtn" class="btn btn-secondary btn-lg">
+                                    <i class="fas fa-broom me-2"></i>Clear
+                                </button>
+                            </div>
+
+                            <hr>
+
+                            <!-- Results Section -->
+                            <div id="resultsContainer" style="display: none;">
+                                <!-- Results Info -->
+                                <div id="resultInfo" class="alert alert-info" style="display: none;">
+                                    <span id="resultStats"></span>
+                                </div>
+
+                                <!-- Table Results for SELECT -->
+                                <div id="tableContainer" style="display: none; overflow-x: auto;">
+                                    <h6 class="mb-3 fw-bold">
+                                        <i class="fas fa-table me-2"></i>Results
+                                    </h6>
+                                    <table id="resultsTable" class="table table-striped table-hover table-bordered">
+                                        <thead id="tableHead" class="table-dark"></thead>
+                                        <tbody id="tableBody"></tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Modification Results -->
+                                <div id="modifyResultContainer" style="display: none;">
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        <strong>Rows Affected:</strong> <span id="affectedRowsCount"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="d-flex gap-2">
-                <button class="btn btn-danger" onclick="executeSql()">
-                    <i class="fas fa-play"></i> Execute
-                </button>
-
-                <button class="btn btn-secondary" onclick="clearEditor()">
-                    <i class="fas fa-eraser"></i> Clear
-                </button>
-            </div>
-
-            <!-- ================= RESULT BOX ================= -->
-            <div class="mt-4">
-                <label class="fw-bold">Execution Result</label>
-                <pre id="sqlResult"
-                     class="p-3 bg-light border rounded"
-                     style="min-height: 80px;"></pre>
-            </div>
-        </section>
+        </div>
 
         <div class="footer-note">
             © 2025 Medical Store Management
@@ -85,11 +118,63 @@
     </main>
 </div>
 
+<!-- ================= STYLES ================= -->
+<style>
+#sqlInput {
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 14px;
+    background-color: #f8f9fa;
+}
+
+#sqlInput:focus {
+    border-color: #0d6efd;
+    background-color: #fff;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+#resultsTable {
+    font-size: 13px;
+    margin-top: 20px;
+}
+
+#resultsTable thead {
+    position: sticky;
+    top: 0;
+}
+
+#resultsTable tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+.btn-group .btn {
+    padding: 10px 20px;
+    font-size: 15px;
+    border-radius: 6px;
+}
+
+#tableContainer {
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #fff;
+}
+
+.alert {
+    border-radius: 8px;
+    border: 1px solid transparent;
+}
+</style>
+
 <!-- ================= Scripts ================= -->
 <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
 <script th:src="@{/js/bootstrap.bundle.js}"></script>
 
 <script>
+    // ================= OLD SQL EDITOR SCRIPT =================
     function executeSql() {
         const sql = document.getElementById("sqlEditor").value.trim();
         const resultBox = document.getElementById("sqlResult");
@@ -124,6 +209,176 @@
         document.getElementById("sqlEditor").value = "";
         document.getElementById("sqlResult").textContent = "";
     }
+
+    // ================= NEW ENHANCED SQL CONSOLE SCRIPT =================
+    $(document).ready(function() {
+        // Execute SQL Button Click
+        $('#executeSqlBtn').click(function() {
+            let sql = $('#sqlInput').val().trim();
+
+            if (!sql) {
+                showError('Please enter a SQL query');
+                return;
+            }
+
+            // Disable button during execution
+            $(this).prop('disabled', true).html(
+                '<i class="fas fa-spinner fa-spin me-2"></i>Executing...'
+            );
+
+            $.ajax({
+                url: '/api/sql/execute',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ sql: sql }),
+                success: function(response) {
+                    displayResults(response);
+                },
+                error: function(xhr) {
+                    let errorResponse = xhr.responseJSON || {};
+                    showError(errorResponse.message || 'An error occurred while executing the query');
+                },
+                complete: function() {
+                    // Re-enable button
+                    $('#executeSqlBtn').prop('disabled', false).html(
+                        '<i class="fas fa-play me-2"></i>Execute Query'
+                    );
+                }
+            });
+        });
+
+        // Clear Button Click
+        $('#clearBtn').click(function() {
+            $('#sqlInput').val('');
+            $('#resultsContainer').hide();
+            $('#tableHead').html('');
+            $('#tableBody').html('');
+            $('#resultMessage').hide();
+            $('#resultInfo').hide();
+            $('#tableContainer').hide();
+            $('#modifyResultContainer').hide();
+        });
+
+        // Display Results
+        function displayResults(response) {
+            $('#resultsContainer').show();
+            $('#resultMessage').hide();
+            $('#resultInfo').hide();
+            $('#tableContainer').hide();
+            $('#modifyResultContainer').hide();
+
+            if (response.success) {
+                if (response.type === 'SELECT') {
+                    displaySelectResults(response);
+                } else if (response.type === 'MODIFY') {
+                    displayModifyResults(response);
+                }
+            } else {
+                showError(response.message);
+            }
+        }
+
+        // Display SELECT Query Results
+        function displaySelectResults(response) {
+            let message = response.message;
+            showSuccess(message);
+
+            if (response.rows.length > 0) {
+                renderTable(response.columns, response.rows);
+                $('#tableContainer').show();
+
+                // Display stats
+                $('#resultStats').html(
+                    `<strong>Total Rows:</strong> ${response.rowCount} |
+                     <strong>Columns:</strong> ${response.columns.length}`
+                );
+                $('#resultInfo').show();
+            } else {
+                $('#resultInfo').html(
+                    '<i class="fas fa-inbox me-2"></i><strong>No results found.</strong>'
+                ).show();
+            }
+        }
+
+        // Display INSERT, UPDATE, DELETE Results
+        function displayModifyResults(response) {
+            let message = response.message;
+            showSuccess(message);
+
+            $('#affectedRowsCount').html(`<strong class="text-success">${response.affectedRows}</strong>`);
+            $('#modifyResultContainer').show();
+        }
+
+        // Render Table
+        function renderTable(columns, rows) {
+            // Render table header
+            let headerHtml = '<tr>';
+            columns.forEach(col => {
+                headerHtml += '<th class="bg-dark text-white">' + escapeHtml(col) + '</th>';
+            });
+            headerHtml += '</tr>';
+            $('#tableHead').html(headerHtml);
+
+            // Render table body
+            let bodyHtml = '';
+            rows.forEach((row, index) => {
+                bodyHtml += '<tr>';
+                columns.forEach(col => {
+                    let value = row[col];
+                    bodyHtml += '<td>' + formatValue(value) + '</td>';
+                });
+                bodyHtml += '</tr>';
+            });
+            $('#tableBody').html(bodyHtml);
+        }
+
+        // Format Value (handle NULL, boolean, etc.)
+        function formatValue(value) {
+            if (value === null || value === undefined) {
+                return '<span class="badge bg-secondary">NULL</span>';
+            }
+            if (typeof value === 'boolean') {
+                return value ?
+                    '<span class="badge bg-success"><i class="fas fa-check me-1"></i>true</span>' :
+                    '<span class="badge bg-danger"><i class="fas fa-times me-1"></i>false</span>';
+            }
+            if (typeof value === 'number') {
+                return '<span class="text-info">' + value + '</span>';
+            }
+            return escapeHtml(value.toString());
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            if (!text) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.toString().replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // Show Success Message
+        function showSuccess(message) {
+            $('#resultMessage')
+                .removeClass('alert-danger alert-warning')
+                .addClass('alert-success')
+                .html('<i class="fas fa-check-circle me-2"></i>' + message)
+                .show();
+        }
+
+        // Show Error Message
+        function showError(message) {
+            $('#resultMessage')
+                .removeClass('alert-success alert-warning')
+                .addClass('alert-danger')
+                .html('<i class="fas fa-exclamation-circle me-2"></i><strong>Error:</strong> ' + message)
+                .show();
+        }
+    });
 </script>
 
 </body>

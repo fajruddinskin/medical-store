@@ -20,8 +20,8 @@
         <i class="fas fa-hospital-alt fa-3x mb-3"></i>
         <nav class="header-nav">
             <a href="/">Dashboard</a>
-            <a href="/medicines">Medicines</a>
-            <a href="/customers">Customers</a>
+            <!--<a href="/medicines">Medicines</a>
+            <a href="/customers">Customers</a>-->
             <a href="/reports">Reports</a>
             <a href="/lab-test-registration">Lab Tests</a>
         </nav>
@@ -66,44 +66,69 @@
         <!-- TABLE -->
         <section class="table-card">
             <h3 style="margin-bottom:16px; text-align:center;">Search Results</h3>
-            <div class="col-md-12 mt-3" id="searchResults"></div>
+            <div class="col-md-12 mt-3">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped" id="searchResultsTable">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="searchResults">
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-3">
+                                    <i class="fas fa-search fa-2x mb-2"></i><br>
+                                    Enter a search term to view results
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </section>
 
         <section class="table-card">
             <div class="row">
-                <!-- Recent Medicines -->
+                <!-- Recent Lab Test (Left Side) -->
                 <div class="col-md-6 mb-4">
                     <div class="card h-100">
-                        <h5 class="card-title mb-0"><i class="fas fa-pills me-2"></i>Recent Medicines </h5>
+                        <h5 class="card-title mb-0"><i class="fas fa-flask me-2"></i>Recent Lab Test </h5>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover customer-table">
                                     <thead>
                                     <tr>
+                                        <th>Id</th>
                                         <th>Name</th>
-                                        <th>Type</th>
-                                        <th>Batch</th>
-                                        <th>Price</th>
-                                        <th>Qty</th>
+                                        <th>Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="medicine : ${recentLabTest}">
-                                       <!-- <td th:text="${medicine.name}"></td>
-                                        <td th:text="${medicine.type}"></td>
-                                        <td th:text="${medicine.batchNumber}"></td>
-                                        <td th:text="'$' + ${medicine.price}"></td>
+                                    <tr th:each="labTest : ${recentLabTestData}" th:data-id="${labTest.id}">
+                                        <td th:text="${labTest.id}"></td>
+                                        <td th:text="${labTest.name}"></td>
                                         <td>
-                                            <span th:if="${medicine.quantity < 10}"
-                                                  class="badge bg-warning" th:text="${medicine.quantity}"></span>
-                                            <span th:unless="${medicine.quantity < 10}"
-                                                  class="badge bg-success" th:text="${medicine.quantity}"></span>
-                                        </td>-->
+                                            <button type="button" class="btn btn-sm btn-primary edit-lab-btn"
+                                                    data-bs-toggle="modal" data-bs-target="#editLabTestModal"
+                                                    th:data-id="${labTest.id}" th:data-name="${labTest.name}"
+                                                    th:data-description="${labTest.description}"
+                                                    th:data-price="${labTest.price}"
+                                                    th:data-referrer-fee="${labTest.referrerFee}">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger delete-lab-btn"
+                                                    th:data-id="${labTest.id}">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
+                                        </td>
                                     </tr>
-                                    <tr th:if="${recentLabTest.empty}">
-                                        <td colspan="5" class="text-center text-muted py-3">
+                                    <tr th:if="${recentLabTestData.empty}">
+                                        <td colspan="3" class="text-center text-muted py-3">
                                             <i class="fas fa-inbox fa-2x mb-2"></i><br>
-                                            No medicines found
+                                            No lab tests found
                                         </td>
                                     </tr>
                                     </tbody>
@@ -112,10 +137,11 @@
                         </div>
                     </div>
                 </div>
-                <!-- Recent Customers -->
+
+                <!-- Recent Customers (Right Side) -->
                 <div class="col-md-6 mb-4">
                     <div class="card h-100">
-                      <h5 class="card-title mb-0"> <i class="fas fa-users me-2"></i>Admin Users</h5>
+                        <h5 class="card-title mb-0"> <i class="fas fa-users me-2"></i>Admin Users</h5>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover customer-table">
@@ -152,13 +178,6 @@
                                             <i class="fas fa-user-plus fa-2x mb-2"></i>
                                             <br />
                                             No customers yet.
-                                            <a
-                                                    href="#"
-                                                    data-bs-toggle="collapse"
-                                                    data-bs-target="#customerFormCollapse"
-                                                    onclick="toggleFormCard('customerForm')">
-                                                Add first customer
-                                            </a>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -177,66 +196,46 @@
     </main>
 </div>
 <!-- Edit Medicine Modal -->
-<div class="modal fade" id="editMedicineModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+<div class="modal fade" id="editLabTestModal" tabindex="-1">
+    <div class="modal-dialog">
         <div class="modal-content">
 
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class="fas fa-edit"></i> Edit Medicine
+                    <i class="fas fa-edit"></i> Edit Lab Test
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
-                <input type="hidden" id="editMedicineId">
+                <input type="hidden" id="editLabTestId">
 
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label>Name</label>
-                        <input type="text" id="editName" class="form-control">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label>Type</label>
-                        <input type="text" id="editType" class="form-control">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label>Batch</label>
-                        <input type="text" id="editBatch" class="form-control">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label>Price</label>
-                        <input type="number" id="editPrice" class="form-control">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label>Quantity</label>
-                        <input type="number" id="editQuantity" class="form-control">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label>Manufacturer</label>
-                        <input type="text" id="editManufacturer" class="form-control">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label>Category</label>
-                        <select id="editCategory" class="form-control">
-                            <option value="">Select Category</option>
-                        </select>
-                    </div>
-
+                <div class="mb-3">
+                    <label>Name</label>
+                    <input type="text" id="editName" class="form-control">
                 </div>
 
-                <div id="editMessage" class="mt-3"></div>
+                <div class="mb-3">
+                    <label>Description</label>
+                    <textarea id="editDescription" class="form-control"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label>Price</label>
+                    <input type="number" id="editPrice" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label>Referrer Fee</label>
+                    <input type="number" id="editReferrerFee" class="form-control">
+                </div>
+
+                <div id="editMessage"></div>
             </div>
 
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button class="btn btn-success" onclick="updateMedicine()">Update</button>
+                <button class="btn btn-success" onclick="updateLabTest()">Update</button>
             </div>
 
         </div>
@@ -285,41 +284,46 @@
         function performSearch() {
             let query = $('#searchInput').val().trim();
             if (query === "") {
-                $('#searchResults').html('<p class="text-muted">Please enter a search term.</p>');
+                // Reset to default state
+                $('#searchResults').html('<tr><td colspan="4" class="text-center text-muted py-3"><i class="fas fa-search fa-2x mb-2"></i><br>Enter a search term to view results</td></tr>');
                 return;
             }
 
             $.ajax({
-                url: '/api/lab-tests/find',  // <-- Adjust endpoint as per your controller mapping
+                url: '/api/lab-tests/find',
                 type: 'GET',
                 data: { searchTerm: query },
                 success: function(data) {
-                    // Assume 'data' is a list of medicine objects (JSON)
                     let html = '';
                     if (data.length === 0) {
-                        html = '<p style="margin-bottom:16px; text-align:center;" class="text-danger">No medicines found.</p>';
+                        html = '<tr><td colspan="4" class="text-center text-danger py-3"><i class="fas fa-inbox fa-2x mb-2"></i><br>No lab tests found.</td></tr>';
                     } else {
-                        html = '<table class="table table-bordered table-striped">';
-                        html += '<thead><tr><th>Id</th><th>Name</th><th>Action</th></tr></thead><tbody>';
-                        data.forEach(med => {
-                            html += `<tr data-id="${med.id}">
-                                <td>${med.id}</td>
-                                <td>${med.name}</td>
-                               <td> <button type="button" class="btn btn-sm edit-btn">
-                                <i class="fas fa-edit"></i> Edit
-                                 </button>
-                                  <button type="button" class="btn btn-sm delete-btn">
-                                  <i class="fas fa-trash"></i> Delete
-                                  </button>
-                                  </td>
-                                  </tr>`;
+                        data.forEach(lab => {
+                            html += `<tr data-id="${lab.id}">
+                                    <td>${lab.id}</td>
+                                    <td>${lab.name}</td>
+                                    <td>$${parseFloat(lab.price).toFixed(2)}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-primary edit-btn"
+                                                data-bs-toggle="modal" data-bs-target="#editLabTestModal"
+                                                data-id="${lab.id}" data-name="${lab.name}"
+                                                data-description="${lab.description}"
+                                                data-price="${lab.price}"
+                                                data-referrer-fee="${lab.referrerFee}">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger delete-lab-btn"
+                                                data-id="${lab.id}">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>`;
                         });
-                        html += '</tbody></table>';
                     }
                     $('#searchResults').html(html);
                 },
                 error: function() {
-                    $('#searchResults').html('<p class="text-danger">Error fetching medicines.</p>');
+                    $('#searchResults').html('<tr><td colspan="4" class="text-center text-danger py-3"><i class="fas fa-exclamation-triangle fa-2x mb-2"></i><br>Error fetching lab tests.</td></tr>');
                 }
             });
         }
@@ -741,6 +745,98 @@ function updateMedicine() {
         }
     });
 }
+
+//=====new code==
+    $(document).on('click', '.edit-btn', function () {
+
+    const id = $(this).closest('tr').data('id');
+
+    $.ajax({
+        url: '/api/lab-tests/' + id,   // GET by id
+        type: 'GET',
+        success: function (data) {
+
+            $('#editLabTestId').val(data.id);
+            $('#editName').val(data.name);
+            $('#editDescription').val(data.description);
+            $('#editPrice').val(data.price);
+            $('#editReferrerFee').val(data.referrerFee);
+
+            const modal = new bootstrap.Modal(
+                document.getElementById('editLabTestModal')
+            );
+            modal.show();
+        },
+        error: function () {
+            alert('Failed to load lab test data');
+        }
+    });
+});
+function updateLabTest() {
+
+    const id = $('#editLabTestId').val();
+
+    const labTestData = {
+        name: $('#editName').val(),
+        description: $('#editDescription').val(),
+        price: $('#editPrice').val(),
+        referrerFee: $('#editReferrerFee').val()
+    };
+
+    $.ajax({
+        url: '/api/lab-tests/' + id,
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(labTestData),
+        success: function () {
+            $('#editMessage').html(
+                '<div class="alert alert-success">Updated successfully</div>'
+            );
+            setTimeout(() => location.reload(), 1000);
+        },
+        error: function () {
+            $('#editMessage').html(
+                '<div class="alert alert-danger">Update failed</div>'
+            );
+        }
+    });
+}
+
+//Delete Lab Test By Id
+    $(document).on('click', '.delete-lab-btn', function() {
+      let row = $(this).closest('tr');
+      let labTestId = row.data('id');
+
+      if (confirm('Are you sure you want to delete this lab test?')) {
+        $.ajax({
+          url: '/api/lab-tests/' + labTestId,
+          type: 'DELETE',
+          success: function(response) {
+            alert('Lab test deleted successfully!');
+            row.remove();
+          },
+          error: function(xhr, status, error) {
+            console.error(error);
+            alert('Failed to delete lab test.');
+          }
+        });
+      }
+    });
+
+    // Edit Lab Test Modal - Populate fields when button is clicked
+    $(document).on('click', '.edit-lab-btn', function() {
+      const labTestId = $(this).data('id');
+      const name = $(this).data('name');
+      const description = $(this).data('description');
+      const price = $(this).data('price');
+      const referrerFee = $(this).data('referrer-fee');
+
+      $('#editLabTestId').val(labTestId);
+      $('#editName').val(name);
+      $('#editDescription').val(description);
+      $('#editPrice').val(price);
+      $('#editReferrerFee').val(referrerFee);
+    });
 </script>
 </body>
 </html>

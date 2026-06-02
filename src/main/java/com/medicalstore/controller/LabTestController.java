@@ -22,14 +22,39 @@ public class LabTestController {
     private LabTestService labTestService;
 
     @Autowired
-    private LabTestDataService LabTestDataService;
+    private LabTestDataService labTestDataService;
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<LabTestData> getById(@PathVariable String id) {
+        return labTestDataService.getLabTestDataById(Long.valueOf(id))
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // UPDATE
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(
+            @PathVariable String id,
+            @RequestBody LabTestData updated) {
+
+        return labTestDataService.getLabTestDataById(Long.valueOf(id)).map(test -> {
+            test.setName(updated.getName());
+            test.setDescription(updated.getDescription());
+            test.setPrice(updated.getPrice());
+            test.setReferrerFee(updated.getReferrerFee());
+
+            labTestDataService.saveLabTest(test);
+            return ResponseEntity.ok().build();
+        }).orElse(ResponseEntity.notFound().build());
+    }
 
     @GetMapping("/find")
     @ResponseBody
     public ResponseEntity<?> findTestData(@RequestParam String searchTerm) {
         try {
             System.out.println(searchTerm);
-            List<LabTestData> list = LabTestDataService.searchLabTestData(searchTerm);
+            List<LabTestData> list = labTestDataService.searchLabTestData(searchTerm);
             return ResponseEntity.ok(list);
         } catch (Exception e) {
             // Log the exception
@@ -54,7 +79,7 @@ public class LabTestController {
     @ResponseBody
     public ResponseEntity<?> searchMedicines(@RequestParam String searchTerm) {
         try {
-            List<LabTestData> list = LabTestDataService.searchTests(searchTerm);
+            List<LabTestData> list = labTestDataService.searchTests(searchTerm);
             return ResponseEntity.ok(list);
         } catch (Exception e) {
             // Log the exception
