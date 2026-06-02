@@ -18,7 +18,9 @@ public class MedicineService {
         //return null;
         return medicineRepository.searchMedicines(query);
     }
-
+    public List<Medicine> getRecentMedicines() {
+        return medicineRepository.findTop5ByOrderByIdDesc();
+    }
     public List<Medicine> getAllMedicines() {
         return medicineRepository.findAll();
     }

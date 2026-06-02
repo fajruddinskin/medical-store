@@ -83,7 +83,7 @@ public class WebController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        List<Medicine> medicines = medicineService.getAllMedicines();
+        List<Medicine> medicines =  medicineService.getRecentMedicines();//medicineService.getAllMedicines();
         List<AdminUserModel> user =  adminService.getAllCustomers();
         List<PatientModel> patients = patientService.getAllPatients();
 
@@ -100,6 +100,10 @@ public class WebController {
         model.addAttribute("totalPatients", patients.size());
 
         System.out.println( "================");
+        System.out.println("=== Recent Medicines ===");
+        medicines.forEach(m ->
+                System.out.println(m.getId() + " - " + m.getName())
+        );
         model.addAttribute("medicines", medicines);
         model.addAttribute("customers", user);
         model.addAttribute("totalMedicines", medicines.size());
@@ -120,7 +124,7 @@ public class WebController {
     // Medicine Management
     @GetMapping("/medicines")
     public String medicineManagement(Model model) {
-        List<Medicine> medicines = medicineService.getAllMedicines();
+        List<Medicine> medicines =  medicineService.getRecentMedicines();
         List<UserModel> user =  userService.getAllCustomers();
         List<PatientModel> patients = patientService.getAllPatients();
 

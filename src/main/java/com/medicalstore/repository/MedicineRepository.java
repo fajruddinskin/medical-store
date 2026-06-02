@@ -39,4 +39,5 @@ public interface MedicineRepository extends JpaRepository<Medicine, Long> {
     //@Modifying
    /* @Query(value="DELETE FROM Medicine u WHERE  u.id = :id",nativeQuery = true)
     boolean deleteUsersByEmailDomain(@Param("id") Long id);*/
+    List<Medicine> findTop5ByOrderByIdDesc();
 }
