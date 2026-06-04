@@ -128,6 +128,7 @@ public class WebController {
     }
 
     // Medicine Management
+
     @GetMapping("/medicines")
     public String medicineManagement(Model model) {
         List<Medicine> medicines =  medicineService.getRecentMedicines();
@@ -136,9 +137,9 @@ public class WebController {
 
         List<LabTestModel> labTests= labTestService.searchTests("CBC");
         List<Category> catagory=categoryService.getAllCategories();
-        System.out.println(medicines.get(0).getCategory().getId());
-        System.out.println(medicines.get(0).getCategory().getName());
-        System.out.println(medicines.get(0).getCategory().getDescription());
+       // System.out.println(medicines.get(0).getCategory().getId());
+       // System.out.println(medicines.get(0).getCategory().getName());
+       // System.out.println(medicines.get(0).getCategory().getDescription());
         System.out.println( "================");
         model.addAttribute("labTests", labTests.size());
         System.out.println( "================");
@@ -164,7 +165,7 @@ public class WebController {
         return "medicine-management";
     }
 
-    @PostMapping("/medicines")
+   @PostMapping("/medicines")
     public String addMedicine(@ModelAttribute Medicine medicine) {
         medicineService.saveMedicine(medicine);
         return "redirect:/medicines";
