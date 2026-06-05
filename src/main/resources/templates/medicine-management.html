@@ -453,26 +453,62 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="medicine : ${recentMedicines}">
+                                    <tr th:each="medicine : ${medicinePage.content}">
                                         <td th:text="${medicine.name}"></td>
                                         <td th:text="${medicine.type}"></td>
                                         <td th:text="${medicine.batchNumber}"></td>
-                                        <td th:text="'$' + ${medicine.price}"></td>
+                                        <td th:text="${medicine.price}"></td>
                                         <td>
-                                            <span th:if="${medicine.quantity < 10}"
-                                                  class="badge bg-warning" th:text="${medicine.quantity}"></span>
+        <span th:if="${medicine.quantity < 10}"
+              class="badge bg-warning"
+              th:text="${medicine.quantity}">
+        </span>
+
                                             <span th:unless="${medicine.quantity < 10}"
-                                                  class="badge bg-success" th:text="${medicine.quantity}"></span>
+                                                  class="badge bg-success"
+                                                  th:text="${medicine.quantity}">
+        </span>
                                         </td>
                                     </tr>
-                                    <tr th:if="${recentMedicines.empty}">
-                                        <td colspan="5" class="text-center text-muted py-3">
-                                            <i class="fas fa-inbox fa-2x mb-2"></i><br>
+
+                                    <tr th:if="${medicinePage.content.isEmpty()}">
+                                        <td colspan="5" class="text-center text-muted">
                                             No medicines found
                                         </td>
                                     </tr>
                                     </tbody>
                                 </table>
+                                <nav th:if="${medicinePage.totalPages > 1}">
+                                    <ul class="pagination pagination-sm justify-content-center">
+
+                                        <li class="page-item"
+                                            th:classappend="${medicinePage.first} ? 'disabled'">
+                                            <a class="page-link"
+                                               th:href="@{/dashboard(page=${medicinePage.number-1})}">
+                                                Previous
+                                            </a>
+                                        </li>
+
+                                        <li class="page-item"
+                                            th:each="i : ${#numbers.sequence(0, medicinePage.totalPages-1)}"
+                                            th:classappend="${i == medicinePage.number} ? 'active'">
+
+                                            <a class="page-link"
+                                               th:text="${i+1}"
+                                               th:href="@{/medicines(page=${i})}">
+                                            </a>
+                                        </li>
+
+                                        <li class="page-item"
+                                            th:classappend="${medicinePage.last} ? 'disabled'">
+                                            <a class="page-link"
+                                               th:href="@{/medicines(page=${medicinePage.number+1})}">
+                                                Next
+                                            </a>
+                                        </li>
+
+                                    </ul>
+                                </nav>
                             </div>
                         </div>
                     </div>

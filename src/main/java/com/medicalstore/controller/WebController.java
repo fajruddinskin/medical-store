@@ -4,6 +4,9 @@ import com.medicalstore.dto.SignupRequest;
 import com.medicalstore.entity.*;
 import com.medicalstore.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -86,57 +89,68 @@ public class WebController {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model) {
-        List<Medicine> medicines =  medicineService.getRecentMedicines();//medicineService.getAllMedicines();
-        List<AdminUserModel> user =  adminService.getAllCustomers();
+    public String dashboard(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            Model model) {
+
+        Page<Medicine> medicinePage = medicineService.getMedicinesPage(page, size);
+
+        List<AdminUserModel> user = adminService.getAllCustomers();
         List<PatientModel> patients = patientService.getAllPatients();
+        List<LabTestModel> labTests = labTestService.searchTests("CBC");
+        List<Category> catagory = categoryService.getAllCategories();
 
-        List<LabTestModel> labTests= labTestService.searchTests("CBC");
-        List<Category> catagory=categoryService.getAllCategories();
-        if (!medicines.isEmpty() && medicines.get(0).getCategory() != null) {
-            System.out.println(medicines.get(0).getCategory().getId());
-            System.out.println(medicines.get(0).getCategory().getName());
-            System.out.println(medicines.get(0).getCategory().getDescription());
-        }
-        System.out.println( "================");
         model.addAttribute("labTests", labTests.size());
-        System.out.println( "================");
-
-        System.out.println( "================");
         model.addAttribute("totalPatients", patients.size());
 
-        System.out.println( "================");
-        System.out.println("=== Recent Medicines ===");
-        medicines.forEach(m ->
-                System.out.println(m.getId() + " - " + m.getName())
-        );
-        model.addAttribute("medicines", medicines);
-        model.addAttribute("customers", user);
-        model.addAttribute("totalMedicines", medicines.size());
-        model.addAttribute("totalCustomers",user.size());
-        model.addAttribute("lowStockCount", medicines.stream().filter(m -> m.getQuantity() < 10).count());
+        model.addAttribute("medicines", medicinePage.getContent());
+        model.addAttribute("medicinePage", medicinePage);
 
-        // Add recent data for dashboard
-        model.addAttribute("recentMedicines",
-                medicines.size() > 5 ? medicines.subList(0, 5) : medicines);
+        model.addAttribute("customers", user);
+        model.addAttribute("totalMedicines", medicinePage.getTotalElements());
+        model.addAttribute("totalCustomers", user.size());
+
+        model.addAttribute("lowStockCount",
+                medicinePage.getContent()
+                        .stream()
+                        .filter(m -> m.getQuantity() < 10)
+                        .count());
+
+        model.addAttribute("recentMedicines", medicinePage.getContent());
+
         model.addAttribute("recentCustomers",
                 user.size() > 5 ? user.subList(0, 5) : user);
+
         model.addAttribute("medicineType", enumService.getMedicineType());
-        model.addAttribute("catagory",catagory);
+        model.addAttribute("catagory", catagory);
         model.addAttribute("bloodGroups", enumService.getBloodGroup());
+
         return "dashboard";
     }
 
     // Medicine Management
 
     @GetMapping("/medicines")
-    public String medicineManagement(Model model) {
+    public String medicineManagement(  @RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(defaultValue = "5") int size,Model model) {
         List<Medicine> medicines =  medicineService.getRecentMedicines();
+        //Page<Medicine> medicinePage = medicineService.getMedicinesPage(page, size);
+        Pageable pageables = PageRequest.of(page, size);
         List<UserModel> user =  userService.getAllCustomers();
         List<PatientModel> patients = patientService.getAllPatients();
 
         List<LabTestModel> labTests= labTestService.searchTests("CBC");
         List<Category> catagory=categoryService.getAllCategories();
+       Page<Medicine> medicinePage = medicineService.getMedicines(pageables);
+
+        /*System.out.println("Current Page: " + page);
+        System.out.println("Total Pages: " + medicinePage.getTotalPages());
+        System.out.println("Records On Page: " + medicinePage.getContent().size());
+
+        medicinePage.getContent().forEach(m ->
+                System.out.println(m.getId() + " " + m.getName())
+        );*/
        // System.out.println(medicines.get(0).getCategory().getId());
        // System.out.println(medicines.get(0).getCategory().getName());
        // System.out.println(medicines.get(0).getCategory().getDescription());
@@ -161,7 +175,12 @@ public class WebController {
                 user.size() > 5 ? user.subList(0, 5) : user);
         model.addAttribute("medicineType", enumService.getMedicineType());
         model.addAttribute("catagory",catagory);
+        Pageable pageable = PageRequest.of(page, 5);
 
+
+
+        model.addAttribute("medicinePage", medicinePage);
+        model.addAttribute("medicines", medicinePage.getContent());
         return "medicine-management";
     }
 

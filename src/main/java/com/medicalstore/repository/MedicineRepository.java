@@ -2,6 +2,8 @@ package com.medicalstore.repository;
 
 import com.medicalstore.entity.Medicine;
 import com.medicalstore.entity.MedicineType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -41,4 +43,5 @@ WHERE LOWER(m.name) LIKE LOWER('%' || :searchTerm || '%')
    /* @Query(value="DELETE FROM Medicine u WHERE  u.id = :id",nativeQuery = true)
     boolean deleteUsersByEmailDomain(@Param("id") Long id);*/
     List<Medicine> findTop5ByOrderByIdDesc();
+    //Page<Medicine> getMedicines(Pageable pageable);
 }

@@ -4,10 +4,15 @@ import com.medicalstore.entity.Medicine;
 import com.medicalstore.entity.MedicineType;
 import com.medicalstore.repository.MedicineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
 
 public class MedicineService {
 
@@ -59,5 +64,15 @@ public class MedicineService {
 
     public List<Medicine> getPrescriptionMedicines() {
         return medicineRepository.findByRequiresPrescription(true);
+    }
+
+    public Page<Medicine> getMedicines(Pageable pageable) {
+        return medicineRepository.findAll(pageable);
+    }
+    public Page<Medicine> getMedicinesPage(int page, int size) {
+        Pageable pageable =
+                PageRequest.of(page, size, Sort.by("id").descending());
+
+        return medicineRepository.findAll(pageable);
     }
 }
