@@ -47,7 +47,6 @@ public class MedicineService {
     }
 
     public List<Medicine> getLowStockMedicines() {
-
         return medicineRepository.findByQuantityLessThan(10);
     }
 
@@ -76,5 +75,4 @@ public class MedicineService {
 
         return medicineRepository.findAll(pageable);
     }
-
 }
