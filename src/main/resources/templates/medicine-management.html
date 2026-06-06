@@ -13,22 +13,49 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <nav class="col-md-3 col-lg-2 sidebar">
+        <nav class="sidebar">
             <div class="position-sticky pt-3">
                 <div class="text-center mb-4">
                     <i class="fas fa-hospital-alt fa-3x mb-3"></i>
                     <h4>Medical Store</h4>
                     <p class="text-light">Management System</p>
                 </div>
+
                 <ul class="nav flex-column">
-                    <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="/medicines"><i class="fas fa-pills me-2"></i> Medicine Management</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/customers"><i class="fas fa-users me-2"></i> Customer Management</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/reports"><i class="fas fa-flask me-2"></i>Lab Reports</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/lab-test-registration"> <i class="fas fa-chart-bar me-2"></i>Lab Test Registration</a> </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/medicines">
+                            <i class="fas fa-pills me-2"></i> Medicine Management
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/customers">
+                            <i class="fas fa-users me-2"></i> Customer Management
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/reports">
+                            <i class="fas fa-flask me-2"></i> Lab Reports
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/lab-test-registration">
+                            <i class="fas fa-chart-bar me-2"></i> Lab Test Registration
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>
+
+
 
         <!-- Main content -->
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-light" style="min-height: 100vh; width: 998px;">
@@ -116,7 +143,7 @@
                                         Add Medicine
                                     </a>
                                 </div>
-                                <div class="col-md-3 text-center mb-3">
+                              <!--  <div class="col-md-3 text-center mb-3">
                                     <a href="#customerFormCollapse"
                                        class="btn btn-outline-success btn-lg w-100 quick-action-btn"
                                        data-bs-toggle="collapse"
@@ -128,7 +155,7 @@
                                         Add Customer
                                     </a>
                                 </div>
-                                <!-- patient form-->
+                                patient form--
                                 <div class="col-md-3 text-center mb-3">
                                     <a href="#patientFormCollapse"
                                        class="btn btn-outline-success btn-lg w-100 quick-action-btn"
@@ -140,7 +167,7 @@
                                         <i class="fas fa-user-plus fa-2x mb-2"></i><br>
                                         Add Patient
                                     </a>
-                                </div>
+                                </div>-->
                                 <div class="col-md-3 text-center mb-3">
                                     <div class="input-group">
                                         <input type="text"
@@ -152,19 +179,40 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="col-md-12 mt-3" id="searchResults"></div>
-                                <div class="col-md-3 text-center mb-3">
+                                <div class="col-12 mt-3">
+                                    <div class="card shadow-sm" id="searchResultsContainer" style="display:none;">
+
+                                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                            <h5 class="mb-0">
+                                                <i class="fas fa-search me-2"></i>
+                                                Search Results
+                                            </h5>
+
+                                            <button type="button"
+                                                    id="closeSearchResults"
+                                                    class="btn btn-danger btn-sm">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+
+                                        <div class="card-body">
+                                            <div id="searchResults"></div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                               <!-- <div class="col-md-3 text-center mb-3">
                                     <a href="/reports" class="btn btn-outline-warning btn-lg w-100 quick-action-btn">
                                         <i class="fas fa-chart-pie fa-2x mb-2"></i><br>
                                         View Reports
                                     </a>
-                                </div>
+                                </div>-->
                             </div>
 
                             <!-- Quick Medicine Creation Form -->
                             <div class="row mb-4">
                                 <div class="col-12">
-                                    <div class="card stat-card text-white form-card" id="medicineForm">
+                                    <div class="card stat-card form-card text-dark" id="medicineForm">
                                         <div class="card-body">
                                             <!-- Collapsible Medicine Form -->
                                             <div class="collapse mt-3" id="medicineFormCollapse">
@@ -265,11 +313,11 @@
                             </div>
 
                             <!-- Quick Customer Creation Form -->
-                            <div class="row mb-4">
+                           <!-- <div class="row mb-4">
                                 <div class="col-12">
                                     <div class="card stat-card text-white form-card" id="customerForm">
                                         <div class="card-body">
-                                            <!-- Collapsible Customer Form -->
+
                                             <div class="collapse mt-3" id="customerFormCollapse">
                                                 <h5 class="card-title mb-3">
                                                     <i class="fas fa-user-plus me-2"></i>Add New Customer
@@ -314,7 +362,7 @@
                                 <div class="col-12">
                                     <div class="card stat-card text-white form-card" id="patientForm">
                                         <div class="card-body">
-                                            <!-- Collapsible Customer Form -->
+
                                             <div class="collapse mt-3" id="patientFormCollapse">
                                                 <h5 class="card-title mb-3">
                                                     <i class="fas fa-user-plus me-2"></i>Add New Patient
@@ -377,7 +425,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                 </div>
             </div>
@@ -393,39 +441,12 @@
                             </h5>
                         </div>
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover customer-table">
-                                    <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Type</th>
-                                        <th>Batch</th>
-                                        <th>Price</th>
-                                        <th>Qty</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="medicine : ${recentMedicines}">
-                                        <td th:text="${medicine.name}"></td>
-                                        <td th:text="${medicine.type}"></td>
-                                        <td th:text="${medicine.batchNumber}"></td>
-                                        <td th:text="'$' + ${medicine.price}"></td>
-                                        <td>
-                                            <span th:if="${medicine.quantity < 10}"
-                                                  class="badge bg-warning" th:text="${medicine.quantity}"></span>
-                                            <span th:unless="${medicine.quantity < 10}"
-                                                  class="badge bg-success" th:text="${medicine.quantity}"></span>
-                                        </td>
-                                    </tr>
-                                    <tr th:if="${recentMedicines.empty}">
-                                        <td colspan="5" class="text-center text-muted py-3">
-                                            <i class="fas fa-inbox fa-2x mb-2"></i><br>
-                                            No medicines found
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+
+
+                            <div id="medicineTableContainer"
+                                 th:insert="fragments/medicine-table :: medicineTable">
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -472,6 +493,7 @@
                     </div>
                 </div>
             </div>
+            </div>
         </main>
     </div>
 </div>
@@ -501,56 +523,132 @@
         }
     });
     //
-    $(document).ready(function() {
-        // Trigger AJAX search on button click or Enter key
-        $('#searchBtn').on('click', function() {
+    $(document).ready(function () {
+
+        // Hide initially
+        $('#searchResultsContainer').hide();
+
+        // Search button click
+        $('#searchBtn').click(function () {
             performSearch();
         });
 
-        $('#searchInput').on('keypress', function(e) {
-            if (e.which === 13) { // Enter key
+        // Enter key search
+        $('#searchInput').keypress(function (e) {
+            if (e.which === 13) {
                 performSearch();
             }
         });
 
+        // Close button
+        $('#closeSearchResults').click(function () {
+            $('#searchResultsContainer').hide();
+            $('#searchResults').html('');
+        });
+
         function performSearch() {
+
             let query = $('#searchInput').val().trim();
-            if (query === "") {
-                $('#searchResults').html('<p class="text-muted">Please enter a search term.</p>');
+
+            if (query === '') {
+
+                $('#searchResults').html(`
+                <div class="alert alert-warning">
+                    Please enter a medicine name.
+                </div>
+            `);
+
+                $('#searchResultsContainer').show();
                 return;
             }
 
             $.ajax({
-                url: '/api/medicines/search',  // <-- Adjust endpoint as per your controller mapping
+                url: '/api/medicines/search',
                 type: 'GET',
-                data: { searchTerm: query },
-                success: function(data) {
-                    // Assume 'data' is a list of medicine objects (JSON)
+                data: {
+                    searchTerm: query
+                },
+
+                success: function (data) {
+
                     let html = '';
-                    if (data.length === 0) {
-                        html = '<p class="text-danger">No medicines found.</p>';
+
+                    if (!data || data.length === 0) {
+
+                        html = `
+                        <div class="alert alert-warning">
+                            No medicines found.
+                        </div>
+                    `;
+
                     } else {
-                        html = '<table class="table table-bordered table-striped">';
-                        html += '<thead><tr><th>Id</th><th>Name</th><th>Manufacturer</th><th>Category</th><th>Action</th></tr></thead><tbody>';
-                        data.forEach(med => {
-                            html += `<tr data-id="${med.id}">
+
+                        html += `
+                        <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Manufacturer</th>
+                                    <th>Category</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
+                        data.forEach(function (med) {
+
+                            html += `
+                            <tr data-id="${med.id}">
                                 <td>${med.id}</td>
                                 <td>${med.name}</td>
-                                <td>${med.manufacturer}</td>
-                                <td>${med.category ? med.category.name || med.category : ''}</td>
-                                <td><button class="btn btn-warning btn-sm edit-btn">Edit</button></td>
-                                <td><button class="btn btn-danger btn-sm delete-btn">Delete</button></td>
-                            </tr>`;
+                                <td>${med.manufacturer || ''}</td>
+                                <td>${med.category ? (med.category.name || med.category) : ''}</td>
+
+                                <td>
+                                    <button class="btn btn-warning btn-sm edit-btn">
+                                        Edit
+                                    </button>
+                                </td>
+
+                                <td>
+                                    <button class="btn btn-danger btn-sm delete-btn">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
                         });
-                        html += '</tbody></table>';
+
+                        html += `
+                            </tbody>
+                        </table>
+                        </div>
+                    `;
                     }
+
                     $('#searchResults').html(html);
+
+                    // Show result card
+                    $('#searchResultsContainer').show();
                 },
-                error: function() {
-                    $('#searchResults').html('<p class="text-danger">Error fetching medicines.</p>');
+
+                error: function () {
+
+                    $('#searchResults').html(`
+                    <div class="alert alert-danger">
+                        Error fetching medicines.
+                    </div>
+                `);
+
+                    $('#searchResultsContainer').show();
                 }
             });
         }
+
     });
     // Function to toggle form card visibility
     function toggleFormCard(formId) {
@@ -857,6 +955,7 @@
         document.getElementById('patientEmail').value = '';
         document.getElementById('patientMessage').innerHTML = '';
 
+
     }
     // Show customer message function
     function showPatientMessage(message, type) {
@@ -870,6 +969,17 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         `;
+    }
+    function loadMedicinePage(page) {
+
+        fetch('/medicines/page?page=' + page)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('medicineTableContainer').innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error loading page:', error);
+            });
     }
 </script>
 </body>
