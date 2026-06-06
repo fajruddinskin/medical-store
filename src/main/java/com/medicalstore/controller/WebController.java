@@ -183,6 +183,19 @@ public class WebController {
         model.addAttribute("medicines", medicinePage.getContent());
         return "medicine-management";
     }
+    @GetMapping("/medicines/page")
+    public String medicinePage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            Model model) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Medicine> medicinePage = medicineService.getMedicines(pageable);
+
+        model.addAttribute("medicinePage", medicinePage);
+
+        return "fragments/medicine-table :: medicineTable";
+    }
 
    @PostMapping("/medicines")
     public String addMedicine(@ModelAttribute Medicine medicine) {

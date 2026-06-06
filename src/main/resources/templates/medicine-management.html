@@ -441,75 +441,12 @@
                             </h5>
                         </div>
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover customer-table">
-                                    <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Type</th>
-                                        <th>Batch</th>
-                                        <th>Price</th>
-                                        <th>Qty</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="medicine : ${medicinePage.content}">
-                                        <td th:text="${medicine.name}"></td>
-                                        <td th:text="${medicine.type}"></td>
-                                        <td th:text="${medicine.batchNumber}"></td>
-                                        <td th:text="${medicine.price}"></td>
-                                        <td>
-        <span th:if="${medicine.quantity < 10}"
-              class="badge bg-warning"
-              th:text="${medicine.quantity}">
-        </span>
 
-                                            <span th:unless="${medicine.quantity < 10}"
-                                                  class="badge bg-success"
-                                                  th:text="${medicine.quantity}">
-        </span>
-                                        </td>
-                                    </tr>
 
-                                    <tr th:if="${medicinePage.content.isEmpty()}">
-                                        <td colspan="5" class="text-center text-muted">
-                                            No medicines found
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                                <nav th:if="${medicinePage.totalPages > 1}">
-                                    <ul class="pagination pagination-sm justify-content-center">
-
-                                        <li class="page-item"
-                                            th:classappend="${medicinePage.first} ? 'disabled'">
-                                            <a class="page-link"
-                                               th:href="@{/dashboard(page=${medicinePage.number-1})}">
-                                                Previous
-                                            </a>
-                                        </li>
-
-                                        <li class="page-item"
-                                            th:each="i : ${#numbers.sequence(0, medicinePage.totalPages-1)}"
-                                            th:classappend="${i == medicinePage.number} ? 'active'">
-
-                                            <a class="page-link"
-                                               th:text="${i+1}"
-                                               th:href="@{/medicines(page=${i})}">
-                                            </a>
-                                        </li>
-
-                                        <li class="page-item"
-                                            th:classappend="${medicinePage.last} ? 'disabled'">
-                                            <a class="page-link"
-                                               th:href="@{/medicines(page=${medicinePage.number+1})}">
-                                                Next
-                                            </a>
-                                        </li>
-
-                                    </ul>
-                                </nav>
+                            <div id="medicineTableContainer"
+                                 th:insert="fragments/medicine-table :: medicineTable">
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -555,6 +492,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </main>
     </div>
@@ -1031,6 +969,17 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         `;
+    }
+    function loadMedicinePage(page) {
+
+        fetch('/medicines/page?page=' + page)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('medicineTableContainer').innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error loading page:', error);
+            });
     }
 </script>
 </body>
