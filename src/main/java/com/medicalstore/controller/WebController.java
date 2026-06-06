@@ -305,4 +305,38 @@ public class WebController {
 
             return "lab-test-registration";
     }
+    @GetMapping("/medicines-inventory")
+    public String medicineInventory( Model model)
+    {
+        List<Medicine> medicines = medicineService.getAllMedicines();
+
+        long totalMedicines = medicines.size();
+
+        long totalStockUnits = medicines.stream()
+                .mapToLong(Medicine::getQuantity)
+                .sum();
+
+        long lowStockCount = medicines.stream()
+                .filter(m -> m.getQuantity() < 10)
+                .count();
+
+        long outOfStockCount = medicines.stream()
+                .filter(m -> m.getQuantity() == 0)
+                .count();
+
+        double inventoryValue = medicines.stream()
+                .mapToDouble(m ->
+                        m.getPrice().doubleValue() * m.getQuantity())
+                .sum();
+
+        model.addAttribute("totalMedicines", totalMedicines);
+        model.addAttribute("totalStockUnits", totalStockUnits);
+        model.addAttribute("lowStockCount", lowStockCount);
+        model.addAttribute("outOfStockCount", outOfStockCount);
+        model.addAttribute("inventoryValue", inventoryValue);
+
+        model.addAttribute("medicines", medicines);
+
+        return "inventory";
+    }
 }

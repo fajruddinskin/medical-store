@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Store Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- ✅ External CSS -->
+    <link rel="stylesheet" th:href="@{/css/medical-store.css}">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="position-sticky pt-3">
+                <div class="text-center mb-4">
+                    <i class="fas fa-hospital-alt fa-3x mb-3"></i>
+                    <h4>Medical Store</h4>
+                    <p class="text-light">Management System</p>
+                </div>
+
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link " href="/medicines">
+                            <i class="fas fa-pills me-2"></i> Medicine Management
+                        </a>
+                    </li>
+                    <li class="nav-item">
+
+                        <a class="nav-link"
+                           data-bs-toggle="collapse"
+                           href="#inventoryMenu">
+
+                            <i class="fas fa-boxes me-2"></i>
+                            Inventory
+                        </a>
+
+                        <div class="collapse show" id="inventoryMenu">
+
+                            <ul class="nav flex-column ms-3">
+
+                                <li class="nav-item">
+                                    <a href="#"
+                                       class="nav-link inventory-link active"
+                                       onclick="loadInventoryData('dashboard'); return false;">
+                                        <i class="fas fa-chart-pie me-2"></i>
+                                        Dashboard
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="#"
+                                       class="nav-link"
+                                       onclick="loadInventoryData('low-stock'); return false;">
+                                        Low Stock
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="#"
+                                       class="nav-link inventory-link"
+                                       onclick="loadInventoryData('expiry'); return false;">
+                                        <i class="fas fa-calendar-times me-2"></i>
+                                        Expiry Tracking
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="#"
+                                       class="nav-link inventory-link"
+                                       onclick="loadInventoryData('purchase'); return false;">
+                                        <i class="fas fa-cart-plus me-2 text-success"></i>
+                                        Purchase Entry
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="#"
+                                       class="nav-link inventory-link"
+                                       onclick="loadInventoryData('history'); return false;">
+                                        <i class="fas fa-history me-2"></i>
+                                        Stock History
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="#"
+                                       class="nav-link inventory-link"
+                                       onclick="loadInventoryData('reports'); return false;">
+                                        <i class="fas fa-file-alt me-2"></i>
+                                        Reports
+                                    </a>
+                                </li>
+
+                            </ul>
+
+                        </div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/customers">
+                            <i class="fas fa-users me-2"></i> Customer Management
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/reports">
+                            <i class="fas fa-flask me-2"></i> Lab Reports
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/lab-test-registration">
+                            <i class="fas fa-chart-bar me-2"></i> Lab Test Registration
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-light" style="min-height: 100vh; width: 998px;">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2 text-primary">
+                    <i class="fas fa-tachometer-alt me-2"></i> Inventory Dashboard
+                </h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <span class="text-muted" th:text="'Welcome to Medical Store System'"></span>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-md-2 mb-3">
+                    <div class="card border-primary shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-pills fa-2x text-primary mb-2"></i>
+                            <h6>Total Medicines</h6>
+                            <h3 th:text="${totalMedicines}">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <div class="card border-success shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-cubes fa-2x text-success mb-2"></i>
+                            <h6>Total Units</h6>
+                            <h3 th:text="${totalStockUnits}">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <div class="card border-warning shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-exclamation-triangle fa-2x text-warning mb-2"></i>
+                            <h6>Low Stock</h6>
+                            <h3 th:text="${lowStockCount}">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <div class="card border-danger shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-times-circle fa-2x text-danger mb-2"></i>
+                            <h6>Out Of Stock</h6>
+                            <h3 th:text="${outOfStockCount}">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <div class="card border-info shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calendar-times fa-2x text-info mb-2"></i>
+                            <h6>Expiring Soon</h6>
+                            <h3 th:text="${0}">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <div class="card border-dark shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-indian-rupee-sign fa-2x text-dark mb-2"></i>
+                            <h6>Inventory Value</h6>
+                            <h3 th:text="${inventoryValue}">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Low Stock Table -->
+            <div class="card mt-4 shadow">
+
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bell"></i>
+                        Low Stock Medicines
+                    </h5>
+                </div>
+
+                <div id="inventoryTableSection" style="display:none;">
+
+                    <div class="card mt-4">
+
+                        <div class="card-header">
+                            <h5 id="tableTitle">Inventory Details</h5>
+                            <button class="btn btn-sm btn-danger"
+                                    onclick="hideInventoryTable()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                        <div class="card-body">
+
+                            <table class="table table-bordered">
+
+                                <thead id="tableHead"></thead>
+
+                                <tbody id="tableBody"></tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            <div class="card mt-4 shadow">
+
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history"></i>
+                        Recent Inventory Activities
+                    </h5>
+                </div>
+
+                <div class="card-body">
+
+                    <table class="table table-bordered">
+
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Medicine</th>
+                            <th>Type</th>
+                            <th>Quantity</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="tx : ${recentTransactions}">
+                            <td th:text="${tx.transactionDate}"></td>
+                            <td th:text="${tx.medicine.name}"></td>
+                            <td th:text="${tx.type}"></td>
+                            <td th:text="${tx.quantity}"></td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+            </div>
+        </main>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    function hideInventoryTable() {
+
+        document.getElementById("inventoryTableSection")
+            .style.display = "none";
+    }
+    function renderLowStock(data){
+
+        document.getElementById("tableTitle").innerText =
+            "Low Stock Medicines";
+
+        document.getElementById("tableHead").innerHTML = `
+        <tr>
+            <th>Name</th>
+            <th>Batch</th>
+            <th>Quantity</th>
+        </tr>
+    `;
+
+        let rows = "";
+
+        data.forEach(medicine => {
+
+            rows += `
+            <tr>
+                <td>${medicine.name}</td>
+                <td>${medicine.batchNumber}</td>
+                <td>${medicine.quantity}</td>
+            </tr>
+        `;
+        });
+
+        document.getElementById("tableBody").innerHTML = rows;
+    }
+    function loadInventoryData(type) {
+
+        document.getElementById("inventoryTableSection")
+            .style.display = "block";
+
+        fetch('/inventory/' + type)
+            .then(response => response.json())
+            .then(data => {
+
+                switch(type) {
+
+                    case 'low-stock':
+                        renderLowStock(data);
+                        break;
+
+                    case 'expiry':
+                        renderExpiry(data);
+                        break;
+
+                    case 'history':
+                        renderHistory(data);
+                        break;
+                }
+
+            });
+    }
+    function renderExpiry(data) {
+
+        document.getElementById("tableTitle").innerText =
+            "Expiring Medicines";
+
+        document.getElementById("tableHead").innerHTML = `
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Batch No</th>
+            <th>Expiry Date</th>
+            <th>Quantity</th>
+        </tr>
+    `;
+
+        let rows = '';
+
+        if(data.length === 0) {
+
+            rows = `
+            <tr>
+                <td colspan="5" class="text-center text-success">
+                    No Expiring Medicines Found
+                </td>
+            </tr>
+        `;
+
+        } else {
+
+            data.forEach(medicine => {
+
+                rows += `
+                <tr>
+                    <td>${medicine.id}</td>
+                    <td>${medicine.name}</td>
+                    <td>${medicine.batchNumber}</td>
+                    <td>${medicine.expiryDate || ''}</td>
+                    <td>${medicine.quantity}</td>
+                </tr>
+            `;
+            });
+
+        }
+
+        document.getElementById("tableBody").innerHTML = rows;
+    }
+</script>
+</body>
+</html>
