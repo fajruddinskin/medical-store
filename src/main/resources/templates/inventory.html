@@ -214,8 +214,9 @@
 
                     <div class="card mt-4">
 
-                        <div class="card-header">
-                            <h5 id="tableTitle">Inventory Details</h5>
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 id="tableTitle" class="mb-0">Inventory Details</h5>
+
                             <button class="btn btn-sm btn-danger"
                                     onclick="hideInventoryTable()">
                                 <i class="fas fa-times"></i>
@@ -337,8 +338,8 @@
                         renderExpiry(data);
                         break;
 
-                    case 'history':
-                        renderHistory(data);
+                    case 'purchase':
+                        renderPurchase(data);
                         break;
                 }
 
@@ -389,6 +390,52 @@
         }
 
         document.getElementById("tableBody").innerHTML = rows;
+    }
+    function renderPurchase(data) {
+
+        console.log("DATA:", data);
+
+        // 1. Set title
+        document.getElementById("tableTitle").innerText = "Purchase History";
+
+        // 2. Set table header
+        document.getElementById("tableHead").innerHTML = `
+        <tr>
+            <th>#</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th>Date</th>
+        </tr>
+    `;
+
+        // 3. Build rows
+        let html = "";
+
+        if (!data || data.length === 0) {
+            html = `<tr>
+                    <td colspan="6" class="text-center">No Data Found</td>
+                </tr>`;
+        } else {
+
+            data.forEach((item, index) => {
+
+                html += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.productName}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.price}</td>
+                    <td>${item.quantity * item.price}</td>
+                    <td>${item.date}</td>
+                </tr>
+            `;
+            });
+        }
+
+        // 4. Set body
+        document.getElementById("tableBody").innerHTML = html;
     }
 </script>
 </body>

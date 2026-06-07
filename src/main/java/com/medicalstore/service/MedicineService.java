@@ -2,7 +2,9 @@ package com.medicalstore.service;
 
 import com.medicalstore.entity.Medicine;
 import com.medicalstore.entity.MedicineType;
+import com.medicalstore.entity.Purchase;
 import com.medicalstore.repository.MedicineRepository;
+import com.medicalstore.repository.PurchaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +20,8 @@ public class MedicineService {
 
     @Autowired
     private MedicineRepository medicineRepository;
-
+    @Autowired
+   private PurchaseRepository purchaseRepository;
     public List<Medicine> searchMedicines(String query) {
         //return null;
         return medicineRepository.searchMedicines(query);
@@ -34,7 +37,19 @@ public class MedicineService {
     }
 
     public Medicine saveMedicine(Medicine medicine) {
-        return medicineRepository.save(medicine);
+        Medicine savedMedicine = medicineRepository.save(medicine);
+
+        // 2. Create Purchase entry (HISTORY)
+        Purchase purchase = new Purchase();
+        purchase.setProductName(savedMedicine.getName());
+        purchase.setQuantity(savedMedicine.getQuantity());
+        purchase.setPrice(savedMedicine.getPrice().doubleValue()); // adjust type if needed
+        purchase.setDate(java.time.LocalDate.now());
+
+        // 3. Save Purchase
+        purchaseRepository.save(purchase);
+
+        return savedMedicine;
     }
 
     public boolean deleteMedicine(Long id) {
