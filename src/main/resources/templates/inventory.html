@@ -94,6 +94,22 @@
                                 <li class="nav-item">
                                     <a href="#"
                                        class="nav-link inventory-link"
+                                       onclick="showAdjustmentForm(); return false;">
+                                        <i class="fas fa-sliders-h me-2"></i>
+                                         Open Adjustment
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#"
+                                       class="nav-link inventory-link"
+                                       onclick="loadInventoryData('adjustmentHistory'); return false;">
+                                        <i class="fas fa-sliders-h me-2 text-warning"></i>
+                                        Inventory Adjustment
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#"
+                                       class="nav-link inventory-link"
                                        onclick="loadInventoryData('reports'); return false;">
                                         <i class="fas fa-file-alt me-2"></i>
                                         Reports
@@ -246,8 +262,8 @@
                         Recent Inventory Activities
                     </h5>
                 </div>
-
-                <div class="card-body">
+                <div id="inventoryTable"></div>
+                  <div class="card-body">
 
                     <table class="table table-bordered">
 
@@ -274,7 +290,94 @@
                     </table>
 
                 </div>
+                <div class="modal fade"
+                     id="adjustmentModal"
+                     tabindex="-1">
 
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    Inventory Adjustment
+                                </h5>
+
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal">
+                                </button>
+                            </div>
+
+                            <div class="modal-body">
+
+                                <div class="mb-3">
+                                    <label>Medicine</label>
+
+                                    <select id="medicineId"
+                                            class="form-select">
+
+                                        <option value="">
+                                            Select Medicine
+                                        </option>
+
+                                        <option th:each="medicine : ${medicines}"
+                                                th:value="${medicine.id}"
+                                                th:text="${medicine.name}">
+                                        </option>
+
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Adjustment Type</label>
+
+                                    <select id="adjustmentType"
+                                            class="form-select">
+
+                                        <option value="DAMAGE">Damage</option>
+                                        <option value="EXPIRED">Expired</option>
+                                        <option value="LOST">Lost</option>
+                                        <option value="STOCK_COUNT_CORRECTION">
+                                            Stock Correction
+                                        </option>
+
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Quantity</label>
+
+                                    <input type="number"
+                                           id="quantity"
+                                           class="form-control">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Reason</label>
+
+                                    <textarea id="reason"
+                                              class="form-control"></textarea>
+                                </div>
+
+                            </div>
+
+                            <div class="modal-footer">
+
+                                <button class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                    Close
+                                </button>
+
+                                <button class="btn btn-primary"
+                                        onclick="saveAdjustment()">
+                                    Save
+                                </button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
             </div>
         </main>
@@ -340,6 +443,9 @@
 
                     case 'purchase':
                         renderPurchase(data);
+                        break;
+                    case 'adjustmentHistory':
+                        renderAdjustment(data);
                         break;
                 }
 
@@ -436,6 +542,119 @@
 
         // 4. Set body
         document.getElementById("tableBody").innerHTML = html;
+    }
+
+    function showAdjustmentForm() {
+
+        const modal = new bootstrap.Modal(
+            document.getElementById('adjustmentModal')
+        );
+
+        modal.show();
+    }
+    function saveAdjustment() {
+
+        const adjustment = {
+
+            medicineId: document.getElementById("medicineId").value,
+            adjustmentType: document.getElementById("adjustmentType").value,
+            quantity: document.getElementById("quantity").value,
+            reason: document.getElementById("reason").value,
+            adjustedBy: "Admin"
+        };
+
+        fetch('/inventory/adjustment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(adjustment)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to save adjustment");
+                }
+                return response.json();
+            })
+            .then(data => {
+
+                alert("Inventory Adjustment Saved Successfully");
+
+                document.getElementById("medicineId").value = "";
+                document.getElementById("adjustmentType").value = "DAMAGE";
+                document.getElementById("quantity").value = "";
+                document.getElementById("reason").value = "";
+
+                const modal =
+                    bootstrap.Modal.getInstance(
+                        document.getElementById('adjustmentModal')
+                    );
+
+                if(modal){
+                    modal.hide();
+                }
+
+                loadInventoryData('history');
+            })
+            .catch(error => {
+                console.error(error);
+                alert("Error saving adjustment");
+            });
+    }
+    function renderAdjustment(data) {
+
+        document.getElementById("tableTitle").innerText =
+            "Inventory Adjustments";
+
+        document.getElementById("tableHead").innerHTML = `
+    <tr>
+        <th>#</th>
+        <th>Medicine</th>
+        <th>Type</th>
+        <th>Quantity</th>
+        <th>Reason</th>
+        <th>Stock Before</th>
+        <th>Stock After</th>
+        <th>Date</th>
+        <th>Adjusted By</th>
+    </tr>
+    `;
+
+        if (!data || data.length === 0) {
+            document.getElementById("tableBody").innerHTML = `
+            <tr>
+                <td colspan="9" class="text-center text-muted">
+                    No adjustment records found
+                </td>
+            </tr>
+        `;
+            return;
+        }
+
+        let rows = "";
+
+        data.forEach((item, index) => {
+
+            rows += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${item.medicineName ?? '-'}</td>
+                <td>
+                    <span class="badge bg-warning text-dark">
+                        ${item.adjustmentType ?? '-'}
+                    </span>
+                </td>
+                <td>${item.quantity ?? 0}</td>
+                <td>${item.reason ?? '-'}</td>
+                <td>${item.stockBefore ?? '-'}</td>
+                <td>${item.stockAfter ?? '-'}</td>
+                <td>${item.adjustmentDate ?? '-'}</td>
+                <td>${item.adjustedBy ?? '-'}</td>
+            </tr>
+        `;
+        });
+
+        document.getElementById("tableBody").innerHTML = rows;
     }
 </script>
 </body>
