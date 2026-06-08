@@ -14,7 +14,7 @@ public class PurchaseMapper {
         dto.setProductName(p.getProductName());
         dto.setQuantity(p.getQuantity());
         dto.setPrice(p.getPrice());
-        dto.setDate(p.getDate());
+        dto.setPurchaseDate(p.getPurchaseDate());
         return dto;
     }
 
@@ -26,7 +26,7 @@ public class PurchaseMapper {
         p.setProductName(dto.getProductName());
         p.setQuantity(dto.getQuantity());
         p.setPrice(dto.getPrice());
-        p.setDate(dto.getDate());
+        p.setPurchaseDate(p.getPurchaseDate());
         return p;
     }
 }

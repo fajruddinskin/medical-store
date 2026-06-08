@@ -44,7 +44,7 @@ public class MedicineService {
         purchase.setProductName(savedMedicine.getName());
         purchase.setQuantity(savedMedicine.getQuantity());
         purchase.setPrice(savedMedicine.getPrice().doubleValue()); // adjust type if needed
-        purchase.setDate(java.time.LocalDate.now());
+        purchase.setPurchaseDate(java.time.LocalDate.now());
 
         // 3. Save Purchase
         purchaseRepository.save(purchase);

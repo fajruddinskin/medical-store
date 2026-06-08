@@ -19,7 +19,7 @@ public class Purchase {
 
     private double price;
 
-    private LocalDate date;
+    private LocalDate purchaseDate;
 
     public Long getId() {
         return id;
@@ -53,11 +53,11 @@ public class Purchase {
         this.price = price;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getPurchaseDate() {
+        return purchaseDate;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setPurchaseDate(LocalDate purchaseDate) {
+        this.purchaseDate = purchaseDate;
     }
 }

@@ -7,7 +7,7 @@ public class PurchaseDto {
     private String productName;
     private int quantity;
     private double price;
-    private LocalDate date;
+    private LocalDate purchaseDate;
 
     public Long getId() {
         return id;
@@ -41,11 +41,11 @@ public class PurchaseDto {
         this.price = price;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getPurchaseDate() {
+        return purchaseDate;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setPurchaseDate(LocalDate purchaseDate) {
+        this.purchaseDate = purchaseDate;
     }
 }

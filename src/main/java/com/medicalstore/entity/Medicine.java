@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "medicines")
@@ -48,6 +49,30 @@ public class Medicine {
 
     @Column(name = "requires_prescription")
     private Boolean requiresPrescription = false;
+    @Column(name = "purchase_date")
+    private LocalDate purchaseDate;
+
+
+
+
+    @ManyToOne(cascade = CascadeType.PERSIST , fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+    private Category category;
+    // Constructors
+    public Medicine() {}
+
+    public Medicine(String name, String batchNumber, BigDecimal price,
+                    Integer quantity, String manufacturer, MedicineType type) {
+        this.name = name;
+        this.batchNumber = batchNumber;
+        this.price = price;
+        this.quantity = quantity;
+        this.manufacturer = manufacturer;
+        this.type = type;
+        this.purchaseDate = LocalDate.now();
+    }
+
+    // Getters and Setters
 
     public Category getCategory() {
         return category;
@@ -56,24 +81,6 @@ public class Medicine {
     public void setCategory(Category category) {
         this.category = category;
     }
-
-    @ManyToOne(cascade = CascadeType.PERSIST , fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id")
-    private Category category;
-    // Constructors
-    public Medicine() {}
-
-    public Medicine(String name, String batchNumber, BigDecimal price, Integer quantity,
-                    String manufacturer, MedicineType type) {
-        this.name = name;
-        this.batchNumber = batchNumber;
-        this.price = price;
-        this.quantity = quantity;
-        this.manufacturer = manufacturer;
-        this.type = type;
-    }
-
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getName() { return name; }
@@ -94,4 +101,12 @@ public class Medicine {
     public void setType(MedicineType type) { this.type = type; }
     public Boolean getRequiresPrescription() { return requiresPrescription; }
     public void setRequiresPrescription(Boolean requiresPrescription) { this.requiresPrescription = requiresPrescription; }
+
+    public LocalDate getPurchaseDate() {
+        return purchaseDate;
+    }
+
+    public void setPurchaseDate(LocalDate purchaseDate) {
+        this.purchaseDate = purchaseDate;
+    }
 }
