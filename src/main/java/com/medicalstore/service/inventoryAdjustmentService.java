@@ -1,12 +1,14 @@
 package com.medicalstore.service;
 
 import com.medicalstore.dto.InventoryAdjustmentDto;
+import com.medicalstore.dto.StockLedgerDto;
 import com.medicalstore.entity.InventoryAdjustment;
 import com.medicalstore.entity.Medicine;
 import com.medicalstore.mapper.InventoryAdjustmentMapper;
 import com.medicalstore.repository.InventoryAdjustmentRepository;
 import com.medicalstore.repository.MedicineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -52,7 +54,12 @@ public class inventoryAdjustmentService {
         adjustment.setStockBefore(stockBefore);
         adjustment.setStockAfter(stockAfter);
         adjustment.setAdjustmentDate(LocalDate.now());
+        String username = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
 
+        adjustment.setAdjustedBy(username);
         InventoryAdjustment saved = adjustmentRepository.save(adjustment);
 
         // ✅ FIX HERE (IMPORTANT)
@@ -64,6 +71,41 @@ public class inventoryAdjustmentService {
         return adjustmentRepository.findAll()
                 .stream()
                 .map(InventoryAdjustmentMapper::toDto)
+                .toList();
+    }
+    public List<StockLedgerDto> getStockLedger() {
+
+        return adjustmentRepository
+                .findAllByOrderByAdjustmentDateDesc()
+                .stream()
+                .map(adjustment -> {
+
+                    StockLedgerDto dto = new StockLedgerDto();
+
+                    dto.setDate(
+                            adjustment.getAdjustmentDate());
+
+                    dto.setMedicineName(
+                            adjustment.getMedicine().getName());
+
+                    dto.setTransactionType(
+                            adjustment.getAdjustmentType().name());
+
+                    dto.setQuantity(
+                            adjustment.getQuantity());
+
+                    dto.setStockBefore(
+                            adjustment.getStockBefore());
+
+                    dto.setStockAfter(
+                            adjustment.getStockAfter());
+
+                    dto.setReason(
+                            adjustment.getReason());
+                    dto.setAdjustedBy(adjustment.getAdjustedBy());
+
+                    return dto;
+                })
                 .toList();
     }
 }

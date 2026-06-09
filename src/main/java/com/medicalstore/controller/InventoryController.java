@@ -2,6 +2,7 @@ package com.medicalstore.controller;
 
 import com.medicalstore.dto.InventoryAdjustmentDto;
 import com.medicalstore.dto.PurchaseDto;
+import com.medicalstore.dto.StockLedgerDto;
 import com.medicalstore.entity.Medicine;
 import com.medicalstore.service.MedicineService;
 import com.medicalstore.service.PurchaseService;
@@ -42,5 +43,12 @@ public class InventoryController {
     @GetMapping("/adjustmentHistory")
     public List<InventoryAdjustmentDto> getAdjustments() {
         return inventoryAdjustmentService.getAllAdjustments();
+    }
+    @GetMapping("/stock-ledger")
+
+    public List<StockLedgerDto> getStockLedger() {
+
+        return inventoryAdjustmentService
+                .getStockLedger();
     }
 }

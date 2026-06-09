@@ -115,7 +115,14 @@
                                         Reports
                                     </a>
                                 </li>
-
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                       href="#"
+                                       onclick="loadStockLedger()">
+                                        <i class="fas fa-book"></i>
+                                        Stock Ledger
+                                    </a>
+                                </li>
                             </ul>
 
                         </div>
@@ -655,6 +662,69 @@
         });
 
         document.getElementById("tableBody").innerHTML = rows;
+    }
+    function loadStockLedger() {
+
+        document.getElementById("inventoryTableSection")
+            .style.display = "block";
+
+        fetch('/inventory/stock-ledger')
+            .then(response => response.json())
+            .then(data => {
+
+                let html = `
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h5>Stock In / Stock Out Ledger</h5>
+                    </div>
+
+                    <div class="card-body table-responsive">
+
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Medicine</th>
+                                    <th>Type</th>
+                                    <th>Qty</th>
+                                    <th>Before</th>
+                                    <th>After</th>
+                                    <th>Reason</th>
+                                    <th>Adjusted By</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+            `;
+
+                data.forEach(item => {
+
+                    html += `
+                    <tr>
+                        <td>${item.date ?? '-'}</td>
+                        <td>${item.medicineName ?? '-'}</td>
+                        <td>${item.transactionType ?? '-'}</td>
+                        <td>${item.quantity ?? 0}</td>
+                        <td>${item.stockBefore ?? '-'}</td>
+                        <td>${item.stockAfter ?? '-'}</td>
+                        <td>${item.reason ?? '-'}</td>
+                        <td>${item.adjustedBy ?? '-'}</td>
+                    </tr>
+                `;
+                });
+
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+
+                document.getElementById("inventoryTableSection")
+                    .innerHTML = html;
+            })
+            .catch(error => {
+                console.error("Error loading stock ledger:", error);
+            });
     }
 </script>
 </body>
