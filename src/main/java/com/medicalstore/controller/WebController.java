@@ -35,7 +35,8 @@ public class WebController {
     private EnumService enumService;
     @Autowired
     private LabTestDataService LabTestDataService;
-
+@Autowired
+private  SupplierService supplierService;
     @GetMapping("/signup")
     public String signupPage(Model model) {
         model.addAttribute("signupRequest", new SignupRequest());
@@ -338,5 +339,18 @@ public class WebController {
         model.addAttribute("medicines", medicines);
 
         return "inventory";
+    }
+    @GetMapping("/suppliers")
+    public String supplierManagement(Model model) {
+
+        model.addAttribute(
+                "totalSuppliers",
+                supplierService.getTotalSuppliers());
+
+        return "fragments/supplier-management";
+    }
+    @GetMapping("/supplier-returns")
+    public String supplierReturnsPage() {
+        return "supplier-return";
     }
 }

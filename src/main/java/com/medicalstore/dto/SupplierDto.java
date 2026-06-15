@@ -15,6 +15,8 @@ public class SupplierDto {
 
     private String status;
 
+
+
     public Long getId() {
         return id;
     }

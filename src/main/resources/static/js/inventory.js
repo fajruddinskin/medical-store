@@ -1,3 +1,4 @@
+let returnItems = [];
 function hideInventoryTable() {
 
     document.getElementById("inventoryTableSection")
@@ -442,4 +443,650 @@ function saveSupplier() {
             console.error(error);
             alert('Error saving supplier');
         });
+}
+
+function loadSuppliers() {
+
+    fetch('/api/suppliers')
+        .then(response => response.json())
+        .then(data => {
+
+            let html = `
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5>Supplier List</h5>
+                    </div>
+                        
+                    <div class="card-body">
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Supplier Name</th>
+                                    <th>Contact Person</th>
+                                    <th>Phone</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+            `;
+
+            data.forEach((supplier, index) => {
+
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${supplier.supplierName}</td>
+                        <td>${supplier.contactPerson}</td>
+                        <td>${supplier.phone}</td>
+                         <td>
+        <span class="badge ${
+                    supplier.status === 'ACTIVE'
+                        ? 'bg-success'
+                        : 'bg-danger'
+                }">
+            ${supplier.status}
+        </span>
+    </td>
+    <td>
+        <button class="btn btn-sm btn-primary"
+                onclick="editSupplier(${supplier.id})">
+            Edit
+        </button>
+
+        <button class="btn btn-sm btn-warning"
+                onclick="toggleSupplierStatus(${supplier.id})">
+            ${supplier.status === 'ACTIVE'
+                    ? 'Deactivate'
+                    : 'Activate'}
+        </button>
+    </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            `;
+
+            document.getElementById("contentArea").innerHTML = html;
+        });
+}
+function toggleSupplierStatus(id) {
+
+    fetch(`/api/suppliers/${id}/status`, {
+        method: 'PUT'
+    })
+        .then(response => response.json())
+        .then(data => {
+
+            alert('Status updated successfully');
+
+            loadSuppliers();
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
+function showSuggestions(query) {
+    const box = document.getElementById("suggestionBox");
+
+    if (!box) return;
+
+    if (!query || query.trim().length === 0) {
+        box.innerHTML = "";
+        box.style.display = "none";
+        return;
+    }
+
+    fetch(`/api/suppliers/search?query=${encodeURIComponent(query)}`)
+        .then(response => {
+            console.log("HTTP Status:", response.status);  // DEBUG 1
+            return response.json();
+        })
+        .then(data => {
+            console.log("API Response Data:", data);       // DEBUG 2
+            renderSuggestions(data);
+        })
+        .catch(err => {
+            console.error("Search error:", err);           // ERROR LOG
+        });
+}
+/*function renderSuggestions(list) {
+    const box = document.getElementById("suggestionBox");
+
+    if (!box) return;
+
+    if (!list || list.length === 0) {
+        box.innerHTML = `<div class="list-group-item">No results found</div>`;
+        box.style.display = "block";
+        return;
+    }
+
+    box.innerHTML = list.map(item => `
+        <div class="list-group-item"
+             onclick="selectSupplier('${item.supplierName}')">
+            ${item.supplierName}
+        </div>
+    `).join("");
+
+    box.style.display = "block";
+}*/
+function renderSuggestions(list) {
+    const box = document.getElementById("suggestionBox");
+
+    if (!box) return;
+
+    if (!list || list.length === 0) {
+        box.innerHTML = `<div class="list-group-item">No results found</div>`;
+        box.style.display = "block";
+        return;
+    }
+
+    box.innerHTML = list.map(item => `
+        <div class="list-group-item"
+             onclick='selectSupplier(${JSON.stringify(item)})'>
+            ${item.supplierName}
+        </div>
+    `).join("");
+
+    box.style.display = "block";
+}
+function renderTable(item) {
+
+    let table = document.getElementById("supplierTable");
+
+    if (!table) {
+        table = document.createElement("table");
+        table.id = "supplierTable";
+        table.className = "table table-bordered mt-3";
+
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Supplier Name</th>
+                    <th>Contact Person</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="supplierTableBody"></tbody>
+        `;
+
+        document.body.appendChild(table);
+    }
+
+    const tbody = document.getElementById("supplierTableBody");
+
+    tbody.innerHTML = `
+        <tr>
+            <td>${item.id}</td>
+            <td>${item.supplierName}</td>
+            <td>${item.contactPerson}</td>
+            <td>${item.phone}</td>
+            <td>${item.email}</td>
+            <td>${item.address}</td>
+            <td>${item.status}</td>
+        </tr>
+    `;
+}
+function selectSupplier(item) {
+
+    // fill input box
+    document.getElementById("supplierSearch").value = item.supplierName;
+
+    // hide suggestion box
+    document.getElementById("suggestionBox").innerHTML = "";
+    document.getElementById("suggestionBox").style.display = "none";
+
+    // show full row in table
+    renderTable(item);
+}
+function loadSupplierReturn() {
+
+    document.getElementById("contentArea").innerHTML = `
+
+        <div class="card mt-4 shadow">
+
+            <div class="card-header bg-warning">
+                <h5 class="mb-0">
+                    Return To Supplier
+                </h5>
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <label class="form-label">
+                            Supplier
+                        </label>
+
+                        <select id="supplierId"
+                                class="form-select">
+
+                            <option value="">
+                                Select Supplier
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">
+                            Return Date
+                        </label>
+
+                        <input type="date"
+                               id="returnDate"
+                               class="form-control">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">
+                            Reason
+                        </label>
+
+                        <select id="returnReason"
+                                class="form-select">
+
+                            <option value="EXPIRED">
+                                Expired
+                            </option>
+
+                            <option value="DAMAGED">
+                                Damaged
+                            </option>
+
+                            <option value="WRONG_SUPPLY">
+                                Wrong Supply
+                            </option>
+
+                            <option value="EXCESS_STOCK">
+                                Excess Stock
+                            </option>
+
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="row mt-3">
+
+                    <div class="col-md-12">
+
+                        <label class="form-label">
+                            Remarks
+                        </label>
+
+                        <textarea id="remarks"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="Enter remarks">
+                        </textarea>
+                    <hr>
+
+<h5>Add Medicine</h5>
+
+<div class="row">
+
+    <div class="col-md-4">
+        <label class="form-label">Medicine</label>
+
+        <input type="hidden"
+           id="medicineId">
+
+    <input type="text"
+           id="medicineSearch"
+           class="form-control"
+           placeholder="Search Medicine"
+           onkeyup="searchMedicine()">
+
+    <div id="medicineSuggestions"
+         class="list-group position-absolute w-100"
+         style="z-index:1000;">
+    </div>
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label">Stock</label>
+
+        <input type="text"
+               id="currentStock"
+               class="form-control"
+               readonly>
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label">Price</label>
+
+        <input type="text"
+               id="purchasePrice"
+               class="form-control"
+               readonly>
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label">Quantity</label>
+
+        <input type="number"
+               id="returnQty"
+               class="form-control"
+               min="1">
+    </div>
+
+    <div class="col-md-2 d-flex align-items-end">
+
+        <button class="btn btn-danger w-100"
+                onclick="addReturnItem()">
+
+            Add Item
+
+        </button>
+
+    </div>
+
+</div>
+<hr>
+
+<div class="table-responsive">
+
+    <table class="table table-bordered">
+
+        <thead class="table-light">
+
+        <tr>
+            <th>Medicine</th>
+            <th>Stock</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+            <th>Action</th>
+        </tr>
+
+        </thead>
+
+        <tbody id="returnItemsTable">
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="text-end">
+
+    <h4>
+        Total :
+        ₹ <span id="totalAmount">0.00</span>
+    </h4>
+
+</div>
+                 
+  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+    document.getElementById("returnDate").value =
+        new Date().toISOString().split("T")[0];
+
+    loadSupplierDropdown();
+ //   loadSuppliers();
+}
+function loadSupplierDropdown() {
+
+    fetch('/api/suppliers')
+        .then(response => response.json())
+        .then(data => {
+
+            const supplierSelect =
+                document.getElementById("supplierId");
+
+            supplierSelect.innerHTML =
+                '<option value="">Select Supplier</option>';
+
+            data.forEach(supplier => {
+
+                if (supplier.status === 'ACTIVE') {
+
+                    supplierSelect.innerHTML += `
+                        <option value="${supplier.id}">
+                            ${supplier.supplierName}
+                        </option>
+                    `;
+                }
+            });
+        })
+        .catch(error => {
+            console.error(
+                "Error loading suppliers:",
+                error
+            );
+        });
+}
+function searchMedicine() {
+
+    const searchTerm =
+        document.getElementById("medicineSearch").value;
+
+    if (searchTerm.length < 2) {
+        document.getElementById(
+            "medicineSuggestions"
+        ).innerHTML = "";
+        return;
+    }
+
+    fetch(`/api/medicines/search?searchTerm=${encodeURIComponent(searchTerm)}`)
+        .then(response => response.json())
+        .then(data => renderMedicineSuggestions(data))
+        .catch(error => {
+            console.error("Medicine Search Error:", error);
+        });
+}
+function renderMedicineSuggestions(medicines) {
+
+    const suggestionBox =
+        document.getElementById(
+            "medicineSuggestions"
+        );
+
+    suggestionBox.innerHTML = "";
+
+    medicines.forEach(medicine => {
+
+        suggestionBox.innerHTML += `
+
+            <a href="#"
+               class="list-group-item list-group-item-action"
+               onclick="selectMedicine(
+                   ${medicine.id},
+                   '${medicine.name}',
+                   ${medicine.quantity},
+                   ${medicine.price}
+               )">
+
+                ${medicine.name}
+                (Stock: ${medicine.quantity})
+
+            </a>
+
+        `;
+    });
+}
+function selectMedicine(
+    id,
+    name,
+    quantity,
+    price
+) {
+
+    document.getElementById("medicineId").value = id;
+
+    document.getElementById("medicineSearch").value = name;
+
+    document.getElementById("currentStock").value = quantity;
+
+    document.getElementById("purchasePrice").value = price;
+
+    document.getElementById("medicineSuggestions").innerHTML = "";
+
+    document.getElementById("returnQty").focus();
+}
+//let returnItems = [];
+
+function addReturnItem() {
+
+    const medicineId =
+        document.getElementById("medicineId").value;
+
+    const medicineName =
+        document.getElementById("medicineSearch").value;
+
+    const stock =
+        parseInt(
+            document.getElementById("currentStock").value
+        );
+
+    const price =
+        parseFloat(
+            document.getElementById("purchasePrice").value
+        );
+
+    const quantity =
+        parseInt(
+            document.getElementById("returnQty").value
+        );
+
+    if (!medicineId) {
+        alert("Please select a medicine");
+        return;
+    }
+
+    if (!quantity || quantity <= 0) {
+        alert("Please enter a valid quantity");
+        return;
+    }
+
+    if (quantity > stock) {
+        alert("Return quantity cannot exceed stock");
+        return;
+    }
+
+    const existingItem = returnItems.find(
+        item => item.medicineId == medicineId
+    );
+
+    if (existingItem) {
+
+        existingItem.quantity += quantity;
+
+        if (existingItem.quantity > stock) {
+            alert("Total quantity exceeds available stock");
+            existingItem.quantity -= quantity;
+            return;
+        }
+
+        existingItem.amount =
+            existingItem.quantity * existingItem.price;
+
+    } else {
+
+        returnItems.push({
+            medicineId: medicineId,
+            medicineName: medicineName,
+            stock: stock,
+            price: price,
+            quantity: quantity,
+            amount: quantity * price
+        });
+    }
+
+    renderReturnItems();
+
+    clearMedicineInputs();
+}
+function renderReturnItems() {
+  //  console.log(returnItems);
+   const tbody =
+        document.getElementById("returnItemsTable");
+
+    tbody.innerHTML = "";
+
+    let total = 0;
+
+    returnItems.forEach((item, index) => {
+
+        total += item.amount;
+
+        tbody.innerHTML += `
+            <tr>
+                <td>${item.medicineName}</td>
+                <td>${item.stock}</td>
+                <td>${item.price}</td>
+                <td>${item.quantity}</td>
+                <td>${item.amount}</td>
+                <td>
+    <button
+        class="btn btn-danger btn-sm"
+        onclick="removeReturnItem(${index})">
+
+        Remove
+
+    </button>
+</td>
+            </tr>
+        `;
+    });
+
+    document.getElementById("totalAmount")
+        .innerText = total.toFixed(2);
+}
+function removeReturnItem(index) {
+
+    returnItems.splice(index, 1);
+
+    renderReturnItems();
+
+    if (returnItems.length === 0) {
+
+        document.getElementById("totalAmount")
+            .innerText = "0.00";
+    }
+}
+function clearMedicineInputs() {
+
+    document.getElementById("medicineId").value = "";
+
+    document.getElementById("medicineSearch").value = "";
+
+    document.getElementById("currentStock").value = "";
+
+    document.getElementById("purchasePrice").value = "";
+
+    document.getElementById("returnQty").value = "";
+
+    const suggestionBox =
+        document.getElementById("medicineSuggestions");
+
+    if (suggestionBox) {
+        suggestionBox.innerHTML = "";
+    }
+
+    document.getElementById("medicineSearch").focus();
 }

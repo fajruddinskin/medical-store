@@ -13,148 +13,9 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="position-sticky pt-3">
-                <div class="text-center mb-4">
-                    <i class="fas fa-hospital-alt fa-3x mb-3"></i>
-                    <h4>Medical Store</h4>
-                    <p class="text-light">Management System</p>
-                </div>
 
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">
-                            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
-                        </a>
-                    </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link " href="/medicines">
-                            <i class="fas fa-pills me-2"></i> Medicine Management
-                        </a>
-                    </li>
-                    <li class="nav-item">
-
-                        <a class="nav-link"
-                           data-bs-toggle="collapse"
-                           href="#inventoryMenu">
-
-                            <i class="fas fa-boxes me-2"></i>
-                            Inventory
-                        </a>
-
-                        <div class="collapse show" id="inventoryMenu">
-
-                            <ul class="nav flex-column ms-3">
-
-                                <li class="nav-item">
-                                    <a href="#"
-                                       class="nav-link inventory-link active"
-                                       onclick="loadInventoryData('dashboard'); return false;">
-                                        <i class="fas fa-chart-pie me-2"></i>
-                                        Dashboard
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="#"
-                                       class="nav-link"
-                                       onclick="loadInventoryData('low-stock'); return false;">
-                                        Low Stock
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="#"
-                                       class="nav-link inventory-link"
-                                       onclick="loadInventoryData('expiry'); return false;">
-                                        <i class="fas fa-calendar-times me-2"></i>
-                                        Expiry Tracking
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="#"
-                                       class="nav-link inventory-link"
-                                       onclick="loadInventoryData('purchase'); return false;">
-                                        <i class="fas fa-cart-plus me-2 text-success"></i>
-                                        Purchase Entry
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="#"
-                                       class="nav-link inventory-link"
-                                       onclick="loadInventoryData('history'); return false;">
-                                        <i class="fas fa-history me-2"></i>
-                                        Stock History
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="#"
-                                       class="nav-link inventory-link"
-                                       onclick="showAdjustmentForm(); return false;">
-                                        <i class="fas fa-sliders-h me-2"></i>
-                                         Open Adjustment
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#"
-                                       class="nav-link inventory-link"
-                                       onclick="loadInventoryData('adjustmentHistory'); return false;">
-                                        <i class="fas fa-sliders-h me-2 text-warning"></i>
-                                        Inventory Adjustment
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#"
-                                       class="nav-link inventory-link"
-                                       onclick="loadInventoryData('reports'); return false;">
-                                        <i class="fas fa-file-alt me-2"></i>
-                                        Reports
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link"
-                                       href="#"
-                                       onclick="loadStockLedger()">
-                                        <i class="fas fa-book"></i>
-                                        Stock Ledger
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link"
-                                       href="#"
-                                       onclick="showSupplierForm()">
-                                        <i class="fas fa-book"></i>
-                                        Stock Ledger
-                                    </a>
-                                </li>
-                            </ul>
-
-                        </div>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/customers">
-                            <i class="fas fa-users me-2"></i> Customer Management
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/reports">
-                            <i class="fas fa-flask me-2"></i> Lab Reports
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/lab-test-registration">
-                            <i class="fas fa-chart-bar me-2"></i> Lab Test Registration
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
+        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
 
         <!-- Main content -->
@@ -169,77 +30,13 @@
             </div>
 
             <!-- Statistics Cards -->
-            <div class="row mb-4">
-                <div class="col-md-2 mb-3">
-                    <div class="card border-primary shadow-sm">
-                        <div class="card-body text-center">
-                            <i class="fas fa-pills fa-2x text-primary mb-2"></i>
-                            <h6>Total Medicines</h6>
-                            <h3 th:text="${totalMedicines}">0</h3>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="col-md-2 mb-3">
-                    <div class="card border-success shadow-sm">
-                        <div class="card-body text-center">
-                            <i class="fas fa-cubes fa-2x text-success mb-2"></i>
-                            <h6>Total Units</h6>
-                            <h3 th:text="${totalStockUnits}">0</h3>
-                        </div>
-                    </div>
-                </div>
+            <div th:replace="~{fragments/inventory-summary :: inventory-summary}"></div>
 
-                <div class="col-md-2 mb-3">
-                    <div class="card border-warning shadow-sm">
-                        <div class="card-body text-center">
-                            <i class="fas fa-exclamation-triangle fa-2x text-warning mb-2"></i>
-                            <h6>Low Stock</h6>
-                            <h3 th:text="${lowStockCount}">0</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-2 mb-3">
-                    <div class="card border-danger shadow-sm">
-                        <div class="card-body text-center">
-                            <i class="fas fa-times-circle fa-2x text-danger mb-2"></i>
-                            <h6>Out Of Stock</h6>
-                            <h3 th:text="${outOfStockCount}">0</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-2 mb-3">
-                    <div class="card border-info shadow-sm">
-                        <div class="card-body text-center">
-                            <i class="fas fa-calendar-times fa-2x text-info mb-2"></i>
-                            <h6>Expiring Soon</h6>
-                            <h3 th:text="${0}">0</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-2 mb-3">
-                    <div class="card border-dark shadow-sm">
-                        <div class="card-body text-center">
-                            <i class="fas fa-indian-rupee-sign fa-2x text-dark mb-2"></i>
-                            <h6>Inventory Value</h6>
-                            <h3 th:text="${inventoryValue}">0</h3>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
             <!-- Low Stock Table -->
             <div class="card mt-4 shadow">
 
-                <div class="card-header bg-warning">
-                    <h5 class="mb-0">
-                        <i class="fas fa-bell"></i>
-                        Low Stock Medicines
-                    </h5>
-                </div>
+
 
                 <div id="inventoryTableSection" style="display:none;">
 

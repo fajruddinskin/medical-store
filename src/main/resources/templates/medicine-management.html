@@ -457,8 +457,8 @@
                         <div class="card-body">
 
 
-                            <div id="medicineTableContainer"
-                                 th:insert="fragments/medicine-table :: medicineTable">
+                            <div id="medicineTableContainer">
+                            <div th:replace="~{fragments/medicine-table :: medicineTable}"></div>
                             </div>
 
                         </div>

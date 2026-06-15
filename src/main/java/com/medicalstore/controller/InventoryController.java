@@ -51,4 +51,9 @@ public class InventoryController {
         return inventoryAdjustmentService
                 .getStockLedger();
     }
+    @GetMapping("/suppliers")
+    public String supplierManagement() {
+        return "fragments/supplier-management";
+    }
+
 }

@@ -1,12 +1,12 @@
 package com.medicalstore.controller;
 
 import com.medicalstore.dto.SupplierDto;
+import com.medicalstore.entity.Supplier;
 import com.medicalstore.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/suppliers")
@@ -18,5 +18,20 @@ public class SupplierController {
             @RequestBody SupplierDto supplierDto) {
 
         return supplierService.saveSupplier(supplierDto);
+    }
+    @GetMapping
+    public List<SupplierDto> getAllSuppliers() {
+
+        return supplierService.getAllSuppliers();
+    }
+    @PutMapping("/{id}/status")
+    public SupplierDto toggleStatus(
+            @PathVariable Long id) {
+
+        return supplierService.toggleStatus(id);
+    }
+    @GetMapping("/search")
+    public List<Supplier> search(@RequestParam String query) {
+        return supplierService.searchSuppliers(query);
     }
 }

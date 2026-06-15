@@ -1,0 +1,62 @@
+<div th:fragment="inventory-summary">
+
+    <div class="row mb-4">
+
+        <!-- Total Medicines -->
+        <div class="col-md-2 mb-3">
+            <div class="card border-primary shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-pills fa-2x text-primary mb-2"></i>
+                    <h6>Total Medicines</h6>
+                    <h3 th:text="${totalMedicines}">0</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Stock -->
+        <div class="col-md-2 mb-3">
+            <div class="card border-warning shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-exclamation-triangle fa-2x text-warning mb-2"></i>
+                    <h6>Low Stock</h6>
+                    <h3 th:text="${lowStockCount}">0</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Out Of Stock -->
+        <div class="col-md-2 mb-3">
+            <div class="card border-danger shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-times-circle fa-2x text-danger mb-2"></i>
+                    <h6>Out Of Stock</h6>
+                    <h3 th:text="${outOfStockCount}">0</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expiring Soon -->
+        <div class="col-md-2 mb-3">
+            <div class="card border-info shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-calendar-times fa-2x text-info mb-2"></i>
+                    <h6>Expiring Soon</h6>
+                    <h3 th:text="${expiringSoonCount}">0</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory Value -->
+        <div class="col-md-2 mb-3">
+            <div class="card border-dark shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-indian-rupee-sign fa-2x text-dark mb-2"></i>
+                    <h6>Inventory Value</h6>
+                    <h3 th:text="${inventoryValue}">0</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
