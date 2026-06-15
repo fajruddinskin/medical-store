@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Store Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- ✅ External CSS -->
+    <link rel="stylesheet" th:href="@{/css/medical-store.css}">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="position-sticky pt-3">
+                <div class="text-center mb-4">
+                    <i class="fas fa-hospital-alt fa-3x mb-3"></i>
+                    <h4>Medical Store</h4>
+                    <p class="text-light">Management System</p>
+                </div>
+
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link " href="/medicines">
+                            <i class="fas fa-pills me-2"></i> Medicine Management
+                        </a>
+                    </li>
+                    <li class="nav-item">
+
+                        <a class="nav-link"
+                           data-bs-toggle="collapse"
+                           href="#inventoryMenu">
+
+                            <i class="fas fa-boxes me-2"></i>
+                            Inventory
+                        </a>
+
+                        <div class="collapse show" id="inventoryMenu">
+
+                            <ul class="nav flex-column ms-3">
+
+                                <li class="nav-item">
+                                    <a href="#"
+                                       class="nav-link inventory-link active"
+                                       onclick="loadInventoryData('dashboard'); return false;">
+                                        <i class="fas fa-chart-pie me-2"></i>
+                                        Dashboard
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="#"
+                                       class="nav-link"
+                                       onclick="loadInventoryData('low-stock'); return false;">
+                                        Low Stock
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="#"
+                                       class="nav-link inventory-link"
+                                       onclick="loadInventoryData('expiry'); return false;">
+                                        <i class="fas fa-calendar-times me-2"></i>
+                                        Expiry Tracking
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="#"
+                                       class="nav-link inventory-link"
+                                       onclick="loadInventoryData('purchase'); return false;">
+                                        <i class="fas fa-cart-plus me-2 text-success"></i>
+                                        Purchase Entry
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="#"
+                                       class="nav-link inventory-link"
+                                       onclick="loadInventoryData('history'); return false;">
+                                        <i class="fas fa-history me-2"></i>
+                                        Stock History
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="#"
+                                       class="nav-link inventory-link"
+                                       onclick="showAdjustmentForm(); return false;">
+                                        <i class="fas fa-sliders-h me-2"></i>
+                                         Open Adjustment
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#"
+                                       class="nav-link inventory-link"
+                                       onclick="loadInventoryData('adjustmentHistory'); return false;">
+                                        <i class="fas fa-sliders-h me-2 text-warning"></i>
+                                        Inventory Adjustment
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#"
+                                       class="nav-link inventory-link"
+                                       onclick="loadInventoryData('reports'); return false;">
+                                        <i class="fas fa-file-alt me-2"></i>
+                                        Reports
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                       href="#"
+                                       onclick="loadStockLedger()">
+                                        <i class="fas fa-book"></i>
+                                        Stock Ledger
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/customers">
+                            <i class="fas fa-users me-2"></i> Customer Management
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/reports">
+                            <i class="fas fa-flask me-2"></i> Lab Reports
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/lab-test-registration">
+                            <i class="fas fa-chart-bar me-2"></i> Lab Test Registration
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-light" style="min-height: 100vh; width: 998px;">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2 text-primary">
+                    <i class="fas fa-tachometer-alt me-2"></i> Inventory Dashboard
+                </h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <span class="text-muted" th:text="'Welcome to Medical Store System'"></span>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-md-2 mb-3">
+                    <div class="card border-primary shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-pills fa-2x text-primary mb-2"></i>
+                            <h6>Total Medicines</h6>
+                            <h3 th:text="${totalMedicines}">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <div class="card border-success shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-cubes fa-2x text-success mb-2"></i>
+                            <h6>Total Units</h6>
+                            <h3 th:text="${totalStockUnits}">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <div class="card border-warning shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-exclamation-triangle fa-2x text-warning mb-2"></i>
+                            <h6>Low Stock</h6>
+                            <h3 th:text="${lowStockCount}">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <div class="card border-danger shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-times-circle fa-2x text-danger mb-2"></i>
+                            <h6>Out Of Stock</h6>
+                            <h3 th:text="${outOfStockCount}">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <div class="card border-info shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calendar-times fa-2x text-info mb-2"></i>
+                            <h6>Expiring Soon</h6>
+                            <h3 th:text="${0}">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <div class="card border-dark shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-indian-rupee-sign fa-2x text-dark mb-2"></i>
+                            <h6>Inventory Value</h6>
+                            <h3 th:text="${inventoryValue}">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Low Stock Table -->
+            <div class="card mt-4 shadow">
+
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bell"></i>
+                        Low Stock Medicines
+                    </h5>
+                </div>
+
+                <div id="inventoryTableSection" style="display:none;">
+
+                    <div class="card mt-4">
+
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 id="tableTitle" class="mb-0">Inventory Details</h5>
+
+                            <button class="btn btn-sm btn-danger"
+                                    onclick="hideInventoryTable()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                        <div class="card-body">
+
+                            <table class="table table-bordered">
+
+                                <thead id="tableHead"></thead>
+
+                                <tbody id="tableBody"></tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            <div class="card mt-4 shadow">
+
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history"></i>
+                        Recent Inventory Activities
+                    </h5>
+                </div>
+                <div id="inventoryTable"></div>
+                  <div class="card-body">
+
+                    <table class="table table-bordered">
+
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Medicine</th>
+                            <th>Type</th>
+                            <th>Quantity</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="tx : ${recentTransactions}">
+                            <td th:text="${tx.transactionDate}"></td>
+                            <td th:text="${tx.medicine.name}"></td>
+                            <td th:text="${tx.type}"></td>
+                            <td th:text="${tx.quantity}"></td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+                <div class="modal fade"
+                     id="adjustmentModal"
+                     tabindex="-1">
+
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    Inventory Adjustment
+                                </h5>
+
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal">
+                                </button>
+                            </div>
+
+                            <div class="modal-body">
+
+                                <div class="mb-3">
+                                    <label>Medicine</label>
+
+                                    <select id="medicineId"
+                                            class="form-select">
+
+                                        <option value="">
+                                            Select Medicine
+                                        </option>
+
+                                        <option th:each="medicine : ${medicines}"
+                                                th:value="${medicine.id}"
+                                                th:text="${medicine.name}">
+                                        </option>
+
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Adjustment Type</label>
+
+                                    <select id="adjustmentType"
+                                            class="form-select">
+
+                                        <option value="DAMAGE">Damage</option>
+                                        <option value="EXPIRED">Expired</option>
+                                        <option value="LOST">Lost</option>
+                                        <option value="STOCK_COUNT_CORRECTION">
+                                            Stock Correction
+                                        </option>
+
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Quantity</label>
+
+                                    <input type="number"
+                                           id="quantity"
+                                           class="form-control">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Reason</label>
+
+                                    <textarea id="reason"
+                                              class="form-control"></textarea>
+                                </div>
+
+                            </div>
+
+                            <div class="modal-footer">
+
+                                <button class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                    Close
+                                </button>
+
+                                <button class="btn btn-primary"
+                                        onclick="saveAdjustment()">
+                                    Save
+                                </button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </main>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    function hideInventoryTable() {
+
+        document.getElementById("inventoryTableSection")
+            .style.display = "none";
+    }
+    function renderLowStock(data){
+
+        document.getElementById("tableTitle").innerText =
+            "Low Stock Medicines";
+
+        document.getElementById("tableHead").innerHTML = `
+        <tr>
+            <th>Name</th>
+            <th>Batch</th>
+            <th>Quantity</th>
+        </tr>
+    `;
+
+        let rows = "";
+
+        data.forEach(medicine => {
+
+            rows += `
+            <tr>
+                <td>${medicine.name}</td>
+                <td>${medicine.batchNumber}</td>
+                <td>${medicine.quantity}</td>
+            </tr>
+        `;
+        });
+
+        document.getElementById("tableBody").innerHTML = rows;
+    }
+    function loadInventoryData(type) {
+
+        document.getElementById("inventoryTableSection")
+            .style.display = "block";
+
+        fetch('/inventory/' + type)
+            .then(response => response.json())
+            .then(data => {
+
+                switch(type) {
+
+                    case 'low-stock':
+                        renderLowStock(data);
+                        break;
+
+                    case 'expiry':
+                        renderExpiry(data);
+                        break;
+
+                    case 'purchase':
+                        renderPurchase(data);
+                        break;
+                    case 'adjustmentHistory':
+                        renderAdjustment(data);
+                        break;
+                }
+
+            });
+    }
+    function renderExpiry(data) {
+
+        document.getElementById("tableTitle").innerText =
+            "Expiring Medicines";
+
+        document.getElementById("tableHead").innerHTML = `
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Batch No</th>
+            <th>Expiry Date</th>
+            <th>Quantity</th>
+        </tr>
+    `;
+
+        let rows = '';
+
+        if(data.length === 0) {
+
+            rows = `
+            <tr>
+                <td colspan="5" class="text-center text-success">
+                    No Expiring Medicines Found
+                </td>
+            </tr>
+        `;
+
+        } else {
+
+            data.forEach(medicine => {
+
+                rows += `
+                <tr>
+                    <td>${medicine.id}</td>
+                    <td>${medicine.name}</td>
+                    <td>${medicine.batchNumber}</td>
+                    <td>${medicine.expiryDate || ''}</td>
+                    <td>${medicine.quantity}</td>
+                </tr>
+            `;
+            });
+
+        }
+
+        document.getElementById("tableBody").innerHTML = rows;
+    }
+    function renderPurchase(data) {
+
+        console.log("DATA:", data);
+
+        // 1. Set title
+        document.getElementById("tableTitle").innerText = "Purchase History";
+
+        // 2. Set table header
+        document.getElementById("tableHead").innerHTML = `
+        <tr>
+            <th>#</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th>Purchase Date</th>
+        </tr>
+    `;
+
+        // 3. Build rows
+        let html = "";
+
+        if (!data || data.length === 0) {
+            html = `<tr>
+                    <td colspan="6" class="text-center">No Data Found</td>
+                </tr>`;
+        } else {
+
+            data.forEach((item, index) => {
+
+                html += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.productName}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.price}</td>
+                    <td>${item.quantity * item.price}</td>
+                     <td>${item.purchaseDate}</td>
+                </tr>
+            `;
+            });
+        }
+
+        // 4. Set body
+        document.getElementById("tableBody").innerHTML = html;
+    }
+
+    function showAdjustmentForm() {
+
+        const modal = new bootstrap.Modal(
+            document.getElementById('adjustmentModal')
+        );
+
+        modal.show();
+    }
+    function saveAdjustment() {
+
+        const adjustment = {
+
+            medicineId: document.getElementById("medicineId").value,
+            adjustmentType: document.getElementById("adjustmentType").value,
+            quantity: document.getElementById("quantity").value,
+            reason: document.getElementById("reason").value,
+            adjustedBy: "Admin"
+        };
+
+        fetch('/inventory/adjustment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(adjustment)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to save adjustment");
+                }
+                return response.json();
+            })
+            .then(data => {
+
+                alert("Inventory Adjustment Saved Successfully");
+
+                document.getElementById("medicineId").value = "";
+                document.getElementById("adjustmentType").value = "DAMAGE";
+                document.getElementById("quantity").value = "";
+                document.getElementById("reason").value = "";
+
+                const modal =
+                    bootstrap.Modal.getInstance(
+                        document.getElementById('adjustmentModal')
+                    );
+
+                if(modal){
+                    modal.hide();
+                }
+
+                loadInventoryData('history');
+            })
+            .catch(error => {
+                console.error(error);
+                alert("Error saving adjustment");
+            });
+    }
+    function renderAdjustment(data) {
+
+        document.getElementById("tableTitle").innerText =
+            "Inventory Adjustments";
+
+        document.getElementById("tableHead").innerHTML = `
+    <tr>
+        <th>#</th>
+        <th>Medicine</th>
+        <th>Type</th>
+        <th>Quantity</th>
+        <th>Reason</th>
+        <th>Stock Before</th>
+        <th>Stock After</th>
+        <th>Date</th>
+        <th>Adjusted By</th>
+    </tr>
+    `;
+
+        if (!data || data.length === 0) {
+            document.getElementById("tableBody").innerHTML = `
+            <tr>
+                <td colspan="9" class="text-center text-muted">
+                    No adjustment records found
+                </td>
+            </tr>
+        `;
+            return;
+        }
+
+        let rows = "";
+
+        data.forEach((item, index) => {
+
+            rows += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${item.medicineName ?? '-'}</td>
+                <td>
+                    <span class="badge bg-warning text-dark">
+                        ${item.adjustmentType ?? '-'}
+                    </span>
+                </td>
+                <td>${item.quantity ?? 0}</td>
+                <td>${item.reason ?? '-'}</td>
+                <td>${item.stockBefore ?? '-'}</td>
+                <td>${item.stockAfter ?? '-'}</td>
+                <td>${item.adjustmentDate ?? '-'}</td>
+                <td>${item.adjustedBy ?? '-'}</td>
+            </tr>
+        `;
+        });
+
+        document.getElementById("tableBody").innerHTML = rows;
+    }
+    function loadStockLedger() {
+
+        document.getElementById("inventoryTableSection")
+            .style.display = "block";
+
+        fetch('/inventory/stock-ledger')
+            .then(response => response.json())
+            .then(data => {
+
+                let html = `
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h5>Stock In / Stock Out Ledger</h5>
+                    </div>
+
+                    <div class="card-body table-responsive">
+
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Medicine</th>
+                                    <th>Type</th>
+                                    <th>Qty</th>
+                                    <th>Before</th>
+                                    <th>After</th>
+                                    <th>Reason</th>
+                                    <th>Adjusted By</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+            `;
+
+                data.forEach(item => {
+
+                    html += `
+                    <tr>
+                        <td>${item.date ?? '-'}</td>
+                        <td>${item.medicineName ?? '-'}</td>
+                        <td>${item.transactionType ?? '-'}</td>
+                        <td>${item.quantity ?? 0}</td>
+                        <td>${item.stockBefore ?? '-'}</td>
+                        <td>${item.stockAfter ?? '-'}</td>
+                        <td>${item.reason ?? '-'}</td>
+                        <td>${item.adjustedBy ?? '-'}</td>
+                    </tr>
+                `;
+                });
+
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+
+                document.getElementById("inventoryTableSection")
+                    .innerHTML = html;
+            })
+            .catch(error => {
+                console.error("Error loading stock ledger:", error);
+            });
+    }
+</script>
+</body>
+</html>
