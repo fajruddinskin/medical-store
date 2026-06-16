@@ -832,7 +832,21 @@ function loadSupplierReturn() {
     </h4>
 
 </div>
-                 
+    <div class="mt-3 text-end">
+
+    <button type="button"
+            class="btn btn-success"
+            onclick="saveReturn()">
+        <i class="fas fa-save"></i> Save Return
+    </button>
+
+    <button type="button"
+            class="btn btn-secondary"
+            onclick="clearReturnItems()">
+        <i class="fas fa-trash"></i> Clear
+    </button>
+
+  </div>      
   </div>
 
                 </div>
@@ -1011,7 +1025,7 @@ function addReturnItem() {
             medicineId: medicineId,
             medicineName: medicineName,
             stock: stock,
-            price: price,
+            purchasePrice: price,
             quantity: quantity,
             amount: quantity * price
         });
@@ -1089,4 +1103,142 @@ function clearMedicineInputs() {
     }
 
     document.getElementById("medicineSearch").focus();
+}
+function saveReturn() {
+
+    const supplierId =
+        document.getElementById("supplierId").value;
+
+    const returnDate =
+        document.getElementById("returnDate").value;
+
+    const reason =
+        document.getElementById("returnReason").value;
+
+    const remarks =
+        document.getElementById("remarks").value;
+
+    if (!supplierId) {
+        alert("Please select a supplier");
+        return;
+    }
+
+    if (!returnDate) {
+        alert("Please select return date");
+        return;
+    }
+
+    if (returnItems.length === 0) {
+        alert("Please add at least one medicine");
+        return;
+    }
+
+    const returnData = {
+        supplierId: Number(supplierId),
+        returnDate: returnDate,
+        reason: reason,
+        remarks: remarks,
+        items: returnItems
+    };
+
+    console.log("Saving Return:");
+    console.log(returnData);
+
+    fetch("/api/returns/save", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(returnData)
+    })
+        .then(response => {
+
+            if (!response.ok) {
+                throw new Error("Failed to save return");
+            }
+
+            return response.json();
+        })
+        .then(data => {
+
+            alert("Return saved successfully");
+
+            console.log("Saved:", data);
+
+            returnItems = [];
+
+            renderReturnItems();
+
+            document.getElementById("supplierId").value = "";
+            document.getElementById("remarks").value = "";
+
+            document.getElementById("totalAmount").innerText = "0.00";
+        })
+        .catch(error => {
+
+            console.error("Save Error:", error);
+
+            alert("Error while saving return");
+        });
+}
+
+function clearReturnItems() {
+
+    if (!confirm("Clear all items?")) {
+        return;
+    }
+
+    returnItems = [];
+    renderReturnItems();
+}
+function loadReturnHistory() {
+
+    fetch("/api/returns")
+        .then(response => response.json())
+        .then(data => {
+
+            let html = `
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Supplier Return History</h5>
+                    </div>
+
+                    <div class="card-body">
+
+                        <table class="table table-bordered">
+
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Date</th>
+                                    <th>Supplier</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+            `;
+
+            data.forEach(item => {
+
+                html += `
+                    <tr>
+                        <td>${item.id}</td>
+                        <td>${item.returnDate}</td>
+                        <td>${item.supplier.supplierName}</td>
+                        <td>${item.totalAmount}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById("contentArea")
+                .innerHTML = html;
+        });
 }

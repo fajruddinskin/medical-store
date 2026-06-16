@@ -12,7 +12,7 @@ public class SupplierReturnMapper {
 
         supplierReturn.setReturnDate(dto.getReturnDate());
         supplierReturn.setReason(dto.getReason());
-
+        supplierReturn.setRemarks(dto.getRemarks());
         return supplierReturn;
     }
 
@@ -27,6 +27,7 @@ public class SupplierReturnMapper {
 
         dto.setReturnDate(entity.getReturnDate());
         dto.setReason(entity.getReason());
+        dto.setRemarks(entity.getRemarks());
 
         return dto;
     }

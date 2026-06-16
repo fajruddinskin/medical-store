@@ -9,8 +9,16 @@ public class SupplierReturnDto {
     private Long supplierId;
     private LocalDate returnDate;
     private ReturnReason reason;
-
+    private String remarks;
     private List<SupplierReturnItemDto> items;
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
 
     public Long getSupplierId() {
         return supplierId;

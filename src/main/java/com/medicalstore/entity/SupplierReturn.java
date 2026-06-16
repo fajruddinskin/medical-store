@@ -1,5 +1,6 @@
 package com.medicalstore.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.medicalstore.enums.ReturnReason;
 import jakarta.persistence.*;
 
@@ -22,11 +23,11 @@ public class SupplierReturn {
     private ReturnReason reason;
 
     private Double totalAmount;
-
+    private String remarks;
     @ManyToOne
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
-
+    @JsonManagedReference
     @OneToMany(
             mappedBy = "supplierReturn",
             cascade = CascadeType.ALL,
@@ -88,5 +89,13 @@ public class SupplierReturn {
 
     public void setItems(List<SupplierReturnItem> items) {
         this.items = items;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }

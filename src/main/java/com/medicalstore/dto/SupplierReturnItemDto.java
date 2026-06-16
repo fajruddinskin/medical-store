@@ -1,8 +1,11 @@
 package com.medicalstore.dto;
 
 public class SupplierReturnItemDto {
+
     private Long medicineId;
+
     private Integer quantity;
+
     private Double purchasePrice;
 
     public Long getMedicineId() {
