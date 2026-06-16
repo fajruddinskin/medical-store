@@ -34,6 +34,16 @@ public class SupplierReturn {
             orphanRemoval = true
     )
     private List<SupplierReturnItem> items = new ArrayList<>();
+    @Column(name = "created_by")
+    private String createdBy;
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
     public Long getId() {
         return id;

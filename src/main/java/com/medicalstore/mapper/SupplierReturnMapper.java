@@ -1,6 +1,7 @@
 package com.medicalstore.mapper;
 
 import com.medicalstore.dto.SupplierReturnDto;
+import com.medicalstore.dto.SupplierReturnHistoryDto;
 import com.medicalstore.dto.SupplierReturnItemDto;
 import com.medicalstore.entity.SupplierReturn;
 import org.springframework.stereotype.Component;
@@ -17,60 +18,30 @@ public class SupplierReturnMapper {
         supplierReturn.setReason(dto.getReason());
         supplierReturn.setRemarks(dto.getRemarks());
 
+        // Add this
+        supplierReturn.setCreatedBy(dto.getCreatedBy());
+
         return supplierReturn;
     }
 
-    public SupplierReturnDto toDto(SupplierReturn entity) {
+    public SupplierReturnHistoryDto toDto(SupplierReturn entity) {
 
-        SupplierReturnDto dto = new SupplierReturnDto();
+        SupplierReturnHistoryDto dto = new SupplierReturnHistoryDto();
 
         dto.setId(entity.getId());
-
-        dto.setSupplierId(
-                entity.getSupplier() != null
-                        ? entity.getSupplier().getId()
-                        : null);
+        dto.setReturnDate(entity.getReturnDate());
 
         dto.setSupplierName(
                 entity.getSupplier() != null
                         ? entity.getSupplier().getSupplierName()
-                        : "");
-
-        dto.setReturnDate(entity.getReturnDate());
-
-        dto.setReason(entity.getReason());
-
-        dto.setRemarks(entity.getRemarks());
+                        : null
+        );
 
         dto.setTotalAmount(entity.getTotalAmount());
 
-        dto.setItems(
-                entity.getItems()
-                        .stream()
-                        .map(item -> {
+        // 🔥 THIS IS THE MISSING LINE (your bug)
+        dto.setCreatedBy(entity.getCreatedBy());
 
-                            SupplierReturnItemDto itemDto =
-                                    new SupplierReturnItemDto();
-
-                            itemDto.setMedicineId(
-                                    item.getMedicine().getId());
-
-                            itemDto.setMedicineName(
-                                    item.getMedicine().getName());
-
-                            itemDto.setQuantity(
-                                    item.getQuantity());
-
-                            itemDto.setPurchasePrice(
-                                    item.getPurchasePrice());
-
-                            itemDto.setAmount(
-                                    item.getAmount());
-
-                            return itemDto;
-                        })
-                        .toList()
-        );
         return dto;
     }
 }

@@ -28,7 +28,8 @@ public class SupplierReturnController {
                 .getAllReturns();
     }
     @GetMapping("/{id}")
-    public SupplierReturnDto getReturnById(
+    public
+    SupplierReturnHistoryDto getReturnById(
             @PathVariable Long id) {
 
         return supplierReturnService

@@ -1224,7 +1224,7 @@ function loadReturnHistory() {
             `;
 
             data.forEach(item => {
-
+                console.log("createdBy =", item.createdBy);
                 html += `
                     <tr>
                         <td>${item.id}</td>
@@ -1232,7 +1232,7 @@ function loadReturnHistory() {
                         <td>${item.supplierName}</td>
                         <td>${item.totalQuantity || 0}</td>
                         <td>₹${item.totalAmount || 0}</td>
-                        <td>${item.createdBy || 'Admin'}</td>
+                        <td>${item.createdBy || '-'}</td>
 
                         <td>
                             <button
