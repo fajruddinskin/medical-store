@@ -1,6 +1,7 @@
 package com.medicalstore.controller;
 
 import com.medicalstore.dto.SupplierReturnDto;
+import com.medicalstore.dto.SupplierReturnHistoryDto;
 import com.medicalstore.entity.SupplierReturn;
 import com.medicalstore.service.SupplierReturnService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,17 @@ public class SupplierReturnController {
         return supplierReturnService.saveReturn(dto);
     }
     @GetMapping
-    public List<SupplierReturn> getAllReturns() {
-        return supplierReturnService.getAllReturns();
+    public List<SupplierReturnHistoryDto>
+    getAllReturns() {
+
+        return supplierReturnService
+                .getAllReturns();
+    }
+    @GetMapping("/{id}")
+    public SupplierReturnDto getReturnById(
+            @PathVariable Long id) {
+
+        return supplierReturnService
+                .getReturnById(id);
     }
 }

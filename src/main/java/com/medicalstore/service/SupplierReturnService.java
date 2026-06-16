@@ -1,11 +1,13 @@
 package com.medicalstore.service;
 
 import com.medicalstore.dto.SupplierReturnDto;
+import com.medicalstore.dto.SupplierReturnHistoryDto;
 import com.medicalstore.dto.SupplierReturnItemDto;
 import com.medicalstore.entity.Medicine;
 import com.medicalstore.entity.Supplier;
 import com.medicalstore.entity.SupplierReturn;
 import com.medicalstore.entity.SupplierReturnItem;
+import com.medicalstore.mapper.SupplierReturnHistoryMapper;
 import com.medicalstore.mapper.SupplierReturnItemMapper;
 import com.medicalstore.mapper.SupplierReturnMapper;
 import com.medicalstore.repository.MedicineRepository;
@@ -34,7 +36,9 @@ public class SupplierReturnService {
     private  SupplierReturnItemMapper supplierReturnItemMapper;
     @Autowired
    private SupplierReturnItemRepository supplierReturnItemRepository;
-
+    @Autowired
+    private SupplierReturnHistoryMapper
+            supplierReturnHistoryMapper;
 
     public SupplierReturnDto saveReturn(
             SupplierReturnDto dto) {
@@ -120,8 +124,31 @@ public class SupplierReturnService {
 
         return dto;
     }
-    public List<SupplierReturn> getAllReturns() {
-        return supplierReturnRepository.findAll(
-                Sort.by(Sort.Direction.DESC, "id"));
+    public List<SupplierReturnHistoryDto>
+    getAllReturns() {
+
+        return supplierReturnRepository
+                .findAll(
+                        Sort.by(
+                                Sort.Direction.DESC,
+                                "id"))
+                .stream()
+                .map(
+                        supplierReturnHistoryMapper
+                                ::toDto)
+                .toList();
+    }
+    public SupplierReturnDto getReturnById(
+            Long id) {
+
+        SupplierReturn supplierReturn =
+                supplierReturnRepository
+                        .findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Return not found"));
+
+        return supplierReturnMapper
+                .toDto(supplierReturn);
     }
 }

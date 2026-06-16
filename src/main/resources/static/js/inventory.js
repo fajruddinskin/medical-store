@@ -1199,20 +1199,24 @@ function loadReturnHistory() {
 
             let html = `
                 <div class="card">
-                    <div class="card-header">
+
+                    <div class="card-header d-flex justify-content-between">
                         <h5>Supplier Return History</h5>
                     </div>
 
                     <div class="card-body">
 
-                        <table class="table table-bordered">
+                        <table class="table table-bordered table-hover">
 
-                            <thead>
+                            <thead class="table-light">
                                 <tr>
                                     <th>ID</th>
                                     <th>Date</th>
                                     <th>Supplier</th>
-                                    <th>Total</th>
+                                    <th>Total Qty</th>
+                                    <th>Total Amount</th>
+                                    <th>Returned By</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
 
@@ -1225,8 +1229,94 @@ function loadReturnHistory() {
                     <tr>
                         <td>${item.id}</td>
                         <td>${item.returnDate}</td>
-                        <td>${item.supplier.supplierName}</td>
-                        <td>${item.totalAmount}</td>
+                        <td>${item.supplierName}</td>
+                        <td>${item.totalQuantity || 0}</td>
+                        <td>₹${item.totalAmount || 0}</td>
+                        <td>${item.createdBy || 'Admin'}</td>
+
+                        <td>
+                            <button
+                                class="btn btn-sm btn-primary"
+                                onclick="viewReturn(${item.id})">
+
+                                <i class="fas fa-eye"></i>
+                                View
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+            `;
+
+            document.getElementById("contentArea")
+                .innerHTML = html;
+        })
+        .catch(error => {
+
+            console.error(
+                "Error loading return history:",
+                error
+            );
+
+            document.getElementById("contentArea")
+                .innerHTML = `
+                    <div class="alert alert-danger">
+                        Failed to load return history
+                    </div>
+                `;
+        });
+}
+function viewReturn(returnId) {
+
+    fetch(`/api/returns/${returnId}`)
+        .then(response => response.json())
+        .then(data => {
+
+            let html = `
+                <div class="card">
+
+                    <div class="card-header">
+                        <h5>Return Details</h5>
+                    </div>
+
+                    <div class="card-body">
+
+                        <p>
+                            <strong>Supplier:</strong>
+                            ${data.supplierName}
+                        </p>
+
+                        <table class="table table-bordered">
+
+                            <thead>
+                                <tr>
+                                    <th>Medicine</th>
+                                    <th>Qty</th>
+                                    <th>Price</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+            `;
+
+            data.items.forEach(item => {
+
+                html += `
+                    <tr>
+                        <td>${item.medicineName}</td>
+                        <td>${item.quantity}</td>
+                        <td>₹${item.purchasePrice}</td>
+                        <td>₹${item.amount}</td>
                     </tr>
                 `;
             });
@@ -1234,7 +1324,14 @@ function loadReturnHistory() {
             html += `
                             </tbody>
                         </table>
+
+                        <h5>
+                            Total Amount :
+                            ₹${data.totalAmount}
+                        </h5>
+
                     </div>
+
                 </div>
             `;
 
