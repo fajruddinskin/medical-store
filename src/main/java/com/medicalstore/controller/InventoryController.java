@@ -1,9 +1,12 @@
 package com.medicalstore.controller;
 
 import com.medicalstore.dto.InventoryAdjustmentDto;
+import com.medicalstore.dto.InventoryDto;
 import com.medicalstore.dto.PurchaseDto;
 import com.medicalstore.dto.StockLedgerDto;
+import com.medicalstore.entity.Inventory;
 import com.medicalstore.entity.Medicine;
+import com.medicalstore.service.InventoryService;
 import com.medicalstore.service.MedicineService;
 import com.medicalstore.service.PurchaseService;
 import com.medicalstore.service.inventoryAdjustmentService;
@@ -21,6 +24,8 @@ public class InventoryController {
     private PurchaseService purchaseService;
     @Autowired
     private inventoryAdjustmentService inventoryAdjustmentService;
+    @Autowired
+    private InventoryService inventoryService;
     @GetMapping("/low-stock")
     public List<Medicine> lowStock() {
         return medicineService.getLowStockMedicines();
@@ -55,5 +60,8 @@ public class InventoryController {
     public String supplierManagement() {
         return "fragments/supplier-management";
     }
-
+    @GetMapping("/reorder-alerts")
+    public List<InventoryDto> getReorderAlerts() {
+        return inventoryService.getReorderAlerts();
+    }
 }

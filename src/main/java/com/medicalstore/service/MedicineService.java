@@ -1,8 +1,10 @@
 package com.medicalstore.service;
 
+import com.medicalstore.entity.Inventory;
 import com.medicalstore.entity.Medicine;
 import com.medicalstore.entity.MedicineType;
 import com.medicalstore.entity.Purchase;
+import com.medicalstore.repository.InventoryRepository;
 import com.medicalstore.repository.MedicineRepository;
 import com.medicalstore.repository.PurchaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +25,8 @@ public class MedicineService {
     private MedicineRepository medicineRepository;
     @Autowired
    private PurchaseRepository purchaseRepository;
+    @Autowired
+    private InventoryRepository inventoryRepository;
     public List<Medicine> searchMedicines(String query) {
         //return null;
         return medicineRepository.searchMedicines(query);
@@ -48,7 +53,28 @@ public class MedicineService {
 
         // 3. Save Purchase
         purchaseRepository.save(purchase);
+  //save inventory
+        Inventory inventory =
+                inventoryRepository
+                        .findByProductName(savedMedicine.getName())
+                        .orElse(new Inventory());
 
+        inventory.setProductName(savedMedicine.getName());
+
+        Integer currentStock =
+                inventory.getStockQuantity();
+
+        inventory.setStockQuantity(
+                currentStock == null
+                        ? savedMedicine.getQuantity()
+                        : currentStock + savedMedicine.getQuantity());
+
+        if (inventory.getReorderLevel() == null) {
+            inventory.setReorderLevel(20);
+        }
+        inventory.setLastUpdated(LocalDate.now());
+
+        inventoryRepository.save(inventory);
         return savedMedicine;
     }
 

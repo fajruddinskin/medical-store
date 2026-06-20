@@ -8,18 +8,18 @@ import jakarta.persistence.Id;
 import java.time.LocalDate;
 
 @Entity
-public class Purchase {
+public class Inventory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String productName;
 
-    private int quantity;
+    private Integer stockQuantity;
 
-    private double price;
+    private Integer reorderLevel;
 
-    private LocalDate purchaseDate;
+    private LocalDate lastUpdated;
 
     public Long getId() {
         return id;
@@ -37,29 +37,27 @@ public class Purchase {
         this.productName = productName;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public Integer getStockQuantity() {
+        return stockQuantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setStockQuantity(Integer stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 
-    public double getPrice() {
-        return price;
+    public Integer getReorderLevel() {
+        return reorderLevel;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setReorderLevel(Integer reorderLevel) {
+        this.reorderLevel = reorderLevel;
     }
 
-    public LocalDate getPurchaseDate() {
-        return purchaseDate;
+    public LocalDate getLastUpdated() {
+        return lastUpdated;
     }
 
-    public void setPurchaseDate(LocalDate purchaseDate) {
-        this.purchaseDate = purchaseDate;
+    public void setLastUpdated(LocalDate lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
-
-
 }

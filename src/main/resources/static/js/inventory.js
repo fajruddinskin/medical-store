@@ -1278,8 +1278,17 @@ function loadReturnHistory() {
 function viewReturn(returnId) {
 
     fetch(`/api/returns/${returnId}`)
-        .then(response => response.json())
+        .then(response => {
+
+            if (!response.ok) {
+                throw new Error("Failed to load return details");
+            }
+
+            return response.json();
+        })
         .then(data => {
+
+            console.log("Return Data:", data);
 
             let html = `
                 <div class="card">
@@ -1290,18 +1299,25 @@ function viewReturn(returnId) {
 
                     <div class="card-body">
 
-                        <p>
-                            <strong>Supplier:</strong>
-                            ${data.supplierName}
-                        </p>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Supplier :</strong>
+                                ${data.supplierName || '-'}
+                            </div>
 
-                        <table class="table table-bordered">
+                            <div class="col-md-6">
+                                <strong>Return Date :</strong>
+                                ${data.returnDate || '-'}
+                            </div>
+                        </div>
 
-                            <thead>
+                        <table class="table table-bordered table-striped">
+
+                            <thead class="table-light">
                                 <tr>
                                     <th>Medicine</th>
-                                    <th>Qty</th>
-                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Purchase Price</th>
                                     <th>Amount</th>
                                 </tr>
                             </thead>
@@ -1309,33 +1325,654 @@ function viewReturn(returnId) {
                             <tbody>
             `;
 
-            data.items.forEach(item => {
+            const items = data.returnItems || data.items || [];
+
+            items.forEach(item => {
+
+                const amount =
+                    item.amount ||
+                    ((item.quantity || 0) * (item.purchasePrice || 0));
 
                 html += `
                     <tr>
-                        <td>${item.medicineName}</td>
-                        <td>${item.quantity}</td>
-                        <td>₹${item.purchasePrice}</td>
-                        <td>₹${item.amount}</td>
+                        <td>${item.medicineName || '-'}</td>
+                        <td>${item.quantity || 0}</td>
+                        <td>₹${item.purchasePrice || 0}</td>
+                        <td>₹${amount}</td>
                     </tr>
                 `;
             });
+
+            if (items.length === 0) {
+
+                html += `
+                    <tr>
+                        <td colspan="4" class="text-center">
+                            No return items found
+                        </td>
+                    </tr>
+                `;
+            }
 
             html += `
                             </tbody>
                         </table>
 
-                        <h5>
-                            Total Amount :
-                            ₹${data.totalAmount}
-                        </h5>
+                        <div class="text-end mt-3">
+                            <h5>
+                                Total Amount :
+                                ₹${data.totalAmount || 0}
+                            </h5>
+                        </div>
 
                     </div>
 
                 </div>
             `;
 
-            document.getElementById("contentArea")
-                .innerHTML = html;
+            document.getElementById("contentArea").innerHTML = html;
+        })
+        .catch(error => {
+
+            console.error("Error loading return:", error);
+
+            document.getElementById("contentArea").innerHTML = `
+                <div class="alert alert-danger">
+                    Failed to load return details.
+                </div>
+            `;
         });
+}
+async function loadReorderAlerts() {
+
+    try {
+
+        const response =
+            await fetch('/inventory/reorder-alerts');
+
+        const alerts =
+            await response.json();
+
+        console.log("Reorder Alerts:", alerts);
+
+        let html = `
+            <h3>Reorder Alerts</h3>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Current Stock</th>
+                        <th>Reorder Level</th>
+                        <th>Suggested Order</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        alerts.forEach(item => {
+
+            html += `
+                <tr>
+                    <td>${item.productName}</td>
+                    <td>${item.stockQuantity}</td>
+                    <td>${item.reorderLevel}</td>
+                    <td>${item.suggestedOrderQuantity}</td>
+                </tr>
+            `;
+        });
+
+        html += `
+                </tbody>
+            </table>
+        `;
+
+        document.getElementById("content-area").innerHTML = html;
+
+    } catch (error) {
+
+        console.error(
+            "Error loading reorder alerts:",
+            error
+        );
+
+        alert("Failed to load reorder alerts");
+    }
+}
+async function loadCustomerTypes() {
+
+    try {
+
+        const response =
+            await fetch("/api/customer/types");
+
+        const data =
+            await response.json();
+
+        console.log("Response =", data);
+
+        if (!Array.isArray(data)) {
+
+            console.error(
+                "Expected array but got:",
+                data
+            );
+
+            return;
+        }
+
+        let options = "";
+
+        data.forEach(type => {
+
+            options += `
+                <option value="${type}">
+                    ${type}
+                </option>
+            `;
+        });
+
+        document.getElementById(
+            "customerType"
+        ).innerHTML = options;
+
+    } catch (error) {
+
+        console.error(
+            "Error loading customer types:",
+            error
+        );
+    }
+}
+function loadBillingScreen() {
+
+    document.getElementById("content").innerHTML = `
+
+        <div class="container-fluid">
+
+            <div class="card">
+
+                <div class="card-header bg-primary text-white">
+
+                    <h4>Billing Management</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    <!-- Customer Section -->
+
+                    <div class="card mb-3">
+
+                        <div class="card-header">
+
+                            Customer Details
+
+                        </div>
+
+                        <div class="card-body">
+
+                            <div class="row">
+
+                                <div class="col-md-3">
+
+                                    <label>Mobile Number</label>
+
+                                    <input type="text"
+                                           id="customerMobile"
+                                           class="form-control">
+
+                                </div>
+
+                                <div class="col-md-2">
+
+                                    <label>&nbsp;</label>
+
+                                    <button
+                                            class="btn btn-primary w-100"
+                                            onclick="searchCustomer()">
+
+                                        Search
+
+                                    </button>
+
+                                </div>
+                                  <div class="col-md-2">
+
+    
+
+    <button
+        class="btn btn-success w-100"
+        onclick="NewCustomerForm()">
+
+        New Customer
+
+    </button>
+
+</div>
+                                <div class="col-md-4">
+
+                                    <label>Customer Name</label>
+
+                                    <input type="text"
+                                           id="customerName"
+                                           class="form-control"
+                                           readonly>
+
+                                   </div>
+
+                                <div class="col-md-3">
+
+                                    <label>Customer Type</label>
+
+                                    <input type="text"
+                                           id="customerType"
+                                           class="form-control"
+                                           readonly>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Medicine Section -->
+
+                    <div class="card mb-3">
+
+                        <div class="card-header">
+
+                            Add Medicine
+
+                        </div>
+
+                        <div class="card-body">
+
+                            <div class="row">
+
+                                <div class="col-md-4">
+
+                                    <label>Medicine</label>
+
+                                    <select id="medicineSelect"
+                                            class="form-control"
+                                            onchange="medicineChanged()">
+
+                                    </select>
+
+                                </div>
+
+                                <div class="col-md-2">
+
+                                    <label>Qty</label>
+
+                                    <input type="number"
+                                           id="saleQty"
+                                           class="form-control">
+
+                                </div>
+
+                                <div class="col-md-2">
+
+                                    <label>Price</label>
+
+                                    <input type="number"
+                                           id="Price"
+                                           class="form-control"
+                                           readonly>
+
+                                </div>
+
+                                <div class="col-md-2">
+
+                                    <label>&nbsp;</label>
+
+                                    <button
+                                            class="btn btn-success w-100"
+                                            onclick="addSaleItem()">
+
+                                        Add
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Sale Items -->
+
+                    <table class="table table-bordered table-striped">
+
+                        <thead class="table-dark">
+
+                            <tr>
+
+                                <th>Medicine</th>
+                                <th>Qty</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="saleItemsTable">
+
+                        </tbody>
+
+                    </table>
+
+                    <!-- Totals -->
+
+                    <div class="row">
+
+                        <div class="col-md-3">
+
+                            <label>Subtotal</label>
+
+                            <input type="text"
+                                   id="subtotal"
+                                   class="form-control"
+                                   value="0"
+                                   readonly>
+
+                        </div>
+
+                        <div class="col-md-3">
+
+                            <label>Discount</label>
+
+                            <input type="number"
+                                   id="discount"
+                                   class="form-control"
+                                   value="0"
+                                   onkeyup="calculateTotal()">
+
+                        </div>
+
+                        <div class="col-md-3">
+
+                            <label>Total Amount</label>
+
+                            <input type="text"
+                                   id="totalAmount"
+                                   class="form-control"
+                                   value="0"
+                                   readonly>
+
+                        </div>
+
+                    </div>
+
+                    <br>
+
+                    <button
+                            class="btn btn-primary"
+                            onclick="saveSale()">
+
+                        Generate Bill
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+    loadMedicines();
+
+
+}
+async function searchCustomer() {
+
+    const mobile =
+        document.getElementById(
+            "customerMobile"
+        ).value;
+
+    const response = await fetch(
+        `/api/customer/mobile/${mobile}`
+    );
+
+    if (!response.ok) {
+        alert("Customer not found");
+        return;
+    }
+
+    const customer = await response.json();
+
+
+    console.log(customer);
+    console.log(customer.name);
+    document.getElementById(
+        "customerName"
+    ).value = customer.name;
+
+    document.getElementById(
+        "customerType"
+    ).value = customer.customerType;
+
+    document.getElementById(
+        "discount"
+    ).value =
+        customer.discountPercentage || 0;
+
+    selectedCustomerId = customer.id;
+}
+async function loadMedicines() {
+
+    try {
+
+        const response =
+            await fetch(  "/api/medicines");
+
+        const medicines = await response.json();
+        console.log(medicines);
+        const medicineSelect =
+            document.getElementById("medicineSelect");
+
+        medicineSelect.innerHTML =
+            '<option value="">Select Medicine</option>';
+
+        medicines.forEach(medicine => {
+
+            medicineSelect.innerHTML += `
+                <option
+                    value="${medicine.id}"
+                      data-price="${medicine.price}"
+                    data-stock="${medicine.stockQuantity || 0}">
+
+                    ${medicine.name}
+
+                </option>
+            `;
+        });
+
+    } catch (error) {
+
+        console.error("Error loading medicines:", error);
+
+        alert("Failed to load medicines");
+    }
+}
+//Save customer Test
+function NewCustomerForm() {
+
+    document.getElementById("contentArea").innerHTML = `
+
+        <div class="card">
+            <div class="card-header">
+                <h3>Customer Details</h3>
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <label>Name</label>
+                      <input type="text"
+                          id="newCustomerName"
+                           class="form-control">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Mobile Number</label>
+                        <input type="text"
+                               id="mobileNumber"
+                               class="form-control">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Email</label>
+                        <input type="email"
+                               id="email"
+                               class="form-control">
+                    </div>
+
+                </div>
+
+                <br>
+
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <label>Address</label>
+                        <input type="text"
+                               id="address"
+                               class="form-control">
+                    </div>
+
+                   <div class="col-md-4">
+    <label>Customer Type</label>
+
+    <select id="newCustomerType"
+            class="form-control">
+
+        <option value="WALK_IN">
+            Walk In
+        </option>
+
+        <option value="REGULAR">
+            Regular
+        </option>
+
+        <option value="PREMIUM">
+            Premium
+        </option>
+
+        <option value="WHOLESALE">
+            Wholesale
+        </option>
+
+    </select>
+
+</div>
+
+                    <div class="col-md-4">
+                        <label>Discount %</label>
+                        <input type="number"
+                               id="discountPercentage"
+                               class="form-control"
+                               value="0">
+                    </div>
+
+                </div>
+
+                <br>
+
+                <button class="btn btn-primary"
+                        onclick="saveCustomer()">
+                    Save Customer
+                </button>
+
+            </div>
+        </div>
+
+    `;
+
+
+}
+async function saveCustomer() {
+
+    const payload = {
+
+        name: document.getElementById(
+            "newCustomerName"
+        ).value.trim(),
+
+
+        mobileNumber:
+            document.getElementById(
+                "mobileNumber"
+            ).value.trim(),
+
+        email:
+            document.getElementById(
+                "email"
+            ).value.trim(),
+
+        address:
+            document.getElementById(
+                "address"
+            ).value.trim(),
+
+        customerType:
+        document.getElementById(
+            "newCustomerType"
+        ).value,
+
+        discountPercentage:
+            parseFloat(
+                document.getElementById(
+                    "discountPercentage"
+                ).value
+            ) || 0
+    };
+    console.log(payload);
+
+    const response = await fetch(
+        "/api/customer",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        }
+    );
+
+    const data = await response.json();
+
+    alert("Customer Saved Successfully");
+
+    console.log(data);
+}
+function medicineChanged() {
+
+    const select =
+        document.getElementById(
+            "medicineSelect"
+        );
+
+    const option =
+        select.options[
+            select.selectedIndex
+            ];
+
+    document.getElementById(
+        "Price"
+    ).value =
+        option.getAttribute(
+            "data-price"
+        ) || 0;
 }

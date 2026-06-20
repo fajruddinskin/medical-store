@@ -15,6 +15,7 @@ public class PurchaseMapper {
         dto.setQuantity(p.getQuantity());
         dto.setPrice(p.getPrice());
         dto.setPurchaseDate(p.getPurchaseDate());
+
         return dto;
     }
 

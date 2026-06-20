@@ -53,7 +53,7 @@ public class Medicine {
     private LocalDate purchaseDate;
 
 
-
+    private Integer reorderLevel;
 
     @ManyToOne(cascade = CascadeType.PERSIST , fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
@@ -62,13 +62,14 @@ public class Medicine {
     public Medicine() {}
 
     public Medicine(String name, String batchNumber, BigDecimal price,
-                    Integer quantity, String manufacturer, MedicineType type) {
+                    Integer quantity, String manufacturer, MedicineType type,Integer reorderLevel ) {
         this.name = name;
         this.batchNumber = batchNumber;
         this.price = price;
         this.quantity = quantity;
         this.manufacturer = manufacturer;
         this.type = type;
+        this.reorderLevel=reorderLevel;
         this.purchaseDate = LocalDate.now();
     }
 
@@ -108,5 +109,13 @@ public class Medicine {
 
     public void setPurchaseDate(LocalDate purchaseDate) {
         this.purchaseDate = purchaseDate;
+    }
+
+    public Integer getReorderLevel() {
+        return reorderLevel;
+    }
+
+    public void setReorderLevel(Integer reorderLevel) {
+        this.reorderLevel = reorderLevel;
     }
 }

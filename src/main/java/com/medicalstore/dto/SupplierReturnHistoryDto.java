@@ -1,6 +1,7 @@
 package com.medicalstore.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class SupplierReturnHistoryDto {
     private Long id;
@@ -14,6 +15,8 @@ public class SupplierReturnHistoryDto {
     private Double totalAmount;
 
     private String createdBy;
+
+    private List<SupplierReturnItemDto> items;
 
     public Long getId() {
         return id;
@@ -61,5 +64,13 @@ public class SupplierReturnHistoryDto {
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public List<SupplierReturnItemDto> getItems() {
+        return items;
+    }
+
+    public void setItems(List<SupplierReturnItemDto> items) {
+        this.items = items;
     }
 }
