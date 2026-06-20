@@ -1603,7 +1603,16 @@ function loadBillingScreen() {
                                     </select>
 
                                 </div>
+                                   <div class="col-md-2">
 
+    <label>Available Qty</label>
+
+    <input type="number"
+           id="availableQty"
+           class="form-control"
+           readonly>
+
+</div>
                                 <div class="col-md-2">
 
                                     <label>Qty</label>
@@ -1789,7 +1798,7 @@ async function loadMedicines() {
                 <option
                     value="${medicine.id}"
                       data-price="${medicine.price}"
-                    data-stock="${medicine.stockQuantity || 0}">
+                     data-stock="${medicine.quantity || 0}">
 
                     ${medicine.name}
 
@@ -1969,10 +1978,262 @@ function medicineChanged() {
             select.selectedIndex
             ];
 
-    document.getElementById(
-        "Price"
-    ).value =
+    const price =
         option.getAttribute(
             "data-price"
-        ) || 0;
+        );
+
+    const stock =
+        option.getAttribute(
+            "data-stock"
+        );
+
+    document.getElementById(
+        "Price"
+    ).value = price || 0;
+
+    document.getElementById(
+        "availableQty"
+    ).value = stock || 0;
+}
+
+let saleCart = [];
+
+function addSaleItem() {
+
+    const medicineSelect =
+        document.getElementById("medicineSelect");
+
+    const quantityInput =
+        document.getElementById("saleQty");
+
+    const selectedOption =
+        medicineSelect.options[medicineSelect.selectedIndex];
+
+    const medicineId = medicineSelect.value;
+    const medicineName = selectedOption.text;
+    const price =
+        parseFloat(selectedOption.dataset.price);
+
+    const stock =
+        parseInt(selectedOption.dataset.stock);
+
+    const quantity =
+        parseInt(quantityInput.value);
+
+    if (!medicineId) {
+        alert("Select medicine");
+        return;
+    }
+
+    if (!quantity || quantity <= 0) {
+        alert("Enter valid quantity");
+        return;
+    }
+
+    if (quantity > stock) {
+        alert("Only " + stock + " available");
+        return;
+    }
+
+    const existingItem = saleCart.find(
+        item => item.medicineId == medicineId
+    );
+
+    if (existingItem) {
+
+        const newQty =
+            existingItem.quantity + quantity;
+
+        if (newQty > stock) {
+            alert("Stock exceeded");
+            return;
+        }
+
+        existingItem.quantity = newQty;
+        existingItem.total =
+            newQty * existingItem.price;
+
+    } else {
+
+        saleCart.push({
+            medicineId: medicineId,
+            medicineName: medicineName,
+            price: price,
+            quantity: quantity,
+            total: price * quantity
+        });
+    }
+
+    renderSaleCart();
+    calculateTotal();
+    quantityInput.value = "";
+}
+function renderSaleCart() {
+
+    const tbody =
+        document.getElementById("saleItemsTable");
+
+    tbody.innerHTML = "";
+
+    let grandTotal = 0;
+
+    saleCart.forEach(item => {
+
+        grandTotal += item.total;
+
+        tbody.innerHTML += `
+            <tr>
+                <td>${item.medicineName}</td>
+                <td>${item.price}</td>
+                <td>${item.quantity}</td>
+                <td>${item.total}</td>
+                <td>
+                    <button
+                         class="btn btn-danger btn-sm"
+                        onclick="removeSaleItem(${item.medicineId})">
+                        Remove
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+
+  /*  document.getElementById("saleGrandTotal")
+        .innerText = grandTotal.toFixed(2);*/
+}
+
+
+function calculateTotal() {
+
+    let subtotal = 0;
+
+    saleCart.forEach(item => {
+        subtotal += item.total;
+    });
+
+    const discount =
+        parseFloat(document.getElementById("discount").value) || 0;
+
+    let totalAmount = subtotal - discount;
+
+    if (totalAmount < 0) {
+        totalAmount = 0;
+    }
+
+    document.getElementById("subtotal").value =
+        subtotal.toFixed(2);
+
+    document.getElementById("totalAmount").value =
+        totalAmount.toFixed(2);
+}
+function removeSaleItem(medicineId) {
+
+    saleCart = saleCart.filter(
+        item => item.medicineId !== medicineId
+    );
+
+    renderSaleCart();
+    calculateTotal();
+}
+function saveSale() {
+    alert("Bill generating");
+    if (saleCart.length === 0) {
+        alert("Add at least one medicine");
+        return;
+    }
+
+    const payload = {
+
+        discount:
+            parseFloat(document.getElementById("discount").value) || 0,
+
+        totalAmount:
+            parseFloat(document.getElementById("totalAmount").value),
+
+        items: saleCart.map(item => ({
+            medicineId: item.medicineId,
+            quantity: item.quantity,
+            unitPrice: item.price
+        }))
+    };
+
+    console.log(payload);
+
+    // fetch('/api/sales/save', ...)
+}
+/*
+function saveSale() {
+
+    if (saleCart.length === 0) {
+
+        alert("Add at least one medicine");
+
+        return;
+    }
+
+    const payload = {
+
+        customerId: selectedCustomerId || null,
+
+        discount:
+            parseFloat(
+                document.getElementById("discount").value
+            ) || 0,
+
+        totalAmount:
+            parseFloat(
+                document.getElementById("totalAmount").value
+            ) || 0,
+
+        items: saleCart.map(item => ({
+
+            medicineId: item.medicineId,
+
+            quantity: item.quantity,
+
+            unitPrice: item.price
+        }))
+    };
+
+    console.log(payload);
+
+    fetch("/api/sales", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        alert("Bill Generated Successfully");
+
+        console.log(data);
+
+        saleCart = [];
+
+        renderSaleCart();
+
+        calculateTotal();
+
+        loadMedicines();
+    })
+    .catch(error => {
+
+        console.error(error);
+
+        alert("Failed to save sale");
+    });
+}*/
+function removeSaleItem(medicineId) {
+
+    saleCart = saleCart.filter(
+        item => Number(item.medicineId) !== Number(medicineId)
+    );
+
+    renderSaleCart();
+
+    calculateTotal();
 }
