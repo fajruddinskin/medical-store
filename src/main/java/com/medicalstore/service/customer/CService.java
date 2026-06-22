@@ -19,13 +19,18 @@ public class CService {
         Customer customer = customerMapper.toEntity(dto);
 
         customer.setActive(true);
-
+        customer.setCustomerCode(generateCustomerCode());
         Customer savedCustomer =
                 customerRepository.save(customer);
 
         return customerMapper.toDto(savedCustomer);
     }
+    private String generateCustomerCode() {
 
+        long count = customerRepository.count() + 1;
+
+        return "CUST" + String.format("%04d", count);
+    }
      public CustomerDto findByMobile(String mobileNumber) {
 
         Customer customer =

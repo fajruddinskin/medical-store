@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "medicines")
@@ -26,7 +25,7 @@ public class Medicine {
     @NotNull(message = "Price is required")
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
     @Column(nullable = false)
-    private BigDecimal price;
+    private Double price;
 
     @NotNull(message = "Quantity is required")
     @Min(value = 0, message = "Quantity cannot be negative")
@@ -61,7 +60,7 @@ public class Medicine {
     // Constructors
     public Medicine() {}
 
-    public Medicine(String name, String batchNumber, BigDecimal price,
+    public Medicine(String name, String batchNumber, Double price,
                     Integer quantity, String manufacturer, MedicineType type,Integer reorderLevel ) {
         this.name = name;
         this.batchNumber = batchNumber;
@@ -88,8 +87,8 @@ public class Medicine {
     public void setName(String name) { this.name = name; }
     public String getBatchNumber() { return batchNumber; }
     public void setBatchNumber(String batchNumber) { this.batchNumber = batchNumber; }
-    public BigDecimal getPrice() { return price; }
-    public void setPrice(BigDecimal price) { this.price = price; }
+    public Double getPrice() { return price; }
+    public void setPrice(Double price) { this.price = price; }
     public Integer getQuantity() { return quantity; }
     public void setQuantity(Integer quantity) { this.quantity = quantity; }
     public LocalDate getManufactureDate() { return manufactureDate; }

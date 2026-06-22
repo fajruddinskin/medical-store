@@ -2127,7 +2127,7 @@ function calculateTotal() {
     document.getElementById("totalAmount").value =
         totalAmount.toFixed(2);
 }
-function removeSaleItem(medicineId) {
+/*function removeSaleItem(medicineId) {
 
     saleCart = saleCart.filter(
         item => item.medicineId !== medicineId
@@ -2135,8 +2135,8 @@ function removeSaleItem(medicineId) {
 
     renderSaleCart();
     calculateTotal();
-}
-function saveSale() {
+}*/
+/*function saveSale() {
     alert("Bill generating");
     if (saleCart.length === 0) {
         alert("Add at least one medicine");
@@ -2161,9 +2161,18 @@ function saveSale() {
     console.log(payload);
 
     // fetch('/api/sales/save', ...)
-}
-/*
+}*/
+
+let selectedCustomerId = null;
+
 function saveSale() {
+
+    if (!selectedCustomerId) {
+
+        alert("Please select customer first");
+
+        return;
+    }
 
     if (saleCart.length === 0) {
 
@@ -2174,7 +2183,18 @@ function saveSale() {
 
     const payload = {
 
-        customerId: selectedCustomerId || null,
+        customerId: selectedCustomerId,
+
+        customerName:
+        document.getElementById("customerName").value,
+
+        customerType:
+        document.getElementById("customerType").value,
+
+        subtotal:
+            parseFloat(
+                document.getElementById("subtotal").value
+            ) || 0,
 
         discount:
             parseFloat(
@@ -2190,13 +2210,17 @@ function saveSale() {
 
             medicineId: item.medicineId,
 
+            medicineName: item.medicineName,
+
             quantity: item.quantity,
 
-            unitPrice: item.price
+            unitPrice: item.price,
+
+            totalPrice: item.total
         }))
     };
 
-    console.log(payload);
+    console.log("Sale Payload =", payload);
 
     fetch("/api/sales", {
         method: "POST",
@@ -2205,28 +2229,37 @@ function saveSale() {
         },
         body: JSON.stringify(payload)
     })
-    .then(response => response.json())
-    .then(data => {
+        .then(response => {
 
-        alert("Bill Generated Successfully");
+            if (!response.ok) {
+                throw new Error("Failed to save sale");
+            }
 
-        console.log(data);
+            return response.json();
+        })
+        .then(data => {
 
-        saleCart = [];
 
-        renderSaleCart();
+            showInvoice(data);
+            saleCart = [];
 
-        calculateTotal();
+            renderSaleCart();
 
-        loadMedicines();
-    })
-    .catch(error => {
+            document.getElementById("subtotal").value = 0;
+            document.getElementById("discount").value = 0;
+            document.getElementById("totalAmount").value = 0;
 
-        console.error(error);
+            loadMedicines();
 
-        alert("Failed to save sale");
-    });
-}*/
+            console.log(data);
+        })
+        .catch(error => {
+
+            console.error(error);
+
+            alert("Failed to save sale");
+        });
+}
 function removeSaleItem(medicineId) {
 
     saleCart = saleCart.filter(
@@ -2236,4 +2269,85 @@ function removeSaleItem(medicineId) {
     renderSaleCart();
 
     calculateTotal();
+}
+//Bill generate
+function showInvoice(sale) {
+
+    let html = `
+        <div id="invoice">
+
+            <h2>Medical Store</h2>
+
+            <p><strong>Bill No:</strong> ${sale.billNumber}</p>
+
+            <p><strong>Customer:</strong> ${sale.customerName}</p>
+
+            <p><strong>Customer Type:</strong> ${sale.customerType}</p>
+
+            <hr>
+
+            <table border="1" width="100%">
+                <tr>
+                    <th>Medicine</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+    `;
+
+    sale.items.forEach(item => {
+
+        html += `
+            <tr>
+                <td>${item.medicineName}</td>
+                <td>${item.quantity}</td>
+                <td>${item.unitPrice}</td>
+                <td>${item.totalPrice}</td>
+            </tr>
+        `;
+    });
+
+    html += `
+            </table>
+
+            <hr>
+
+            <p><strong>Subtotal:</strong> ${sale.subtotal}</p>
+            <p><strong>Discount:</strong> ${sale.discount}</p>
+            <p><strong>Total:</strong> ${sale.totalAmount}</p>
+
+            <button
+    type="button"
+    class="btn btn-primary mt-3"
+    onclick="printInvoice()">
+    <i class="fas fa-print"></i> Print Invoice
+</button>
+
+        </div>
+    `;
+
+    document.getElementById("invoiceContainer").innerHTML = html;
+}
+//Print invoice
+function printInvoice() {
+
+    const invoice =
+        document.getElementById("invoice").innerHTML;
+
+    const printWindow =
+        window.open("", "_blank");
+
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Invoice</title>
+        </head>
+        <body>
+            ${invoice}
+        </body>
+        </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.print();
 }
